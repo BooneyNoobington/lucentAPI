@@ -68,15 +68,9 @@ def number(r: m.Reading) -> float | None:
     return None
 
 
-def values_of(conn: Connection, collection_ids: Iterable[int]) -> dict[int, list[dict]]:
-    """Visible values per collection, each with its raw values (oldest first) under "raw"."""
-    ids = list(collection_ids)
-    if not ids:
-        return {}
-    rows = conn.execute(
-        select(value).where(value.c.id_collection.in_(ids), visible(value))
-        .order_by(value.c.id_j_action_variable, value.c.repetition)
-    ).mappings().all()
+def with_raw(conn: Connection, rows) -> list[dict]:
+    """Value rows, each with its visible raw values (oldest first) under "raw"."""
+    rows = [dict(row) for row in rows]
     raws = defaultdict(list)
     if rows:
         for raw in conn.execute(
@@ -84,9 +78,21 @@ def values_of(conn: Connection, collection_ids: Iterable[int]) -> dict[int, list
             .order_by(raw_value.c.t, raw_value.c.id_raw_value)
         ).mappings():
             raws[raw["id_value"]].append(dict(raw))
+    return [{**row, "raw": raws[row["id_value"]]} for row in rows]
+
+
+def values_of(conn: Connection, collection_ids: Iterable[int]) -> dict[int, list[dict]]:
+    """Visible values per collection, with their raw values."""
+    ids = list(collection_ids)
+    if not ids:
+        return {}
+    rows = conn.execute(
+        select(value).where(value.c.id_collection.in_(ids), visible(value))
+        .order_by(value.c.id_j_action_variable, value.c.repetition)
+    ).mappings().all()
     result = defaultdict(list)
-    for row in rows:
-        result[row["id_collection"]].append({**row, "raw": raws[row["id_value"]]})
+    for row in with_raw(conn, rows):
+        result[row["id_collection"]].append(row)
     return result
 
 

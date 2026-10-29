@@ -1,0 +1,50 @@
+[
+  {
+    "id": 24,
+    "given_name": "John",
+    "surname": "Doe",
+    "unix_account": "jd",
+    "organization_id": 10,
+    "position": "Analytik"
+  },
+  {
+    "id": 26,
+    "given_name": "Michael",
+    "surname": "Dorn",
+    "unix_account": "worf",
+    "organization_id": 10,
+    "position": "Probenahme"
+  },
+  {
+    "id": 23,
+    "given_name": "Booney",
+    "surname": "Noobington",
+    "unix_account": "grindel",
+    "organization_id": 5,
+    "position": "Administration"
+  },
+  {
+    "id": 28,
+    "given_name": "Jean Luc",
+    "surname": "Picard",
+    "unix_account": "p47at",
+    "organization_id": 10,
+    "position": "Laborleitung"
+  },
+  {
+    "id": 29,
+    "given_name": "Ellen",
+    "surname": "Ripley",
+    "unix_account": "xx121",
+    "organization_id": 10,
+    "position": "Qualitätssicherung"
+  },
+  {
+    "id": 27,
+    "given_name": "Homer",
+    "surname": "Simpson",
+    "unix_account": "s7e23",
+    "organization_id": 10,
+    "position": "Luftmessnetz"
+  }
+]

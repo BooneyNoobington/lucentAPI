@@ -1,0 +1,12 @@
+{
+  "error": {
+    "code": "four_eyes",
+    "message": "Values have to be accepted by someone other than who measured them.",
+    "request_id": "example",
+    "details": {
+      "value_ids": [
+        232
+      ]
+    }
+  }
+}

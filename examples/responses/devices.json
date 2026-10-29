@@ -1,0 +1,101 @@
+[
+  {
+    "id": 6,
+    "name": "Brutschrank 36 °C",
+    "number": "BS36-002",
+    "manufacturer_id": 13,
+    "operator_id": 29,
+    "active": true,
+    "etag": "\"f6fea62b05ec36cfb57d64ee\""
+  },
+  {
+    "id": 11,
+    "name": "Einstichthermometer",
+    "number": "TH-0042",
+    "manufacturer_id": 13,
+    "operator_id": 26,
+    "active": true,
+    "etag": "\"26b29ce56a797e3d876600c5\""
+  },
+  {
+    "id": 7,
+    "name": "Feinstaubsammler LVS-3 Nr. 1",
+    "number": "LVS3-1187",
+    "manufacturer_id": 14,
+    "operator_id": 27,
+    "active": true,
+    "etag": "\"813e07514cebc369eefc3cc1\""
+  },
+  {
+    "id": 8,
+    "name": "Feinstaubsammler LVS-3 Nr. 2",
+    "number": "LVS3-1192",
+    "manufacturer_id": 14,
+    "operator_id": 27,
+    "active": true,
+    "etag": "\"54fbbe4c2b01aede637f0240\""
+  },
+  {
+    "id": 10,
+    "name": "Feinwaage XS205",
+    "number": "XS205-778",
+    "manufacturer_id": 13,
+    "operator_id": 24,
+    "active": true,
+    "etag": "\"5831fbdb2f9fc2b01b2713b7\""
+  },
+  {
+    "id": 5,
+    "name": "ICP-MS Q2",
+    "number": "ICPMS-Q2-4411",
+    "manufacturer_id": 12,
+    "operator_id": 28,
+    "active": true,
+    "etag": "\"237ff6e90c2010dbb6541ed7\""
+  },
+  {
+    "id": 4,
+    "name": "Ionenchromatograph IC-3",
+    "number": "IC3-0098",
+    "manufacturer_id": 12,
+    "operator_id": 24,
+    "active": true,
+    "etag": "\"5e796a78e8dd9f373cfc3f52\""
+  },
+  {
+    "id": 3,
+    "name": "Leitfähigkeitsmessgerät LF 4",
+    "number": "LF-2105-033",
+    "manufacturer_id": 11,
+    "operator_id": 24,
+    "active": true,
+    "etag": "\"1aa05038f10133695b265842\""
+  },
+  {
+    "id": 9,
+    "name": "NO₂-Analysator",
+    "number": "NOX500-221",
+    "manufacturer_id": 14,
+    "operator_id": 27,
+    "active": true,
+    "etag": "\"2234aeef7b9db89195a9efe4\""
+  },
+  {
+    "id": 1,
+    "name": "pH-Meter Lab 1",
+    "number": "PH-2207-114",
+    "manufacturer_id": 11,
+    "operator_id": 24,
+    "active": true,
+    "etag": "\"2950bf7b64be6dca61e81ccb\""
+  },
+  {
+    "id": 2,
+    "name": "pH-Meter Lab 2 (Reserve)",
+    "number": "PH-1903-027",
+    "manufacturer_id": 11,
+    "operator_id": 24,
+    "active": false,
+    "etag": "\"890f49e7c270307ccd35ac1c\""
+  }
+]

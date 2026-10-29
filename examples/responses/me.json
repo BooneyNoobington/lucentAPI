@@ -1,0 +1,11 @@
+{
+  "person": {
+    "id": 29,
+    "given_name": "Ellen",
+    "surname": "Ripley",
+    "unix_account": "xx121",
+    "organization_id": 10,
+    "position": "Qualitätssicherung"
+  },
+  "roles": []
+}

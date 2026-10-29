@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "name": "Betriebsgelände Laborstraße",
+    "description": "Labor- und Verwaltungsgebäude",
+    "address": {
+      "street": "Laborstraße",
+      "house_number": "4",
+      "addition": null,
+      "zip": "76131",
+      "district": "Oststadt",
+      "city": "Karlsruhe"
+    },
+    "border": [
+      {
+        "latitude": 49.0103,
+        "longitude": 8.4102
+      },
+      {
+        "latitude": 49.0106,
+        "longitude": 8.4139
+      },
+      {
+        "latitude": 49.0088,
+        "longitude": 8.4145
+      },
+      {
+        "latitude": 49.0084,
+        "longitude": 8.4108
+      }
+    ],
+    "crs_id": 1
+  },
+  {
+    "id": 3,
+    "name": "Messfeld Rheinaue",
+    "description": "Grundwassermessstellen am Altrhein",
+    "address": {
+      "street": "Rheinauenweg",
+      "house_number": "12",
+      "addition": null,
+      "zip": "76187",
+      "district": "Knielingen",
+      "city": "Karlsruhe"
+    },
+    "border": [
+      {
+        "latitude": 49.0335,
+        "longitude": 8.301
+      },
+      {
+        "latitude": 49.034,
+        "longitude": 8.3095
+      },
+      {
+        "latitude": 49.029,
+        "longitude": 8.3105
+      },
+      {
+        "latitude": 49.0282,
+        "longitude": 8.302
+      }
+    ],
+    "crs_id": 1
+  },
+  {
+    "id": 2,
+    "name": "Wasserwerk Ost",
+    "description": "Fassungsgelände mit den Brunnen B3 und B7",
+    "address": {
+      "street": "Am Wasserwerk",
+      "house_number": "1",
+      "addition": "a",
+      "zip": "76227",
+      "district": "Durlach",
+      "city": "Karlsruhe"
+    },
+    "border": [
+      {
+        "latitude": 48.999,
+        "longitude": 8.451
+      },
+      {
+        "latitude": 48.9995,
+        "longitude": 8.46
+      },
+      {
+        "latitude": 48.995,
+        "longitude": 8.4612
+      },
+      {
+        "latitude": 48.9944,
+        "longitude": 8.4515
+      }
+    ],
+    "crs_id": 1
+  }
+]

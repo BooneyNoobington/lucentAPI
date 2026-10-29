@@ -1,0 +1,32 @@
+[
+  {
+    "id": 14,
+    "name": "Aerosol Systems GmbH",
+    "shorthand": "Aerosol"
+  },
+  {
+    "id": 11,
+    "name": "Ionic Instruments GmbH",
+    "shorthand": "Ionic"
+  },
+  {
+    "id": 13,
+    "name": "Klarsicht Messtechnik KG",
+    "shorthand": "Klarsicht"
+  },
+  {
+    "id": 5,
+    "name": "Redhsoft Inc",
+    "shorthand": "Redhsoft"
+  },
+  {
+    "id": 12,
+    "name": "Spectra Analytik AG",
+    "shorthand": "Spectra"
+  },
+  {
+    "id": 10,
+    "name": "Umweltlabor Lucent",
+    "shorthand": "Lucent"
+  }
+]

@@ -1,0 +1,51 @@
+[
+  {
+    "value_id": 11,
+    "collection_id": 2,
+    "sampled_at": "2026-09-07T09:48:00Z",
+    "value": 41.2,
+    "exceeds": false
+  },
+  {
+    "value_id": 30,
+    "collection_id": 6,
+    "sampled_at": "2026-09-14T09:09:00Z",
+    "value": 43.3,
+    "exceeds": false
+  },
+  {
+    "value_id": 74,
+    "collection_id": 13,
+    "sampled_at": "2026-09-21T10:38:00Z",
+    "value": 47.0,
+    "exceeds": false
+  },
+  {
+    "value_id": 93,
+    "collection_id": 17,
+    "sampled_at": "2026-09-28T07:07:00Z",
+    "value": 47.2,
+    "exceeds": false
+  },
+  {
+    "value_id": 132,
+    "collection_id": 23,
+    "sampled_at": "2026-10-05T09:46:00Z",
+    "value": 51.0,
+    "exceeds": true
+  },
+  {
+    "value_id": 164,
+    "collection_id": 28,
+    "sampled_at": "2026-10-12T09:26:00Z",
+    "value": 50.8,
+    "exceeds": true
+  },
+  {
+    "value_id": 195,
+    "collection_id": 34,
+    "sampled_at": "2026-10-19T08:14:00Z",
+    "value": 51.9,
+    "exceeds": true
+  }
+]

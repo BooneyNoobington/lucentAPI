@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1,
+    "name": "Temperatur",
+    "value_class": "decimal",
+    "description": "Wassertemperatur bei der Probenahme",
+    "dimension_id": 2
+  },
+  {
+    "id": 2,
+    "name": "pH-Wert",
+    "value_class": "decimal",
+    "description": "Negativer dekadischer Logarithmus der Oxoniumaktivität",
+    "dimension_id": 1
+  },
+  {
+    "id": 3,
+    "name": "Elektrische Leitfähigkeit",
+    "value_class": "decimal",
+    "description": "Bezogen auf 25 °C",
+    "dimension_id": 3
+  },
+  {
+    "id": 4,
+    "name": "Nitrat",
+    "value_class": "decimal",
+    "description": "NO₃⁻",
+    "dimension_id": 4
+  },
+  {
+    "id": 5,
+    "name": "Chlorid",
+    "value_class": "decimal",
+    "description": "Cl⁻",
+    "dimension_id": 4
+  },
+  {
+    "id": 6,
+    "name": "Sulfat",
+    "value_class": "decimal",
+    "description": "SO₄²⁻",
+    "dimension_id": 4
+  },
+  {
+    "id": 7,
+    "name": "Blei",
+    "value_class": "decimal",
+    "description": "Pb, gesamt",
+    "dimension_id": 4
+  },
+  {
+    "id": 8,
+    "name": "Kupfer",
+    "value_class": "decimal",
+    "description": "Cu, gesamt",
+    "dimension_id": 4
+  },
+  {
+    "id": 9,
+    "name": "Nickel",
+    "value_class": "decimal",
+    "description": "Ni, gesamt",
+    "dimension_id": 4
+  },
+  {
+    "id": 10,
+    "name": "Escherichia coli",
+    "value_class": "decimal",
+    "description": "Fäkalindikator",
+    "dimension_id": 5
+  },
+  {
+    "id": 11,
+    "name": "Coliforme Bakterien",
+    "value_class": "decimal",
+    "description": "Hygieneindikator",
+    "dimension_id": 5
+  },
+  {
+    "id": 12,
+    "name": "Feinstaub PM10",
+    "value_class": "decimal",
+    "description": "Partikel ≤ 10 µm, Tagesmittel",
+    "dimension_id": 4
+  },
+  {
+    "id": 13,
+    "name": "Feinstaub PM2,5",
+    "value_class": "decimal",
+    "description": "Partikel ≤ 2,5 µm, Tagesmittel",
+    "dimension_id": 4
+  },
+  {
+    "id": 14,
+    "name": "Stickstoffdioxid",
+    "value_class": "decimal",
+    "description": "NO₂, Tagesmittel",
+    "dimension_id": 4
+  },
+  {
+    "id": 15,
+    "name": "Färbung",
+    "value_class": "text",
+    "description": "Visuelle Prüfung",
+    "dimension_id": null
+  },
+  {
+    "id": 16,
+    "name": "Geruch auffällig",
+    "value_class": "boolean",
+    "description": "Olfaktorische Prüfung",
+    "dimension_id": null
+  }
+]

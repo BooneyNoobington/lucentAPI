@@ -186,3 +186,26 @@ def test_series(client, as_user):
 def test_series_needs_one_location(client, as_user):
     response = client.get("/v1/series?action_variable_id=6", headers=as_user("grindel"))
     assert response.status_code == 422
+
+
+def test_values_in_bulk(client, as_user):
+    headers = as_user("grindel")
+    page = client.get("/v1/values?limit=50", headers=headers).json()
+    assert len(page["items"]) == 50 and page["total"] > 50
+    ids = [v["id"] for v in page["items"]]
+    assert ids == sorted(ids)
+    rest = client.get(f"/v1/values?limit=5000&offset=50", headers=headers).json()
+    assert len(rest["items"]) == page["total"] - 50
+
+    some = client.get("/v1/values?collection_id=1&collection_id=2&limit=5000", headers=headers).json()["items"]
+    assert {v["collection_id"] for v in some} == {1, 2}
+    detail = client.get("/v1/collections/1", headers=headers).json()
+    assert [v for v in some if v["collection_id"] == 1] == detail["values"]
+
+
+def test_values_in_a_time_window(client, as_user):
+    headers = as_user("grindel")
+    recent = client.get("/v1/collections?sampled_from=2026-10-15T00:00:00Z&limit=1000", headers=headers).json()
+    values = client.get("/v1/values?sampled_from=2026-10-15T00:00:00Z&limit=5000", headers=headers).json()
+    assert {v["collection_id"] for v in values["items"]} <= {c["id"] for c in recent["items"]}
+    assert sum(c["measured"] > 0 for c in recent["items"]) == len({v["collection_id"] for v in values["items"]})

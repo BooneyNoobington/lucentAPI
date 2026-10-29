@@ -217,6 +217,13 @@ class Value(BaseModel):
     etag: str
 
 
+class ValuePage(BaseModel):
+    items: list[Value]
+    total: int
+    limit: int
+    offset: int
+
+
 class ValueIn(Note):
     action_variable_id: int
     reading: Reading

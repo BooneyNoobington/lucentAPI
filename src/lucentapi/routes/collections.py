@@ -262,6 +262,33 @@ def accept_collection(
         return detail(conn, target)
 
 
+@router.get("/values")
+def list_values(
+    _: CurrentCaller,
+    engine: Database,
+    collection_id: Annotated[list[int] | None, Query(description="Repeat for several collections.")] = None,
+    sampled_from: Annotated[m.dt.datetime | None, Query(description="Of the collection; inclusive.")] = None,
+    sampled_until: Annotated[m.dt.datetime | None, Query(description="Of the collection; exclusive.")] = None,
+    limit: Annotated[int, Query(ge=1, le=5000)] = 1000,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> m.ValuePage:
+    """Values of many collections at once, oldest first, for clients that keep a local copy."""
+    query = (select(value).join(collection, collection.c.id_collection == value.c.id_collection)
+             .where(visible(value), visible(collection)).order_by(value.c.id_value))
+    if collection_id:
+        query = query.where(value.c.id_collection.in_(collection_id))
+    if sampled_from is not None:
+        query = query.where(collection.c.sampled_at >= to_db_time(sampled_from))
+    if sampled_until is not None:
+        query = query.where(collection.c.sampled_at < to_db_time(sampled_until))
+    with engine.connect() as conn:
+        total = conn.scalar(select(func.count()).select_from(query.order_by(None).subquery()))
+        rows = lims.with_raw(conn, conn.execute(query.limit(limit).offset(offset)).mappings().all())
+        catalog = lims.Catalog(conn)
+        return m.ValuePage(items=[lims.value_out(row, catalog) for row in rows], total=total, limit=limit,
+                           offset=offset)
+
+
 @router.get("/series", tags=["locations"])
 def series(
     _: CurrentCaller, engine: Database,

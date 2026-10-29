@@ -1,0 +1,92 @@
+[
+  {
+    "id": 8,
+    "name": "Brunnen B3",
+    "description": "Vertikalfilterbrunnen, 28 m",
+    "x": 48.9978,
+    "y": 8.4531,
+    "crs_id": 1,
+    "site_id": 2
+  },
+  {
+    "id": 9,
+    "name": "Brunnen B7",
+    "description": "Vertikalfilterbrunnen, 34 m",
+    "x": 48.9958,
+    "y": 8.4592,
+    "crs_id": 1,
+    "site_id": 2
+  },
+  {
+    "id": 10,
+    "name": "GWM 12",
+    "description": "Grundwassermessstelle am Feldrand",
+    "x": 49.0318,
+    "y": 8.3046,
+    "crs_id": 1,
+    "site_id": 3
+  },
+  {
+    "id": 3,
+    "name": "Garten",
+    "description": "Unter dem Dach der Fahrradgarage",
+    "x": 49.006097,
+    "y": 8.382112,
+    "crs_id": 1,
+    "site_id": null
+  },
+  {
+    "id": 6,
+    "name": "Hochbehälter Nord",
+    "description": "Probenahmehahn Kammer 1",
+    "x": 49.0352,
+    "y": 8.4212,
+    "crs_id": 1,
+    "site_id": null
+  },
+  {
+    "id": 11,
+    "name": "Messcontainer Innenstadt",
+    "description": "Verkehrsnahe Luftmessstation",
+    "x": 49.0094,
+    "y": 8.401,
+    "crs_id": 1,
+    "site_id": null
+  },
+  {
+    "id": 2,
+    "name": "Test 1",
+    "description": "Erster Test",
+    "x": 49.006986,
+    "y": 8.376389,
+    "crs_id": 1,
+    "site_id": null
+  },
+  {
+    "id": 7,
+    "name": "Wasserwerk Reinwasser",
+    "description": "Reinwasserbehälter, Ausgang ins Netz",
+    "x": 48.9962,
+    "y": 8.4566,
+    "crs_id": 1,
+    "site_id": 2
+  },
+  {
+    "id": 5,
+    "name": "Zapfstelle Kantine",
+    "description": "Spülküche, Mischbatterie links",
+    "x": 49.0091,
+    "y": 8.4132,
+    "crs_id": 1,
+    "site_id": 1
+  },
+  {
+    "id": 4,
+    "name": "Zapfstelle Labor 2.14",
+    "description": "Kaltwasserhahn im Altbau, 2. OG",
+    "x": 49.0096,
+    "y": 8.4118,
+    "crs_id": 1,
+    "site_id": 1
+  }
+]

@@ -998,6 +998,127 @@
         }
       }
     },
+    "/v1/values": {
+      "get": {
+        "tags": [
+          "collections"
+        ],
+        "summary": "List Values",
+        "description": "Values of many collections at once, oldest first, for clients that keep a local copy.",
+        "operationId": "list_values_v1_values_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "collection_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Repeat for several collections.",
+              "title": "Collection Id"
+            },
+            "description": "Repeat for several collections."
+          },
+          {
+            "name": "sampled_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Of the collection; inclusive.",
+              "title": "Sampled From"
+            },
+            "description": "Of the collection; inclusive."
+          },
+          {
+            "name": "sampled_until",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Of the collection; exclusive.",
+              "title": "Sampled Until"
+            },
+            "description": "Of the collection; exclusive."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 5000,
+              "minimum": 1,
+              "default": 1000,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValuePage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/series": {
       "get": {
         "tags": [
@@ -3416,6 +3537,37 @@
           "reading"
         ],
         "title": "ValueIn"
+      },
+      "ValuePage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Value"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "ValuePage"
       },
       "Variable": {
         "properties": {

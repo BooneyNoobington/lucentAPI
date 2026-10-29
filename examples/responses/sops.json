@@ -1,0 +1,296 @@
+[
+  {
+    "id": 1,
+    "name": "SOP-001 Probenahme Wasser",
+    "active": true,
+    "documents": [
+      {
+        "id": 1,
+        "name": "Probenahme Wasser, Rev. 3",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-001_r3.pdf",
+        "accepted": true,
+        "sha256": null
+      },
+      {
+        "id": 2,
+        "name": "Probenahme Wasser, Rev. 2 (ersetzt)",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-001_r2.pdf",
+        "accepted": false,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 26,
+        "role": "Autor"
+      },
+      {
+        "person_id": 29,
+        "role": "Prüfung"
+      },
+      {
+        "person_id": 28,
+        "role": "Freigabe"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "SOP-002 pH-Wert",
+    "active": true,
+    "documents": [
+      {
+        "id": 3,
+        "name": "pH-Wert, Rev. 2",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-002_r2.pdf",
+        "accepted": true,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 24,
+        "role": "Autor"
+      },
+      {
+        "person_id": 29,
+        "role": "Prüfung"
+      },
+      {
+        "person_id": 28,
+        "role": "Freigabe"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "SOP-003 Elektrische Leitfähigkeit",
+    "active": true,
+    "documents": [
+      {
+        "id": 4,
+        "name": "Elektrische Leitfähigkeit, Rev. 1",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-003_r1.pdf",
+        "accepted": true,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 24,
+        "role": "Autor"
+      },
+      {
+        "person_id": 29,
+        "role": "Prüfung"
+      },
+      {
+        "person_id": 28,
+        "role": "Freigabe"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "SOP-004 Anionen mittels IC",
+    "active": true,
+    "documents": [
+      {
+        "id": 5,
+        "name": "Anionen mittels IC, Rev. 4",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-004_r4.pdf",
+        "accepted": true,
+        "sha256": null
+      },
+      {
+        "id": 6,
+        "name": "Gerätehandbuch IC-3",
+        "url": "https://docs.example.org/ic3/handbuch.pdf",
+        "file_path": null,
+        "accepted": true,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 24,
+        "role": "Autor"
+      },
+      {
+        "person_id": 29,
+        "role": "Prüfung"
+      },
+      {
+        "person_id": 28,
+        "role": "Freigabe"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "SOP-005 Metalle mittels ICP-MS",
+    "active": true,
+    "documents": [
+      {
+        "id": 7,
+        "name": "Metalle mittels ICP-MS, Rev. 2",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-005_r2.pdf",
+        "accepted": true,
+        "sha256": null
+      },
+      {
+        "id": 8,
+        "name": "Entwurf Rev. 3",
+        "url": null,
+        "file_path": "/srv/lucent/sop/entwurf/SOP-005_r3.docx",
+        "accepted": false,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 28,
+        "role": "Autor"
+      },
+      {
+        "person_id": 29,
+        "role": "Prüfung"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "SOP-006 E. coli und coliforme Bakterien",
+    "active": true,
+    "documents": [
+      {
+        "id": 9,
+        "name": "Membranfiltration, Rev. 1",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-006_r1.pdf",
+        "accepted": true,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 29,
+        "role": "Autor"
+      },
+      {
+        "person_id": 28,
+        "role": "Freigabe"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "SOP-007 Feinstaub gravimetrisch",
+    "active": true,
+    "documents": [
+      {
+        "id": 10,
+        "name": "Feinstaub gravimetrisch, Rev. 2",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-007_r2.pdf",
+        "accepted": true,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 27,
+        "role": "Autor"
+      },
+      {
+        "person_id": 24,
+        "role": "Prüfung"
+      },
+      {
+        "person_id": 28,
+        "role": "Freigabe"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "SOP-008 Stickstoffdioxid",
+    "active": true,
+    "documents": [
+      {
+        "id": 11,
+        "name": "Stickstoffdioxid, Rev. 1",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-008_r1.pdf",
+        "accepted": true,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 27,
+        "role": "Autor"
+      },
+      {
+        "person_id": 28,
+        "role": "Freigabe"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "SOP-009 Datenfreigabe (Vier-Augen-Prinzip)",
+    "active": true,
+    "documents": [
+      {
+        "id": 12,
+        "name": "Datenfreigabe, Rev. 1",
+        "url": null,
+        "file_path": "/srv/lucent/sop/SOP-009_r1.pdf",
+        "accepted": true,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 29,
+        "role": "Autor"
+      },
+      {
+        "person_id": 23,
+        "role": "Prüfung"
+      },
+      {
+        "person_id": 28,
+        "role": "Freigabe"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "SOP-010 Probenahme Luft",
+    "active": false,
+    "documents": [
+      {
+        "id": 13,
+        "name": "Entwurf",
+        "url": null,
+        "file_path": "/srv/lucent/sop/entwurf/SOP-010.docx",
+        "accepted": false,
+        "sha256": null
+      }
+    ],
+    "people": [
+      {
+        "person_id": 27,
+        "role": "Autor"
+      }
+    ]
+  }
+]

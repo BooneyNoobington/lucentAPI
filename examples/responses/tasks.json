@@ -1,0 +1,62 @@
+[
+  {
+    "id": 6,
+    "request": "Probenflaschen nachbestellen",
+    "description": "500 mL PE und 250 mL Glas, steril.",
+    "assigner_id": 26,
+    "assignee_id": 23,
+    "deadline": "2026-10-23T16:00:00Z",
+    "done": true,
+    "etag": "\"c226f92f3fd017a25deb6f72\""
+  },
+  {
+    "id": 1,
+    "request": "pH-Meter Lab 1 kalibrieren",
+    "description": "Drei-Punkt-Kalibrierung mit Puffer 4, 7 und 10.",
+    "assigner_id": 28,
+    "assignee_id": 24,
+    "deadline": "2026-10-28T16:00:00Z",
+    "done": false,
+    "etag": "\"998b6114563d3092bac2b66d\""
+  },
+  {
+    "id": 3,
+    "request": "Offene Kollektionen freigeben",
+    "description": "Vier-Augen-Prinzip nach SOP-009.",
+    "assigner_id": 28,
+    "assignee_id": 29,
+    "deadline": "2026-10-30T16:00:00Z",
+    "done": false,
+    "etag": "\"bf9b82feec15b17604f20fa7\""
+  },
+  {
+    "id": 2,
+    "request": "Blei an Zapfstelle 2.14 nachprüfen",
+    "description": "Stagnationsproben S0 und S1 nehmen.",
+    "assigner_id": 29,
+    "assignee_id": 26,
+    "deadline": "2026-10-31T16:00:00Z",
+    "done": false,
+    "etag": "\"4203a31d22644d852b162a69\""
+  },
+  {
+    "id": 4,
+    "request": "Nitrat-Trend an GWM 12 melden",
+    "description": "Bericht an die Wasserbehörde.",
+    "assigner_id": 28,
+    "assignee_id": 28,
+    "deadline": "2026-11-03T16:00:00Z",
+    "done": false,
+    "etag": "\"e863955935ce81a198b7432e\""
+  },
+  {
+    "id": 5,
+    "request": "lucentLIMS an lucentAPI anbinden",
+    "description": "Die Mock-Daten durch die API ersetzen.",
+    "assigner_id": 23,
+    "assignee_id": 23,
+    "deadline": "2026-11-28T16:00:00Z",
+    "done": false,
+    "etag": "\"2471775d37450ace5ec9f7ad\""
+  }
+]

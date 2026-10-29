@@ -1,0 +1,477 @@
+[
+  {
+    "id": 1,
+    "name": "Probenahme Wasser",
+    "standard": "DIN ISO 5667-5",
+    "iteration": 3,
+    "active": true,
+    "description": "Entnahme der Probe und Messung der Wassertemperatur vor Ort.",
+    "sop_id": 1,
+    "device_ids": [
+      11
+    ],
+    "people": [
+      {
+        "person_id": 26,
+        "role": "Verantwortlich"
+      }
+    ],
+    "depends_on": [],
+    "implies": [
+      2
+    ],
+    "collection_class_ids": [
+      1,
+      3,
+      4
+    ],
+    "variables": [
+      {
+        "id": 1,
+        "action_id": 1,
+        "variable_id": 1,
+        "unit_id": 2,
+        "uncertainty": 0.2,
+        "uncertainty_class": "absolute",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 1,
+        "lower_limit": null,
+        "upper_limit": null
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Sensorische Prüfung",
+    "standard": "DIN EN 1622",
+    "iteration": 1,
+    "active": true,
+    "description": "Färbung und Geruch, direkt nach der Probenahme.",
+    "sop_id": 1,
+    "device_ids": [],
+    "people": [
+      {
+        "person_id": 26,
+        "role": "Prüfer"
+      }
+    ],
+    "depends_on": [
+      1
+    ],
+    "implies": [],
+    "collection_class_ids": [
+      1,
+      3
+    ],
+    "variables": [
+      {
+        "id": 2,
+        "action_id": 2,
+        "variable_id": 15,
+        "unit_id": null,
+        "uncertainty": null,
+        "uncertainty_class": null,
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": null,
+        "lower_limit": null,
+        "upper_limit": null
+      },
+      {
+        "id": 3,
+        "action_id": 2,
+        "variable_id": 16,
+        "unit_id": null,
+        "uncertainty": null,
+        "uncertainty_class": null,
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": null,
+        "lower_limit": null,
+        "upper_limit": 0.0
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "pH-Wert",
+    "standard": "DIN EN ISO 10523",
+    "iteration": 2,
+    "active": true,
+    "description": "Potentiometrische Messung mit Glaselektrode, Drei-Punkt-Kalibrierung.",
+    "sop_id": 2,
+    "device_ids": [
+      1,
+      2
+    ],
+    "people": [
+      {
+        "person_id": 24,
+        "role": "Analyst"
+      },
+      {
+        "person_id": 28,
+        "role": "Verantwortlich"
+      }
+    ],
+    "depends_on": [
+      1
+    ],
+    "implies": [],
+    "collection_class_ids": [
+      1,
+      3,
+      4
+    ],
+    "variables": [
+      {
+        "id": 4,
+        "action_id": 3,
+        "variable_id": 2,
+        "unit_id": 1,
+        "uncertainty": 0.05,
+        "uncertainty_class": "absolute",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 2,
+        "lower_limit": 6.5,
+        "upper_limit": 9.5
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Elektrische Leitfähigkeit",
+    "standard": "DIN EN 27888",
+    "iteration": 1,
+    "active": true,
+    "description": "Konduktometrische Messung mit Temperaturkompensation auf 25 °C.",
+    "sop_id": 3,
+    "device_ids": [
+      3
+    ],
+    "people": [
+      {
+        "person_id": 24,
+        "role": "Analyst"
+      }
+    ],
+    "depends_on": [
+      1
+    ],
+    "implies": [],
+    "collection_class_ids": [
+      1,
+      3,
+      4
+    ],
+    "variables": [
+      {
+        "id": 5,
+        "action_id": 4,
+        "variable_id": 3,
+        "unit_id": 3,
+        "uncertainty": 2.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": "κ₂₅ = κ_T · f₂₅(T)",
+        "decimals": 0,
+        "lower_limit": null,
+        "upper_limit": 2790.0
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Anionen (IC)",
+    "standard": "DIN EN ISO 10304-1",
+    "iteration": 4,
+    "active": true,
+    "description": "Nitrat, Chlorid und Sulfat mittels Ionenchromatographie.",
+    "sop_id": 4,
+    "device_ids": [
+      4
+    ],
+    "people": [
+      {
+        "person_id": 24,
+        "role": "Analyst"
+      },
+      {
+        "person_id": 28,
+        "role": "Verantwortlich"
+      }
+    ],
+    "depends_on": [
+      1
+    ],
+    "implies": [
+      4
+    ],
+    "collection_class_ids": [
+      3,
+      4
+    ],
+    "variables": [
+      {
+        "id": 6,
+        "action_id": 5,
+        "variable_id": 4,
+        "unit_id": 4,
+        "uncertainty": 5.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 1,
+        "lower_limit": null,
+        "upper_limit": 50.0
+      },
+      {
+        "id": 7,
+        "action_id": 5,
+        "variable_id": 5,
+        "unit_id": 4,
+        "uncertainty": 5.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 1,
+        "lower_limit": null,
+        "upper_limit": 250.0
+      },
+      {
+        "id": 8,
+        "action_id": 5,
+        "variable_id": 6,
+        "unit_id": 4,
+        "uncertainty": 5.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 1,
+        "lower_limit": null,
+        "upper_limit": 250.0
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Metalle (ICP-MS)",
+    "standard": "DIN EN ISO 17294-2",
+    "iteration": 2,
+    "active": true,
+    "description": "Stagnationsprobe S0. Eine Überschreitung wird mit einer Wiederholungsmessung bestätigt.",
+    "sop_id": 5,
+    "device_ids": [
+      5
+    ],
+    "people": [
+      {
+        "person_id": 28,
+        "role": "Analyst"
+      },
+      {
+        "person_id": 29,
+        "role": "Prüfer"
+      }
+    ],
+    "depends_on": [
+      1
+    ],
+    "implies": [],
+    "collection_class_ids": [
+      3
+    ],
+    "variables": [
+      {
+        "id": 9,
+        "action_id": 6,
+        "variable_id": 7,
+        "unit_id": 5,
+        "uncertainty": 10.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 1,
+        "lower_limit": null,
+        "upper_limit": 10.0
+      },
+      {
+        "id": 10,
+        "action_id": 6,
+        "variable_id": 8,
+        "unit_id": 4,
+        "uncertainty": 8.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 2,
+        "lower_limit": null,
+        "upper_limit": 2.0
+      },
+      {
+        "id": 11,
+        "action_id": 6,
+        "variable_id": 9,
+        "unit_id": 5,
+        "uncertainty": 10.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 1,
+        "lower_limit": null,
+        "upper_limit": 20.0
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "E. coli und coliforme Bakterien",
+    "standard": "DIN EN ISO 9308-1",
+    "iteration": 1,
+    "active": true,
+    "description": "Membranfiltration, Bebrütung 21 ± 3 h bei 36 °C.",
+    "sop_id": 6,
+    "device_ids": [
+      6
+    ],
+    "people": [
+      {
+        "person_id": 29,
+        "role": "Analyst"
+      }
+    ],
+    "depends_on": [
+      1
+    ],
+    "implies": [],
+    "collection_class_ids": [
+      1,
+      3
+    ],
+    "variables": [
+      {
+        "id": 12,
+        "action_id": 7,
+        "variable_id": 10,
+        "unit_id": 7,
+        "uncertainty": null,
+        "uncertainty_class": null,
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 0,
+        "lower_limit": null,
+        "upper_limit": 0.0
+      },
+      {
+        "id": 13,
+        "action_id": 7,
+        "variable_id": 11,
+        "unit_id": 7,
+        "uncertainty": null,
+        "uncertainty_class": null,
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 0,
+        "lower_limit": null,
+        "upper_limit": 0.0
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Feinstaub (gravimetrisch)",
+    "standard": "DIN EN 12341",
+    "iteration": 2,
+    "active": true,
+    "description": "24-Stunden-Probenahme auf Filter, Wägung vor und nach der Beaufschlagung.",
+    "sop_id": 7,
+    "device_ids": [
+      7,
+      8,
+      10
+    ],
+    "people": [
+      {
+        "person_id": 27,
+        "role": "Probenehmer"
+      },
+      {
+        "person_id": 24,
+        "role": "Analyst"
+      }
+    ],
+    "depends_on": [],
+    "implies": [],
+    "collection_class_ids": [
+      2
+    ],
+    "variables": [
+      {
+        "id": 14,
+        "action_id": 8,
+        "variable_id": 12,
+        "unit_id": 6,
+        "uncertainty": 7.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": "c = (m₂ − m₁) / V",
+        "decimals": 0,
+        "lower_limit": null,
+        "upper_limit": 50.0
+      },
+      {
+        "id": 15,
+        "action_id": 8,
+        "variable_id": 13,
+        "unit_id": 6,
+        "uncertainty": 7.0,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": "c = (m₂ − m₁) / V",
+        "decimals": 0,
+        "lower_limit": null,
+        "upper_limit": 25.0
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Stickstoffdioxid",
+    "standard": "DIN EN 14211",
+    "iteration": 1,
+    "active": true,
+    "description": "Chemilumineszenz, Tagesmittelwert.",
+    "sop_id": 8,
+    "device_ids": [
+      9
+    ],
+    "people": [
+      {
+        "person_id": 27,
+        "role": "Verantwortlich"
+      }
+    ],
+    "depends_on": [],
+    "implies": [],
+    "collection_class_ids": [
+      2
+    ],
+    "variables": [
+      {
+        "id": 16,
+        "action_id": 9,
+        "variable_id": 14,
+        "unit_id": 6,
+        "uncertainty": 7.5,
+        "uncertainty_class": "relative",
+        "uncertainty_unit_id": null,
+        "calculation": null,
+        "decimals": 0,
+        "lower_limit": null,
+        "upper_limit": 40.0
+      }
+    ]
+  }
+]

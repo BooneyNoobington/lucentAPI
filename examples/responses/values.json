@@ -1,0 +1,61 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "collection_id": 1,
+      "action_variable_id": 1,
+      "repetition": 1,
+      "reading": {
+        "decimal": 14.1,
+        "text": null,
+        "boolean": null,
+        "datetime": null
+      },
+      "accepted": true,
+      "measured_at": "2026-09-03T07:50:00Z",
+      "person_id": 26,
+      "device_id": 11,
+      "exceeds": false,
+      "etag": "\"68374fa01e433b0683c96f7b\""
+    },
+    {
+      "id": 2,
+      "collection_id": 1,
+      "action_variable_id": 2,
+      "repetition": 1,
+      "reading": {
+        "decimal": null,
+        "text": "farblos",
+        "boolean": null,
+        "datetime": null
+      },
+      "accepted": true,
+      "measured_at": "2026-09-03T13:13:00Z",
+      "person_id": 26,
+      "device_id": null,
+      "exceeds": false,
+      "etag": "\"5c39ca6359a849310f48e105\""
+    },
+    {
+      "id": 3,
+      "collection_id": 1,
+      "action_variable_id": 3,
+      "repetition": 1,
+      "reading": {
+        "decimal": null,
+        "text": null,
+        "boolean": false,
+        "datetime": null
+      },
+      "accepted": true,
+      "measured_at": "2026-09-03T13:13:00Z",
+      "person_id": 26,
+      "device_id": null,
+      "exceeds": false,
+      "etag": "\"492c49a87478d91b87480e49\""
+    }
+  ],
+  "total": 230,
+  "limit": 3,
+  "offset": 0
+}

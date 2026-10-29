@@ -1,0 +1,22 @@
+[
+  {
+    "id": 11,
+    "name": "Grundwasser",
+    "description": "Aus Brunnen und Messstellen"
+  },
+  {
+    "id": 9,
+    "name": "Leitungswasser",
+    "description": "Aus der Hausinstallation"
+  },
+  {
+    "id": 8,
+    "name": "Luft",
+    "description": "Außen- oder Innenluft"
+  },
+  {
+    "id": 10,
+    "name": "Trinkwasser",
+    "description": "Gemäß Trinkwasserverordnung"
+  }
+]

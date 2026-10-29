@@ -1,0 +1,52 @@
+{
+  "id": 44,
+  "name": "1·Blue·6·Phi",
+  "matrix_id": 9,
+  "class_id": 3,
+  "spot_id": 4,
+  "site_id": null,
+  "sampled_at": "2026-10-29T09:30:00Z",
+  "sampler_id": 26,
+  "status": "in_analysis",
+  "measured": 1,
+  "planned": 13,
+  "exceedances": 2,
+  "values": [
+    {
+      "id": 231,
+      "collection_id": 44,
+      "action_variable_id": 9,
+      "repetition": 1,
+      "reading": {
+        "decimal": 12.4,
+        "text": null,
+        "boolean": null,
+        "datetime": null
+      },
+      "accepted": false,
+      "measured_at": "2026-10-29T11:00:00Z",
+      "person_id": 28,
+      "device_id": 5,
+      "exceeds": true,
+      "etag": "\"ddd133a9efa815d483eee7a7\""
+    },
+    {
+      "id": 232,
+      "collection_id": 44,
+      "action_variable_id": 9,
+      "repetition": 2,
+      "reading": {
+        "decimal": 11.9,
+        "text": null,
+        "boolean": null,
+        "datetime": null
+      },
+      "accepted": false,
+      "measured_at": "2026-10-29T11:00:00Z",
+      "person_id": 28,
+      "device_id": 5,
+      "exceeds": true,
+      "etag": "\"2eec91d75cb06a65e84708b9\""
+    }
+  ]
+}
