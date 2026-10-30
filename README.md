@@ -1,3 +1,5 @@
+<p align="center"><img src="src/lucentapi/static/lucentLIMS-logo.svg" alt="lucentLIMS" width="420"></p>
+
 # lucentAPI
 
 An HTTPS API for lucentBASE that reads and writes. Clients (the SwiftUI app
@@ -53,7 +55,9 @@ TOKEN=$(uv run python dev/mint_token.py grindel admin)
 curl --noproxy '*' -H "Authorization: Bearer $TOKEN" 'localhost:8000/v1/collections?status=in_review'
 ```
 
-The interactive documentation is at <http://localhost:8000/docs>. The demo users are
+The interactive documentation is at <http://localhost:8000/docs> (and
+<http://localhost:8000/redoc>). Both show the lucentLIMS logo, which the API serves from
+`src/lucentapi/static/` under `/static/`. The demo users are
 `grindel`, `jd`, `worf`, `s7e23`, `p47at` and `xx121`, the people of lucentAndShiny's demo data.
 
 ## Configuration
@@ -71,7 +75,6 @@ Environment variables, or a `.env` file in the working directory:
 | `LUCENT_ROLES_CLAIM` | Default `roles`. Dots walk into nested claims: Keycloak needs `realm_access.roles`. |
 | `LUCENT_ROLE_MAP` | JSON, e.g. `{"lims-reviewers": "reviewer"}`, if your role or group names differ. |
 | `LUCENT_NUMBERING_OFFSET` | Collection identifiers continue at `id_collection + offset`. Default 0. |
-| `LUCENT_ROOT_PATH` | Path prefix behind a reverse proxy, e.g. `/lucent`. |
 
 Unknown `LUCENT_` variables stop the start, so a typo doesn't go unnoticed.
 
@@ -243,7 +246,7 @@ tests.
 
 The API runs as `uvicorn --factory lucentapi.main:create_app` behind a reverse proxy that
 terminates TLS, e.g. Caddy with `reverse_proxy 127.0.0.1:8000`. Start uvicorn with
-`--proxy-headers`, and set `LUCENT_ROOT_PATH` if the API lives under a path. Keep the
+`--proxy-headers`, and with `--root-path /lucent` if the API lives under a path. Keep the
 database password in the service's environment, not in git. None of this has been tried in
 production yet.
 
@@ -283,7 +286,8 @@ new copies too.
 
 ```
 src/lucentapi/
-  main.py        create_app(), /health
+  main.py        create_app(), /health, /docs and /redoc
+  static/        the lucentLIMS logo (SVG), as in lucentLIMS's Branding/
   config.py      settings (LUCENT_…)
   auth.py        token check, person lookup, roles
   schema.py      the lucentBASE tables

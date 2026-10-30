@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+  <title id="title">lucentLIMS</title>
+  <desc id="desc">Two overlapping translucent cards form an L.</desc>
+  <defs>
+    <clipPath id="vertical-card"><rect x="32" y="32" width="144" height="256" rx="20"/></clipPath>
+  </defs>
+  <rect x="32" y="32" width="144" height="256" rx="20" fill="#59B9F4"/>
+  <rect x="32" y="144" width="256" height="144" rx="20" fill="#7ADFC8"/>
+  <rect x="32" y="144" width="256" height="144" rx="20" fill="#168ED0" clip-path="url(#vertical-card)"/>
+</svg>
+

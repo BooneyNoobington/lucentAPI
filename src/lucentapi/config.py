@@ -36,9 +36,6 @@ class Settings(BaseSettings):
     # Collection identifiers are the numbering scheme's identifier for id_collection + offset.
     numbering_offset: int = 0
 
-    # Path prefix behind a reverse proxy, e.g. /lucent.
-    root_path: str = ""
-
     @model_validator(mode="after")
     def check(self) -> Self:
         # Unknown keys in .env are refused by extra="forbid"; unknown environment variables
