@@ -1,32 +1,38 @@
 [
   {
-    "id": 14,
+    "id": 6,
     "name": "Aerosol Systems GmbH",
-    "shorthand": "Aerosol"
+    "shorthand": "Aerosol",
+    "relation": "Hersteller"
   },
   {
-    "id": 11,
+    "id": 3,
     "name": "Ionic Instruments GmbH",
-    "shorthand": "Ionic"
-  },
-  {
-    "id": 13,
-    "name": "Klarsicht Messtechnik KG",
-    "shorthand": "Klarsicht"
+    "shorthand": "Ionic",
+    "relation": "Hersteller"
   },
   {
     "id": 5,
-    "name": "Redhsoft Inc",
-    "shorthand": "Redhsoft"
+    "name": "Klarsicht Messtechnik KG",
+    "shorthand": "Klarsicht",
+    "relation": "Hersteller"
   },
   {
-    "id": 12,
+    "id": 1,
+    "name": "Redhsoft.org",
+    "shorthand": "redhsoft",
+    "relation": null
+  },
+  {
+    "id": 4,
     "name": "Spectra Analytik AG",
-    "shorthand": "Spectra"
+    "shorthand": "Spectra",
+    "relation": "Hersteller"
   },
   {
-    "id": 10,
+    "id": 2,
     "name": "Umweltlabor Lucent",
-    "shorthand": "Lucent"
+    "shorthand": "Lucent",
+    "relation": "Labor"
   }
 ]

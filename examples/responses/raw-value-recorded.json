@@ -1,0 +1,17 @@
+{
+  "id": 274,
+  "value_id": 293,
+  "t": "2026-10-29T14:00:00Z",
+  "person_id": 5,
+  "device_id": 5,
+  "unit_id": 4,
+  "reading": {
+    "decimal": 11.9,
+    "text": null,
+    "boolean": null,
+    "datetime": null
+  },
+  "accepted": false,
+  "exceeds": true,
+  "etag": "\"ada1947bcc9b6bdfceeb6b6c\""
+}

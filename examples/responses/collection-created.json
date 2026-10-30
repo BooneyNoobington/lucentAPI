@@ -1,15 +1,103 @@
 {
   "id": 44,
   "name": "1·Blue·6·Phi",
-  "matrix_id": 9,
-  "class_id": 3,
+  "matrix_id": 2,
+  "collection_class": "spot sample",
   "spot_id": 4,
   "site_id": null,
+  "registered_at": "2026-10-29T12:00:00Z",
+  "registered_by": 3,
   "sampled_at": "2026-10-29T09:30:00Z",
-  "sampler_id": 26,
-  "status": "registered",
-  "measured": 0,
-  "planned": 13,
+  "sampled_by": 3,
+  "status": "in_analysis",
+  "planned": 5,
+  "measured": 1,
   "exceedances": 0,
-  "values": []
+  "values": [
+    {
+      "id": 291,
+      "collection_id": 44,
+      "effect_id": 1,
+      "name": null,
+      "limits": [],
+      "raw_values": [
+        {
+          "id": 272,
+          "value_id": 291,
+          "t": "2026-10-29T09:30:00Z",
+          "person_id": 3,
+          "device_id": 11,
+          "unit_id": null,
+          "reading": {
+            "decimal": null,
+            "text": null,
+            "boolean": null,
+            "datetime": "2026-10-29T09:30:00Z"
+          },
+          "accepted": false,
+          "exceeds": false,
+          "etag": "\"e2881740f39cb256a1852c04\""
+        }
+      ]
+    },
+    {
+      "id": 292,
+      "collection_id": 44,
+      "effect_id": 2,
+      "name": null,
+      "limits": [],
+      "raw_values": []
+    },
+    {
+      "id": 293,
+      "collection_id": 44,
+      "effect_id": 10,
+      "name": null,
+      "limits": [
+        {
+          "threshold_id": 7,
+          "document_id": 12,
+          "lower_limit": null,
+          "upper_limit": 10.0
+        },
+        {
+          "threshold_id": 15,
+          "document_id": 13,
+          "lower_limit": null,
+          "upper_limit": 10.0
+        }
+      ],
+      "raw_values": []
+    },
+    {
+      "id": 294,
+      "collection_id": 44,
+      "effect_id": 11,
+      "name": null,
+      "limits": [
+        {
+          "threshold_id": 8,
+          "document_id": 12,
+          "lower_limit": null,
+          "upper_limit": 2.0
+        }
+      ],
+      "raw_values": []
+    },
+    {
+      "id": 295,
+      "collection_id": 44,
+      "effect_id": 12,
+      "name": null,
+      "limits": [
+        {
+          "threshold_id": 9,
+          "document_id": 12,
+          "lower_limit": null,
+          "upper_limit": 20.0
+        }
+      ],
+      "raw_values": []
+    }
+  ]
 }

@@ -13,7 +13,7 @@ from pathlib import Path
 from lucentapi.devtokens import DevSigner
 
 parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-parser.add_argument("username", help="a person.unix_account, e.g. grindel")
+parser.add_argument("username", help="a person.linux_user, e.g. grindel")
 parser.add_argument("roles", nargs="*", help="sampler, analyst, reviewer, admin")
 parser.add_argument("--minutes", type=int, default=60)
 args = parser.parse_args()

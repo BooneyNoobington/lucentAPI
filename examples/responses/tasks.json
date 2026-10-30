@@ -3,60 +3,60 @@
     "id": 6,
     "request": "Probenflaschen nachbestellen",
     "description": "500 mL PE und 250 mL Glas, steril.",
-    "assigner_id": 26,
-    "assignee_id": 23,
+    "assigner_id": 3,
+    "assignee_id": 1,
     "deadline": "2026-10-23T16:00:00Z",
     "done": true,
-    "etag": "\"c226f92f3fd017a25deb6f72\""
+    "etag": "\"99c53788bf4e091135359601\""
   },
   {
     "id": 1,
     "request": "pH-Meter Lab 1 kalibrieren",
     "description": "Drei-Punkt-Kalibrierung mit Puffer 4, 7 und 10.",
-    "assigner_id": 28,
-    "assignee_id": 24,
+    "assigner_id": 5,
+    "assignee_id": 2,
     "deadline": "2026-10-28T16:00:00Z",
     "done": false,
-    "etag": "\"998b6114563d3092bac2b66d\""
+    "etag": "\"4e632cc6899e377bdd27402b\""
   },
   {
     "id": 3,
     "request": "Offene Kollektionen freigeben",
     "description": "Vier-Augen-Prinzip nach SOP-009.",
-    "assigner_id": 28,
-    "assignee_id": 29,
+    "assigner_id": 5,
+    "assignee_id": 6,
     "deadline": "2026-10-30T16:00:00Z",
     "done": false,
-    "etag": "\"bf9b82feec15b17604f20fa7\""
+    "etag": "\"5ae756fb247c4b5ea4b623b0\""
   },
   {
     "id": 2,
     "request": "Blei an Zapfstelle 2.14 nachprüfen",
     "description": "Stagnationsproben S0 und S1 nehmen.",
-    "assigner_id": 29,
-    "assignee_id": 26,
+    "assigner_id": 6,
+    "assignee_id": 3,
     "deadline": "2026-10-31T16:00:00Z",
     "done": false,
-    "etag": "\"4203a31d22644d852b162a69\""
+    "etag": "\"1304ebce232c53b24246837d\""
   },
   {
     "id": 4,
     "request": "Nitrat-Trend an GWM 12 melden",
     "description": "Bericht an die Wasserbehörde.",
-    "assigner_id": 28,
-    "assignee_id": 28,
+    "assigner_id": 5,
+    "assignee_id": 5,
     "deadline": "2026-11-03T16:00:00Z",
     "done": false,
-    "etag": "\"e863955935ce81a198b7432e\""
+    "etag": "\"7876eb84084e74a3cddd0760\""
   },
   {
     "id": 5,
     "request": "lucentLIMS an lucentAPI anbinden",
     "description": "Die Mock-Daten durch die API ersetzen.",
-    "assigner_id": 23,
-    "assignee_id": 23,
+    "assigner_id": 1,
+    "assignee_id": 1,
     "deadline": "2026-11-28T16:00:00Z",
     "done": false,
-    "etag": "\"2471775d37450ace5ec9f7ad\""
+    "etag": "\"5c11e9e1639e29679669ce91\""
   }
 ]

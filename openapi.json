@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "lucentAPI",
-    "description": "\n<img src=\"static/lucentLIMS-logo.svg\" alt=\"lucentLIMS\" width=\"300\">\n\nAn HTTPS API for lucentBASE, for lucentLIMS and any other client.\n\n**Authentication.** Send an access token from the OpenID Connect provider as\n`Authorization: Bearer <token>`. The token's username has to belong to a person in lucentBASE\n(`person.unix_account`); every change is recorded under that person.\n\n**Roles** come from the token: `sampler` registers collections, `analyst` records values,\n`reviewer` accepts them (never their own: four-eyes principle), `admin` may do everything.\nReading needs no role.\n\n**Audit trail.** Every write adds a row to the table's log table (`l_<table>`), chained by\nSHA-256 checksums.\n\n**Concurrent changes.** Records that can be changed carry an `etag`. Send it in `If-Match`;\nif the record changed meanwhile, the answer is 412.\n\n**Errors** look like `{\"error\": {\"code\", \"message\", \"request_id\", \"details\"?}}`.\n\n**Times** are UTC.\n",
+    "description": "\n<img src=\"static/lucentLIMS-logo.svg\" alt=\"lucentLIMS\" width=\"300\">\n\nAn HTTPS API for lucentBASE, for lucentLIMS and any other client.\n\n**Authentication.** Send an access token from the OpenID Connect provider as\n`Authorization: Bearer <token>`. The token's username has to belong to a person in lucentBASE\n(`person.linux_user`); lucentBASE logs every change under that person.\n\n**Roles** come from the token: `sampler` registers collections, `analyst` records values,\n`reviewer` accepts them (never their own: four-eyes principle), `admin` may do everything.\nReading needs no role.\n\n**Collections** have **values**, one per planned effect (an action's parameter), and values\nhave **raw values**: the readings, each accepted on its own. A raw value's limits are the\nthresholds of its parameter in the documents of its action.\n\n**Audit trail.** lucentBASE's triggers log every change in `l_<table>`, with the person and the\n`note` a request gives.\n\n**Concurrent changes.** Records that can be changed carry an `etag`. Send it in `If-Match`;\nif the record changed meanwhile, the answer is 412.\n\n**Errors** look like `{\"error\": {\"code\", \"message\", \"request_id\", \"details\"?}}`.\n\n**Times** are UTC.\n",
     "version": "0.1.0"
   },
   "paths": {
@@ -44,6 +44,33 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Me"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/configuration": {
+      "get": {
+        "tags": [
+          "reference"
+        ],
+        "summary": "Configuration",
+        "description": "What clients need to know about this lucentBASE.",
+        "operationId": "configuration_v1_configuration_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Configuration"
                 }
               }
             }
@@ -250,6 +277,7 @@
           "catalog"
         ],
         "summary": "Collection Classes",
+        "description": "The classes lucentBASE allows for a collection (its collection_class_choices).",
         "operationId": "collection_classes_v1_collection_classes_get",
         "responses": {
           "200": {
@@ -258,7 +286,14 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/CollectionClass"
+                    "type": "string",
+                    "enum": [
+                      "spot sample",
+                      "mixed sample",
+                      "collective sample",
+                      "time series",
+                      "free measurement"
+                    ]
                   },
                   "type": "array",
                   "title": "Response Collection Classes V1 Collection Classes Get"
@@ -336,14 +371,14 @@
         ]
       }
     },
-    "/v1/variables": {
+    "/v1/parameters": {
       "get": {
         "tags": [
           "reference",
           "catalog"
         ],
-        "summary": "Variables",
-        "operationId": "variables_v1_variables_get",
+        "summary": "Parameters",
+        "operationId": "parameters_v1_parameters_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -351,10 +386,10 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Variable"
+                    "$ref": "#/components/schemas/Parameter"
                   },
                   "type": "array",
-                  "title": "Response Variables V1 Variables Get"
+                  "title": "Response Parameters V1 Parameters Get"
                 }
               }
             }
@@ -398,14 +433,15 @@
         ]
       }
     },
-    "/v1/sops": {
+    "/v1/documents": {
       "get": {
         "tags": [
           "reference",
           "catalog"
         ],
-        "summary": "Sops",
-        "operationId": "sops_v1_sops_get",
+        "summary": "Documents",
+        "description": "Links: SOPs, standards, regulations, any file or web page.",
+        "operationId": "documents_v1_documents_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -413,10 +449,10 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/SOP"
+                    "$ref": "#/components/schemas/Document"
                   },
                   "type": "array",
-                  "title": "Response Sops V1 Sops Get"
+                  "title": "Response Documents V1 Documents Get"
                 }
               }
             }
@@ -436,7 +472,7 @@
           "catalog"
         ],
         "summary": "Actions",
-        "description": "Actions (methods) with what they measure, their devices, people and dependencies.",
+        "description": "Actions with their effects, documents, devices, people and dependencies.",
         "operationId": "actions_v1_actions_get",
         "responses": {
           "200": {
@@ -461,13 +497,77 @@
         ]
       }
     },
+    "/v1/coefficients": {
+      "get": {
+        "tags": [
+          "reference",
+          "catalog"
+        ],
+        "summary": "Coefficients",
+        "description": "Pairs of effects that belong together, e.g. conductivity and the temperature it refers to.",
+        "operationId": "coefficients_v1_coefficients_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Coefficient"
+                  },
+                  "type": "array",
+                  "title": "Response Coefficients V1 Coefficients Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/thresholds": {
+      "get": {
+        "tags": [
+          "reference",
+          "catalog"
+        ],
+        "summary": "Thresholds",
+        "description": "Limits of parameters, each in the context of a document (e.g. a regulation or SOP).",
+        "operationId": "thresholds_v1_thresholds_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Threshold"
+                  },
+                  "type": "array",
+                  "title": "Response Thresholds V1 Thresholds Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/v1/collections": {
       "get": {
         "tags": [
           "collections"
         ],
         "summary": "List Collections",
-        "description": "Newest first. Status is derived from the values, so filtering by it reads every match.",
+        "description": "Newest first.",
         "operationId": "list_collections_v1_collections_get",
         "security": [
           {
@@ -514,19 +614,26 @@
             }
           },
           {
-            "name": "class_id",
+            "name": "collection_class",
             "in": "query",
             "required": false,
             "schema": {
               "anyOf": [
                 {
-                  "type": "integer"
+                  "enum": [
+                    "spot sample",
+                    "mixed sample",
+                    "collective sample",
+                    "time series",
+                    "free measurement"
+                  ],
+                  "type": "string"
                 },
                 {
                   "type": "null"
                 }
               ],
-              "title": "Class Id"
+              "title": "Collection Class"
             }
           },
           {
@@ -631,7 +738,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CollectionPage"
+                  "$ref": "#/components/schemas/Page_Collection_"
                 }
               }
             }
@@ -653,7 +760,7 @@
           "collections"
         ],
         "summary": "Create Collection",
-        "description": "Registers a collection. Its identifier comes from the numbering scheme and its id.",
+        "description": "Registers a collection and plans the effects of the given actions. Its identifier comes\nfrom the numbering scheme and its id.",
         "operationId": "create_collection_v1_collections_post",
         "security": [
           {
@@ -700,7 +807,7 @@
           "collections"
         ],
         "summary": "Get Collection",
-        "description": "A collection with all its values.",
+        "description": "A collection with its values and their raw values.",
         "operationId": "get_collection_v1_collections__collection_id__get",
         "security": [
           {
@@ -742,14 +849,14 @@
         }
       }
     },
-    "/v1/collections/{collection_id}/values": {
+    "/v1/collections/{collection_id}/plan": {
       "post": {
         "tags": [
           "collections"
         ],
-        "summary": "Record Value",
-        "description": "Records a reading. A further reading of the same variable becomes the next repetition.",
-        "operationId": "record_value_v1_collections__collection_id__values_post",
+        "summary": "Plan More",
+        "description": "Plans the effects of further actions for a collection.",
+        "operationId": "plan_more_v1_collections__collection_id__plan_post",
         "security": [
           {
             "HTTPBearer": []
@@ -771,7 +878,65 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ValueIn"
+                "$ref": "#/components/schemas/PlanIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/values/{value_id}/raw-values": {
+      "post": {
+        "tags": [
+          "collections"
+        ],
+        "summary": "Record Raw Value",
+        "description": "Records a reading of a value. A further reading of the same value is a repetition.",
+        "operationId": "record_raw_value_v1_values__value_id__raw_values_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "value_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Value Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RawValueIn"
               }
             }
           }
@@ -782,7 +947,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Value"
+                  "$ref": "#/components/schemas/RawValue"
                 }
               }
             }
@@ -800,15 +965,15 @@
         }
       }
     },
-    "/v1/values/{value_id}/accept": {
+    "/v1/raw-values/{raw_value_id}/accept": {
       "post": {
         "tags": [
           "collections",
           "review"
         ],
-        "summary": "Accept Value",
-        "description": "Accepts a value. Not allowed for whoever measured it (four-eyes principle). Honours If-Match.",
-        "operationId": "accept_value_v1_values__value_id__accept_post",
+        "summary": "Accept Raw Value",
+        "description": "Accepts a raw value. Not for whoever measured it (four-eyes principle). Honours If-Match.",
+        "operationId": "accept_raw_value_v1_raw_values__raw_value_id__accept_post",
         "security": [
           {
             "HTTPBearer": []
@@ -816,12 +981,12 @@
         ],
         "parameters": [
           {
-            "name": "value_id",
+            "name": "raw_value_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
-              "title": "Value Id"
+              "title": "Raw Value Id"
             }
           }
         ],
@@ -848,7 +1013,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Value"
+                  "$ref": "#/components/schemas/RawValue"
                 }
               }
             }
@@ -866,15 +1031,15 @@
         }
       }
     },
-    "/v1/values/{value_id}/withdraw": {
+    "/v1/raw-values/{raw_value_id}/withdraw": {
       "post": {
         "tags": [
           "collections",
           "review"
         ],
-        "summary": "Withdraw Value",
-        "description": "Takes back the acceptance of a value. Honours If-Match.",
-        "operationId": "withdraw_value_v1_values__value_id__withdraw_post",
+        "summary": "Withdraw Raw Value",
+        "description": "Takes back the acceptance of a raw value. Honours If-Match.",
+        "operationId": "withdraw_raw_value_v1_raw_values__raw_value_id__withdraw_post",
         "security": [
           {
             "HTTPBearer": []
@@ -882,12 +1047,12 @@
         ],
         "parameters": [
           {
-            "name": "value_id",
+            "name": "raw_value_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
-              "title": "Value Id"
+              "title": "Raw Value Id"
             }
           }
         ],
@@ -914,7 +1079,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Value"
+                  "$ref": "#/components/schemas/RawValue"
                 }
               }
             }
@@ -939,7 +1104,7 @@
           "review"
         ],
         "summary": "Accept Collection",
-        "description": "Accepts all values of a collection, or none if the caller measured any of the open ones.",
+        "description": "Accepts all open raw values of a collection, or none if the caller measured any of them.",
         "operationId": "accept_collection_v1_collections__collection_id__accept_post",
         "security": [
           {
@@ -1004,7 +1169,7 @@
           "collections"
         ],
         "summary": "List Values",
-        "description": "Values of many collections at once, oldest first, for clients that keep a local copy.",
+        "description": "Values of many collections at once, with their raw values, for clients that keep a copy.",
         "operationId": "list_values_v1_values_get",
         "security": [
           {
@@ -1101,7 +1266,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ValuePage"
+                  "$ref": "#/components/schemas/Page_Value_"
                 }
               }
             }
@@ -1126,7 +1291,7 @@
           "locations"
         ],
         "summary": "Series",
-        "description": "One numeric variable over time at a spot or site: the last repetition per collection.",
+        "description": "One numeric parameter over time at a spot or site: the latest raw value per collection.",
         "operationId": "series_v1_series_get",
         "security": [
           {
@@ -1135,12 +1300,12 @@
         ],
         "parameters": [
           {
-            "name": "action_variable_id",
+            "name": "parameter_id",
             "in": "query",
             "required": true,
             "schema": {
               "type": "integer",
-              "title": "Action Variable Id"
+              "title": "Parameter Id"
             }
           },
           {
@@ -1590,27 +1755,11 @@
             "type": "string",
             "title": "Name"
           },
-          "standard": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Standard"
-          },
           "iteration": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Iteration"
+            "type": "string",
+            "format": "date-time",
+            "title": "Iteration",
+            "description": "The version of the action, as a point in time."
           },
           "active": {
             "type": "boolean",
@@ -1627,16 +1776,12 @@
             ],
             "title": "Description"
           },
-          "sop_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sop Id"
+          "document_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Document Ids"
           },
           "device_ids": {
             "items": {
@@ -1647,176 +1792,63 @@
           },
           "people": {
             "items": {
-              "$ref": "#/components/schemas/Assignment"
+              "$ref": "#/components/schemas/ActionPerson"
             },
             "type": "array",
             "title": "People"
           },
-          "depends_on": {
+          "dependencies": {
             "items": {
-              "type": "integer"
+              "$ref": "#/components/schemas/Dependency"
             },
             "type": "array",
-            "title": "Depends On"
+            "title": "Dependencies"
           },
-          "implies": {
+          "effects": {
             "items": {
-              "type": "integer"
+              "$ref": "#/components/schemas/Effect"
             },
             "type": "array",
-            "title": "Implies"
-          },
-          "collection_class_ids": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array",
-            "title": "Collection Class Ids"
-          },
-          "variables": {
-            "items": {
-              "$ref": "#/components/schemas/ActionVariable"
-            },
-            "type": "array",
-            "title": "Variables"
+            "title": "Effects"
           }
         },
         "type": "object",
         "required": [
           "id",
           "name",
-          "standard",
           "iteration",
           "active",
           "description",
-          "sop_id",
+          "document_ids",
           "device_ids",
           "people",
-          "depends_on",
-          "implies",
-          "collection_class_ids",
-          "variables"
+          "dependencies",
+          "effects"
         ],
         "title": "Action"
       },
-      "ActionVariable": {
+      "ActionPerson": {
         "properties": {
-          "id": {
+          "person_id": {
             "type": "integer",
-            "title": "Id"
+            "title": "Person Id"
           },
-          "action_id": {
-            "type": "integer",
-            "title": "Action Id"
-          },
-          "variable_id": {
-            "type": "integer",
-            "title": "Variable Id"
-          },
-          "unit_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
+          "role": {
+            "type": "string",
+            "enum": [
+              "auditor",
+              "manager",
+              "worker"
             ],
-            "title": "Unit Id"
-          },
-          "uncertainty": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Uncertainty"
-          },
-          "uncertainty_class": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Uncertainty Class"
-          },
-          "uncertainty_unit_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Uncertainty Unit Id"
-          },
-          "calculation": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Calculation"
-          },
-          "decimals": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Decimals"
-          },
-          "lower_limit": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Lower Limit"
-          },
-          "upper_limit": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Upper Limit"
+            "title": "Role"
           }
         },
         "type": "object",
         "required": [
-          "id",
-          "action_id",
-          "variable_id",
-          "unit_id",
-          "uncertainty",
-          "uncertainty_class",
-          "uncertainty_unit_id",
-          "calculation",
-          "decimals",
-          "lower_limit",
-          "upper_limit"
+          "person_id",
+          "role"
         ],
-        "title": "ActionVariable"
+        "title": "ActionPerson"
       },
       "Address": {
         "properties": {
@@ -1834,7 +1866,7 @@
           "house_number": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "integer"
               },
               {
                 "type": "null"
@@ -1898,42 +1930,13 @@
         ],
         "title": "Address"
       },
-      "Assignment": {
-        "properties": {
-          "person_id": {
-            "type": "integer",
-            "title": "Person Id"
-          },
-          "role": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Role"
-          }
-        },
-        "type": "object",
-        "required": [
-          "person_id",
-          "role"
-        ],
-        "title": "Assignment"
-      },
-      "Collection": {
+      "Coefficient": {
         "properties": {
           "id": {
             "type": "integer",
             "title": "Id"
           },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "matrix_id": {
+          "effect1_id": {
             "anyOf": [
               {
                 "type": "integer"
@@ -1942,9 +1945,9 @@
                 "type": "null"
               }
             ],
-            "title": "Matrix Id"
+            "title": "Effect1 Id"
           },
-          "class_id": {
+          "effect2_id": {
             "anyOf": [
               {
                 "type": "integer"
@@ -1953,103 +1956,7 @@
                 "type": "null"
               }
             ],
-            "title": "Class Id"
-          },
-          "spot_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Spot Id"
-          },
-          "site_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Site Id"
-          },
-          "sampled_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sampled At"
-          },
-          "sampler_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sampler Id"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "registered",
-              "in_analysis",
-              "in_review",
-              "approved"
-            ],
-            "title": "Status"
-          },
-          "measured": {
-            "type": "integer",
-            "title": "Measured",
-            "description": "Planned variables with at least one value."
-          },
-          "planned": {
-            "type": "integer",
-            "title": "Planned"
-          },
-          "exceedances": {
-            "type": "integer",
-            "title": "Exceedances"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "matrix_id",
-          "class_id",
-          "spot_id",
-          "site_id",
-          "sampled_at",
-          "sampler_id",
-          "status",
-          "measured",
-          "planned",
-          "exceedances"
-        ],
-        "title": "Collection"
-      },
-      "CollectionClass": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
+            "title": "Effect2 Id"
           },
           "description": {
             "anyOf": [
@@ -2061,56 +1968,48 @@
               }
             ],
             "title": "Description"
-          },
-          "action_ids": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array",
-            "title": "Action Ids",
-            "description": "The actions this class plans."
           }
         },
         "type": "object",
         "required": [
           "id",
-          "name",
-          "description",
-          "action_ids"
+          "effect1_id",
+          "effect2_id",
+          "description"
         ],
-        "title": "CollectionClass"
+        "title": "Coefficient"
       },
-      "CollectionDetail": {
+      "Collection": {
         "properties": {
           "id": {
             "type": "integer",
             "title": "Id"
           },
           "name": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Name"
           },
           "matrix_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "integer",
             "title": "Matrix Id"
           },
-          "class_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
+          "collection_class": {
+            "type": "string",
+            "enum": [
+              "spot sample",
+              "mixed sample",
+              "collective sample",
+              "time series",
+              "free measurement"
             ],
-            "title": "Class Id"
+            "title": "Collection Class"
           },
           "spot_id": {
             "anyOf": [
@@ -2134,6 +2033,30 @@
             ],
             "title": "Site Id"
           },
+          "registered_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registered At",
+            "description": "From the insert entry in l_collection."
+          },
+          "registered_by": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registered By"
+          },
           "sampled_at": {
             "anyOf": [
               {
@@ -2144,9 +2067,10 @@
                 "type": "null"
               }
             ],
-            "title": "Sampled At"
+            "title": "Sampled At",
+            "description": "The sampling-time raw value, else the registration time."
           },
-          "sampler_id": {
+          "sampled_by": {
             "anyOf": [
               {
                 "type": "integer"
@@ -2155,7 +2079,7 @@
                 "type": "null"
               }
             ],
-            "title": "Sampler Id"
+            "title": "Sampled By"
           },
           "status": {
             "type": "string",
@@ -2167,14 +2091,161 @@
             ],
             "title": "Status"
           },
+          "planned": {
+            "type": "integer",
+            "title": "Planned",
+            "description": "Values (effects) planned for the collection."
+          },
           "measured": {
             "type": "integer",
             "title": "Measured",
-            "description": "Planned variables with at least one value."
+            "description": "Values with at least one raw value."
+          },
+          "exceedances": {
+            "type": "integer",
+            "title": "Exceedances"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "matrix_id",
+          "collection_class",
+          "spot_id",
+          "site_id",
+          "registered_at",
+          "registered_by",
+          "sampled_at",
+          "sampled_by",
+          "status",
+          "planned",
+          "measured",
+          "exceedances"
+        ],
+        "title": "Collection"
+      },
+      "CollectionDetail": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "matrix_id": {
+            "type": "integer",
+            "title": "Matrix Id"
+          },
+          "collection_class": {
+            "type": "string",
+            "enum": [
+              "spot sample",
+              "mixed sample",
+              "collective sample",
+              "time series",
+              "free measurement"
+            ],
+            "title": "Collection Class"
+          },
+          "spot_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spot Id"
+          },
+          "site_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Id"
+          },
+          "registered_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registered At",
+            "description": "From the insert entry in l_collection."
+          },
+          "registered_by": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registered By"
+          },
+          "sampled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sampled At",
+            "description": "The sampling-time raw value, else the registration time."
+          },
+          "sampled_by": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sampled By"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "registered",
+              "in_analysis",
+              "in_review",
+              "approved"
+            ],
+            "title": "Status"
           },
           "planned": {
             "type": "integer",
-            "title": "Planned"
+            "title": "Planned",
+            "description": "Values (effects) planned for the collection."
+          },
+          "measured": {
+            "type": "integer",
+            "title": "Measured",
+            "description": "Values with at least one raw value."
           },
           "exceedances": {
             "type": "integer",
@@ -2193,14 +2264,16 @@
           "id",
           "name",
           "matrix_id",
-          "class_id",
+          "collection_class",
           "spot_id",
           "site_id",
+          "registered_at",
+          "registered_by",
           "sampled_at",
-          "sampler_id",
+          "sampled_by",
           "status",
-          "measured",
           "planned",
+          "measured",
           "exceedances",
           "values"
         ],
@@ -2212,22 +2285,29 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 2000
+                "maxLength": 500
               },
               {
                 "type": "null"
               }
             ],
             "title": "Note",
-            "description": "Why, for the audit trail."
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
           },
           "matrix_id": {
             "type": "integer",
             "title": "Matrix Id"
           },
-          "class_id": {
-            "type": "integer",
-            "title": "Class Id"
+          "collection_class": {
+            "type": "string",
+            "enum": [
+              "spot sample",
+              "mixed sample",
+              "collective sample",
+              "time series",
+              "free measurement"
+            ],
+            "title": "Collection Class"
           },
           "spot_id": {
             "anyOf": [
@@ -2251,6 +2331,14 @@
             ],
             "title": "Site Id"
           },
+          "action_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Action Ids",
+            "description": "Plan every effect of these actions as a value."
+          },
           "sampled_at": {
             "anyOf": [
               {
@@ -2262,9 +2350,20 @@
               }
             ],
             "title": "Sampled At",
-            "description": "Defaults to now."
-          },
-          "sampler_id": {
+            "description": "Recorded as the sampling-time raw value; needs that parameter planned."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "matrix_id",
+          "collection_class"
+        ],
+        "title": "CollectionIn"
+      },
+      "Configuration": {
+        "properties": {
+          "sampling_time_parameter_id": {
             "anyOf": [
               {
                 "type": "integer"
@@ -2273,48 +2372,65 @@
                 "type": "null"
               }
             ],
-            "title": "Sampler Id",
-            "description": "Defaults to the caller."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "matrix_id",
-          "class_id"
-        ],
-        "title": "CollectionIn"
-      },
-      "CollectionPage": {
-        "properties": {
-          "items": {
+            "title": "Sampling Time Parameter Id",
+            "description": "The parameter whose datetime raw value is a collection's sampling time."
+          },
+          "collection_classes": {
             "items": {
-              "$ref": "#/components/schemas/Collection"
+              "type": "string",
+              "enum": [
+                "spot sample",
+                "mixed sample",
+                "collective sample",
+                "time series",
+                "free measurement"
+              ]
             },
             "type": "array",
-            "title": "Items"
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total"
-          },
-          "limit": {
-            "type": "integer",
-            "title": "Limit"
-          },
-          "offset": {
-            "type": "integer",
-            "title": "Offset"
+            "title": "Collection Classes"
           }
         },
         "type": "object",
         "required": [
-          "items",
-          "total",
-          "limit",
-          "offset"
+          "sampling_time_parameter_id",
+          "collection_classes"
         ],
-        "title": "CollectionPage"
+        "title": "Configuration"
+      },
+      "Dependency": {
+        "properties": {
+          "action_id": {
+            "type": "integer",
+            "title": "Action Id"
+          },
+          "dependency_class": {
+            "type": "string",
+            "enum": [
+              "strict",
+              "possibility"
+            ],
+            "title": "Dependency Class"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action_id",
+          "dependency_class",
+          "description"
+        ],
+        "title": "Dependency",
+        "description": "This action depends on `action_id` (j_action_action: id_action1 depends on id_action2)."
       },
       "Device": {
         "properties": {
@@ -2327,14 +2443,7 @@
             "title": "Name"
           },
           "number": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "integer",
             "title": "Number"
           },
           "manufacturer_id": {
@@ -2346,7 +2455,8 @@
                 "type": "null"
               }
             ],
-            "title": "Manufacturer Id"
+            "title": "Manufacturer Id",
+            "description": "An organization."
           },
           "operator_id": {
             "anyOf": [
@@ -2357,7 +2467,8 @@
                 "type": "null"
               }
             ],
-            "title": "Operator Id"
+            "title": "Operator Id",
+            "description": "An organization, as in lucentBASE."
           },
           "active": {
             "type": "boolean",
@@ -2386,14 +2497,14 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 2000
+                "maxLength": 500
               },
               {
                 "type": "null"
               }
             ],
             "title": "Note",
-            "description": "Why, for the audit trail."
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
           },
           "active": {
             "type": "boolean",
@@ -2436,6 +2547,147 @@
           "description"
         ],
         "title": "Dimension"
+      },
+      "Document": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uri"
+          },
+          "file_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Path"
+          },
+          "accepted": {
+            "type": "boolean",
+            "title": "Accepted"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sha256"
+          },
+          "action_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Action Ids",
+            "description": "Actions that refer to it (j_action_link)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "uri",
+          "file_path",
+          "accepted",
+          "sha256",
+          "action_ids"
+        ],
+        "title": "Document",
+        "description": "A link: an SOP, a standard, a regulation, any file or web page."
+      },
+      "Effect": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "action_id": {
+            "type": "integer",
+            "title": "Action Id"
+          },
+          "parameter_id": {
+            "type": "integer",
+            "title": "Parameter Id"
+          },
+          "uncertainty": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty"
+          },
+          "uncertainty_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty Class"
+          },
+          "uncertainty_unit_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty Unit Id"
+          },
+          "calculation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "action_id",
+          "parameter_id",
+          "uncertainty",
+          "uncertainty_class",
+          "uncertainty_unit_id",
+          "calculation"
+        ],
+        "title": "Effect",
+        "description": "What an action yields: one parameter, with method-specific uncertainty."
       },
       "GeoPoint": {
         "properties": {
@@ -2486,6 +2738,48 @@
           "version"
         ],
         "title": "Health"
+      },
+      "Limit": {
+        "properties": {
+          "threshold_id": {
+            "type": "integer",
+            "title": "Threshold Id"
+          },
+          "document_id": {
+            "type": "integer",
+            "title": "Document Id"
+          },
+          "lower_limit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower Limit"
+          },
+          "upper_limit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper Limit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "threshold_id",
+          "document_id",
+          "lower_limit",
+          "upper_limit"
+        ],
+        "title": "Limit"
       },
       "Matrix": {
         "properties": {
@@ -2550,52 +2844,25 @@
             "title": "Id"
           },
           "sender_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "integer",
             "title": "Sender Id"
           },
           "receiver_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "integer",
             "title": "Receiver Id"
           },
           "subject": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
             "title": "Subject"
           },
           "body": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
             "title": "Body"
           },
           "read": {
             "type": "boolean",
-            "title": "Read"
+            "title": "Read",
+            "description": "The opposite of lucentBASE's message.new."
           },
           "sent_at": {
             "anyOf": [
@@ -2607,7 +2874,8 @@
                 "type": "null"
               }
             ],
-            "title": "Sent At"
+            "title": "Sent At",
+            "description": "From the insert entry in l_message."
           }
         },
         "type": "object",
@@ -2630,13 +2898,14 @@
           },
           "subject": {
             "type": "string",
-            "maxLength": 255,
+            "maxLength": 250,
             "minLength": 1,
             "title": "Subject"
           },
           "body": {
             "type": "string",
-            "maxLength": 10000,
+            "maxLength": 500,
+            "minLength": 1,
             "title": "Body"
           }
         },
@@ -2655,14 +2924,14 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 2000
+                "maxLength": 500
               },
               {
                 "type": "null"
               }
             ],
             "title": "Note",
-            "description": "Why, for the audit trail."
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
           }
         },
         "additionalProperties": false,
@@ -2676,7 +2945,14 @@
             "title": "Id"
           },
           "name": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Name"
           },
           "shorthand": {
@@ -2689,15 +2965,142 @@
               }
             ],
             "title": "Shorthand"
+          },
+          "relation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relation"
           }
         },
         "type": "object",
         "required": [
           "id",
           "name",
-          "shorthand"
+          "shorthand",
+          "relation"
         ],
         "title": "Organization"
+      },
+      "Page_Collection_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Collection"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[Collection]"
+      },
+      "Page_Value_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Value"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "Page[Value]"
+      },
+      "Parameter": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "unit_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Id"
+          },
+          "value_class": {
+            "type": "string",
+            "enum": [
+              "decimal",
+              "text",
+              "boolean",
+              "datetime"
+            ],
+            "title": "Value Class"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "unit_id",
+          "value_class"
+        ],
+        "title": "Parameter"
       },
       "Person": {
         "properties": {
@@ -2706,21 +3109,14 @@
             "title": "Id"
           },
           "given_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
             "title": "Given Name"
           },
           "surname": {
             "type": "string",
             "title": "Surname"
           },
-          "unix_account": {
+          "linux_user": {
             "anyOf": [
               {
                 "type": "string"
@@ -2729,7 +3125,7 @@
                 "type": "null"
               }
             ],
-            "title": "Unix Account"
+            "title": "Linux User"
           },
           "organization_id": {
             "anyOf": [
@@ -2751,7 +3147,8 @@
                 "type": "null"
               }
             ],
-            "title": "Position"
+            "title": "Position",
+            "description": "From j_person_organization."
           }
         },
         "type": "object",
@@ -2759,11 +3156,200 @@
           "id",
           "given_name",
           "surname",
-          "unix_account",
+          "linux_user",
           "organization_id",
           "position"
         ],
         "title": "Person"
+      },
+      "PlanIn": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "action_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Action Ids"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "action_ids"
+        ],
+        "title": "PlanIn"
+      },
+      "RawValue": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "value_id": {
+            "type": "integer",
+            "title": "Value Id"
+          },
+          "t": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "T"
+          },
+          "person_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Person Id"
+          },
+          "device_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Id"
+          },
+          "unit_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Id"
+          },
+          "reading": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Reading"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "None if the raw value holds nothing."
+          },
+          "accepted": {
+            "type": "boolean",
+            "title": "Accepted"
+          },
+          "exceeds": {
+            "type": "boolean",
+            "title": "Exceeds",
+            "description": "Outside one of the limits that apply."
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "value_id",
+          "t",
+          "person_id",
+          "device_id",
+          "unit_id",
+          "reading",
+          "accepted",
+          "exceeds",
+          "etag"
+        ],
+        "title": "RawValue"
+      },
+      "RawValueIn": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "reading": {
+            "$ref": "#/components/schemas/Reading"
+          },
+          "t": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "T",
+            "description": "When it was measured; defaults to now."
+          },
+          "device_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Id",
+            "description": "Defaults to the first active device of the action."
+          },
+          "unit_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Id",
+            "description": "Defaults to the parameter's unit."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "reading"
+        ],
+        "title": "RawValueIn"
       },
       "Reading": {
         "properties": {
@@ -2782,7 +3368,7 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 10000
+                "maxLength": 50
               },
               {
                 "type": "null"
@@ -2817,7 +3403,7 @@
         "additionalProperties": false,
         "type": "object",
         "title": "Reading",
-        "description": "Exactly one of the four, matching the variable's value class."
+        "description": "What a raw value holds: exactly one of the four, matching the parameter's value class."
       },
       "ReferenceSystem": {
         "properties": {
@@ -2826,129 +3412,40 @@
             "title": "Id"
           },
           "epsg": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "integer",
             "title": "Epsg"
           },
           "name": {
             "type": "string",
             "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
           }
         },
         "type": "object",
         "required": [
           "id",
           "epsg",
-          "name"
+          "name",
+          "description"
         ],
         "title": "ReferenceSystem"
       },
-      "SOP": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "active": {
-            "type": "boolean",
-            "title": "Active"
-          },
-          "documents": {
-            "items": {
-              "$ref": "#/components/schemas/SOPDocument"
-            },
-            "type": "array",
-            "title": "Documents"
-          },
-          "people": {
-            "items": {
-              "$ref": "#/components/schemas/Assignment"
-            },
-            "type": "array",
-            "title": "People"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "active",
-          "documents",
-          "people"
-        ],
-        "title": "SOP"
-      },
-      "SOPDocument": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Url"
-          },
-          "file_path": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "File Path"
-          },
-          "accepted": {
-            "type": "boolean",
-            "title": "Accepted"
-          },
-          "sha256": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sha256"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "url",
-          "file_path",
-          "accepted",
-          "sha256"
-        ],
-        "title": "SOPDocument"
-      },
       "SeriesPoint": {
         "properties": {
+          "raw_value_id": {
+            "type": "integer",
+            "title": "Raw Value Id"
+          },
           "value_id": {
             "type": "integer",
             "title": "Value Id"
@@ -2980,6 +3477,7 @@
         },
         "type": "object",
         "required": [
+          "raw_value_id",
           "value_id",
           "collection_id",
           "sampled_at",
@@ -3094,6 +3592,17 @@
             "title": "Y",
             "description": "Longitude, as in lucentBASE."
           },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          },
           "crs_id": {
             "anyOf": [
               {
@@ -3124,6 +3633,7 @@
           "description",
           "x",
           "y",
+          "z",
           "crs_id",
           "site_id"
         ],
@@ -3151,25 +3661,11 @@
             "title": "Description"
           },
           "assigner_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "integer",
             "title": "Assigner Id"
           },
           "assignee_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "integer",
             "title": "Assignee Id"
           },
           "deadline": {
@@ -3212,18 +3708,18 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 2000
+                "maxLength": 500
               },
               {
                 "type": "null"
               }
             ],
             "title": "Note",
-            "description": "Why, for the audit trail."
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
           },
           "request": {
             "type": "string",
-            "maxLength": 255,
+            "maxLength": 50,
             "minLength": 1,
             "title": "Request"
           },
@@ -3231,7 +3727,7 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 10000
+                "maxLength": 250
               },
               {
                 "type": "null"
@@ -3270,14 +3766,14 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 2000
+                "maxLength": 500
               },
               {
                 "type": "null"
               }
             ],
             "title": "Note",
-            "description": "Why, for the audit trail."
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
           },
           "done": {
             "anyOf": [
@@ -3318,6 +3814,66 @@
         "type": "object",
         "title": "TaskPatch"
       },
+      "Threshold": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "parameter_id": {
+            "type": "integer",
+            "title": "Parameter Id"
+          },
+          "document_id": {
+            "type": "integer",
+            "title": "Document Id"
+          },
+          "lower_limit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower Limit"
+          },
+          "upper_limit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper Limit"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "parameter_id",
+          "document_id",
+          "lower_limit",
+          "upper_limit",
+          "description"
+        ],
+        "title": "Threshold",
+        "description": "Limits of a parameter in the context of a document, in the parameter's unit."
+      },
       "Unit": {
         "properties": {
           "id": {
@@ -3327,6 +3883,17 @@
           "name": {
             "type": "string",
             "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
           },
           "notations": {
             "items": {
@@ -3351,6 +3918,7 @@
         "required": [
           "id",
           "name",
+          "description",
           "notations",
           "dimension_id"
         ],
@@ -3406,190 +3974,11 @@
             "type": "integer",
             "title": "Collection Id"
           },
-          "action_variable_id": {
+          "effect_id": {
             "type": "integer",
-            "title": "Action Variable Id"
-          },
-          "repetition": {
-            "type": "integer",
-            "title": "Repetition"
-          },
-          "reading": {
-            "$ref": "#/components/schemas/Reading"
-          },
-          "accepted": {
-            "type": "boolean",
-            "title": "Accepted"
-          },
-          "measured_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Measured At"
-          },
-          "person_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Person Id",
-            "description": "Who measured it (the latest raw value)."
-          },
-          "device_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Device Id"
-          },
-          "exceeds": {
-            "type": "boolean",
-            "title": "Exceeds",
-            "description": "Outside the action variable's limits."
-          },
-          "etag": {
-            "type": "string",
-            "title": "Etag"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "collection_id",
-          "action_variable_id",
-          "repetition",
-          "reading",
-          "accepted",
-          "measured_at",
-          "person_id",
-          "device_id",
-          "exceeds",
-          "etag"
-        ],
-        "title": "Value"
-      },
-      "ValueIn": {
-        "properties": {
-          "note": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 2000
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Note",
-            "description": "Why, for the audit trail."
-          },
-          "action_variable_id": {
-            "type": "integer",
-            "title": "Action Variable Id"
-          },
-          "reading": {
-            "$ref": "#/components/schemas/Reading"
-          },
-          "device_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Device Id",
-            "description": "Defaults to the first active device of the action."
-          },
-          "measured_at": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Measured At",
-            "description": "Defaults to now."
-          }
-        },
-        "additionalProperties": false,
-        "type": "object",
-        "required": [
-          "action_variable_id",
-          "reading"
-        ],
-        "title": "ValueIn"
-      },
-      "ValuePage": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/Value"
-            },
-            "type": "array",
-            "title": "Items"
-          },
-          "total": {
-            "type": "integer",
-            "title": "Total"
-          },
-          "limit": {
-            "type": "integer",
-            "title": "Limit"
-          },
-          "offset": {
-            "type": "integer",
-            "title": "Offset"
-          }
-        },
-        "type": "object",
-        "required": [
-          "items",
-          "total",
-          "limit",
-          "offset"
-        ],
-        "title": "ValuePage"
-      },
-      "Variable": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
+            "title": "Effect Id"
           },
           "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "value_class": {
-            "type": "string",
-            "enum": [
-              "decimal",
-              "text",
-              "boolean",
-              "datetime"
-            ],
-            "title": "Value Class"
-          },
-          "description": {
             "anyOf": [
               {
                 "type": "string"
@@ -3598,29 +3987,35 @@
                 "type": "null"
               }
             ],
-            "title": "Description"
+            "title": "Name"
           },
-          "dimension_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Dimension Id"
+          "limits": {
+            "items": {
+              "$ref": "#/components/schemas/Limit"
+            },
+            "type": "array",
+            "title": "Limits",
+            "description": "Thresholds of the parameter in the documents of the action."
+          },
+          "raw_values": {
+            "items": {
+              "$ref": "#/components/schemas/RawValue"
+            },
+            "type": "array",
+            "title": "Raw Values"
           }
         },
         "type": "object",
         "required": [
           "id",
+          "collection_id",
+          "effect_id",
           "name",
-          "value_class",
-          "description",
-          "dimension_id"
+          "limits",
+          "raw_values"
         ],
-        "title": "Variable"
+        "title": "Value",
+        "description": "A collection's slot for one effect; its raw values are the readings, oldest first."
       }
     },
     "securitySchemes": {

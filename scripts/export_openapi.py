@@ -6,14 +6,18 @@
 import json
 from pathlib import Path
 
+from lucentapi import devdb
 from lucentapi.config import Settings
+from lucentapi.db import make_engine
 from lucentapi.main import create_app
 
 
 def spec() -> str:
     settings = Settings(database_url="sqlite://", oidc_issuer="https://id.example.org", oidc_audience="lucentapi",
                         _env_file=None)
-    return json.dumps(create_app(settings).openapi(), indent=2, ensure_ascii=False) + "\n"
+    engine = make_engine(settings.database_url)
+    devdb.create(engine)  # the app checks its database at startup
+    return json.dumps(create_app(settings, engine).openapi(), indent=2, ensure_ascii=False) + "\n"
 
 
 if __name__ == "__main__":

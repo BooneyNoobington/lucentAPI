@@ -1,4 +1,4 @@
-"""Request and response bodies. Requests reject unknown fields."""
+"""Request and response bodies. Requests reject unknown fields. Names follow lucentBASE."""
 
 import datetime as dt
 from typing import Literal, Self
@@ -7,6 +7,8 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 Status = Literal["registered", "in_analysis", "in_review", "approved"]
 Role = Literal["sampler", "analyst", "reviewer", "admin"]
+ValueClass = Literal["decimal", "text", "boolean", "datetime"]
+CollectionClass = Literal["spot sample", "mixed sample", "collective sample", "time series", "free measurement"]
 
 
 class Request(BaseModel):
@@ -14,24 +16,25 @@ class Request(BaseModel):
 
 
 class Note(Request):
-    note: str | None = Field(None, max_length=2000, description="Why, for the audit trail.")
+    note: str | None = Field(None, max_length=500, description="Why, for lucentBASE's log (l_<table>.note).")
 
 
 # People and organizations
 
 class Organization(BaseModel):
     id: int
-    name: str
+    name: str | None
     shorthand: str | None
+    relation: str | None
 
 
 class Person(BaseModel):
     id: int
-    given_name: str | None
+    given_name: str
     surname: str
-    unix_account: str | None
+    linux_user: str | None
     organization_id: int | None
-    position: str | None
+    position: str | None = Field(description="From j_person_organization.")
 
 
 class Me(BaseModel):
@@ -48,7 +51,7 @@ class GeoPoint(BaseModel):
 
 class Address(BaseModel):
     street: str | None
-    house_number: str | None
+    house_number: int | None
     addition: str | None
     zip: str | None
     district: str | None
@@ -57,8 +60,9 @@ class Address(BaseModel):
 
 class ReferenceSystem(BaseModel):
     id: int
-    epsg: int | None
+    epsg: int
     name: str
+    description: str | None
 
 
 class Site(BaseModel):
@@ -76,6 +80,7 @@ class Spot(BaseModel):
     description: str | None
     x: float | None = Field(description="Latitude, as in lucentBASE.")
     y: float | None = Field(description="Longitude, as in lucentBASE.")
+    z: float | None
     crs_id: int | None
     site_id: int | None
 
@@ -88,13 +93,6 @@ class Matrix(BaseModel):
     description: str | None
 
 
-class CollectionClass(BaseModel):
-    id: int
-    name: str
-    description: str | None
-    action_ids: list[int] = Field(description="The actions this class plans.")
-
-
 class Dimension(BaseModel):
     id: int
     name: str
@@ -104,24 +102,25 @@ class Dimension(BaseModel):
 class Unit(BaseModel):
     id: int
     name: str
+    description: str | None
     notations: list[str]
     dimension_id: int | None
 
 
-class Variable(BaseModel):
+class Parameter(BaseModel):
     id: int
     name: str
-    value_class: Literal["decimal", "text", "boolean", "datetime"]
     description: str | None
-    dimension_id: int | None
+    unit_id: int | None
+    value_class: ValueClass
 
 
 class Device(BaseModel):
     id: int
     name: str
-    number: str | None
-    manufacturer_id: int | None
-    operator_id: int | None
+    number: int
+    manufacturer_id: int | None = Field(description="An organization.")
+    operator_id: int | None = Field(description="An organization, as in lucentBASE.")
     active: bool
     etag: str
 
@@ -130,65 +129,87 @@ class DevicePatch(Note):
     active: bool
 
 
-class Assignment(BaseModel):
-    person_id: int
-    role: str | None
+class Document(BaseModel):
+    """A link: an SOP, a standard, a regulation, any file or web page."""
 
-
-class SOPDocument(BaseModel):
     id: int
     name: str
-    url: str | None
+    uri: str | None
     file_path: str | None
     accepted: bool
     sha256: str | None
+    action_ids: list[int] = Field(description="Actions that refer to it (j_action_link).")
 
 
-class SOP(BaseModel):
-    id: int
-    name: str
-    active: bool
-    documents: list[SOPDocument]
-    people: list[Assignment]
+class Effect(BaseModel):
+    """What an action yields: one parameter, with method-specific uncertainty."""
 
-
-class ActionVariable(BaseModel):
     id: int
     action_id: int
-    variable_id: int
-    unit_id: int | None
+    parameter_id: int
     uncertainty: float | None
     uncertainty_class: str | None
     uncertainty_unit_id: int | None
     calculation: str | None
-    decimals: int | None
-    lower_limit: float | None
-    upper_limit: float | None
+
+
+class ActionPerson(BaseModel):
+    person_id: int
+    role: Literal["auditor", "manager", "worker"]
+
+
+class Dependency(BaseModel):
+    """This action depends on `action_id` (j_action_action: id_action1 depends on id_action2)."""
+
+    action_id: int
+    dependency_class: Literal["strict", "possibility"]
+    description: str | None
 
 
 class Action(BaseModel):
     id: int
     name: str
-    standard: str | None
-    iteration: int | None
+    iteration: dt.datetime = Field(description="The version of the action, as a point in time.")
     active: bool
     description: str | None
-    sop_id: int | None
+    document_ids: list[int]
     device_ids: list[int]
-    people: list[Assignment]
-    depends_on: list[int]
-    implies: list[int]
-    collection_class_ids: list[int]
-    variables: list[ActionVariable]
+    people: list[ActionPerson]
+    dependencies: list[Dependency]
+    effects: list[Effect]
 
 
-# Collections and values
+class Coefficient(BaseModel):
+    id: int
+    effect1_id: int | None
+    effect2_id: int | None
+    description: str | None
+
+
+class Threshold(BaseModel):
+    """Limits of a parameter in the context of a document, in the parameter's unit."""
+
+    id: int
+    parameter_id: int
+    document_id: int
+    lower_limit: float | None
+    upper_limit: float | None
+    description: str | None
+
+
+class Configuration(BaseModel):
+    sampling_time_parameter_id: int | None = Field(
+        description="The parameter whose datetime raw value is a collection's sampling time.")
+    collection_classes: list[CollectionClass]
+
+
+# Collections, values and raw values
 
 class Reading(Request):
-    """Exactly one of the four, matching the variable's value class."""
+    """What a raw value holds: exactly one of the four, matching the parameter's value class."""
 
     decimal: float | None = None
-    text: str | None = Field(None, max_length=10_000)
+    text: str | None = Field(None, max_length=50)
     boolean: bool | None = None
     datetime: dt.datetime | None = None
 
@@ -203,46 +224,52 @@ class Reading(Request):
         return next(k for k in ("decimal", "text", "boolean", "datetime") if getattr(self, k) is not None)
 
 
-class Value(BaseModel):
+class Limit(BaseModel):
+    threshold_id: int
+    document_id: int
+    lower_limit: float | None
+    upper_limit: float | None
+
+
+class RawValue(BaseModel):
     id: int
-    collection_id: int
-    action_variable_id: int
-    repetition: int
-    reading: Reading
-    accepted: bool
-    measured_at: dt.datetime | None
-    person_id: int | None = Field(description="Who measured it (the latest raw value).")
+    value_id: int
+    t: dt.datetime | None
+    person_id: int | None
     device_id: int | None
-    exceeds: bool = Field(description="Outside the action variable's limits.")
+    unit_id: int | None
+    reading: Reading | None = Field(description="None if the raw value holds nothing.")
+    accepted: bool
+    exceeds: bool = Field(description="Outside one of the limits that apply.")
     etag: str
 
 
-class ValuePage(BaseModel):
-    items: list[Value]
-    total: int
-    limit: int
-    offset: int
+class Value(BaseModel):
+    """A collection's slot for one effect; its raw values are the readings, oldest first."""
 
-
-class ValueIn(Note):
-    action_variable_id: int
-    reading: Reading
-    device_id: int | None = Field(None, description="Defaults to the first active device of the action.")
-    measured_at: dt.datetime | None = Field(None, description="Defaults to now.")
+    id: int
+    collection_id: int
+    effect_id: int
+    name: str | None
+    limits: list[Limit] = Field(description="Thresholds of the parameter in the documents of the action.")
+    raw_values: list[RawValue]
 
 
 class Collection(BaseModel):
     id: int
-    name: str
-    matrix_id: int | None
-    class_id: int | None
+    name: str | None
+    matrix_id: int
+    collection_class: CollectionClass
     spot_id: int | None
     site_id: int | None
-    sampled_at: dt.datetime | None
-    sampler_id: int | None
+    registered_at: dt.datetime | None = Field(description="From the insert entry in l_collection.")
+    registered_by: int | None
+    sampled_at: dt.datetime | None = Field(
+        description="The sampling-time raw value, else the registration time.")
+    sampled_by: int | None
     status: Status
-    measured: int = Field(description="Planned variables with at least one value.")
-    planned: int
+    planned: int = Field(description="Values (effects) planned for the collection.")
+    measured: int = Field(description="Values with at least one raw value.")
     exceedances: int
 
 
@@ -250,8 +277,8 @@ class CollectionDetail(Collection):
     values: list[Value]
 
 
-class CollectionPage(BaseModel):
-    items: list[Collection]
+class Page[T](BaseModel):
+    items: list[T]
     total: int
     limit: int
     offset: int
@@ -259,11 +286,13 @@ class CollectionPage(BaseModel):
 
 class CollectionIn(Note):
     matrix_id: int
-    class_id: int
+    collection_class: CollectionClass
     spot_id: int | None = None
     site_id: int | None = None
-    sampled_at: dt.datetime | None = Field(None, description="Defaults to now.")
-    sampler_id: int | None = Field(None, description="Defaults to the caller.")
+    action_ids: list[int] = Field(default_factory=list,
+                                  description="Plan every effect of these actions as a value.")
+    sampled_at: dt.datetime | None = Field(
+        None, description="Recorded as the sampling-time raw value; needs that parameter planned.")
 
     @model_validator(mode="after")
     def one_location(self) -> Self:
@@ -272,7 +301,19 @@ class CollectionIn(Note):
         return self
 
 
+class PlanIn(Note):
+    action_ids: list[int] = Field(min_length=1)
+
+
+class RawValueIn(Note):
+    reading: Reading
+    t: dt.datetime | None = Field(None, description="When it was measured; defaults to now.")
+    device_id: int | None = Field(None, description="Defaults to the first active device of the action.")
+    unit_id: int | None = Field(None, description="Defaults to the parameter's unit.")
+
+
 class SeriesPoint(BaseModel):
+    raw_value_id: int
     value_id: int
     collection_id: int
     sampled_at: dt.datetime | None
@@ -286,16 +327,16 @@ class Task(BaseModel):
     id: int
     request: str
     description: str | None
-    assigner_id: int | None
-    assignee_id: int | None
+    assigner_id: int
+    assignee_id: int
     deadline: dt.datetime | None
     done: bool
     etag: str
 
 
 class TaskIn(Note):
-    request: str = Field(min_length=1, max_length=255)
-    description: str | None = Field(None, max_length=10_000)
+    request: str = Field(min_length=1, max_length=50)
+    description: str | None = Field(None, max_length=250)
     assignee_id: int
     deadline: dt.datetime | None = None
 
@@ -308,18 +349,18 @@ class TaskPatch(Note):
 
 class Message(BaseModel):
     id: int
-    sender_id: int | None
-    receiver_id: int | None
-    subject: str | None
-    body: str | None
-    read: bool
-    sent_at: dt.datetime | None
+    sender_id: int
+    receiver_id: int
+    subject: str
+    body: str
+    read: bool = Field(description="The opposite of lucentBASE's message.new.")
+    sent_at: dt.datetime | None = Field(description="From the insert entry in l_message.")
 
 
 class MessageIn(Request):
     receiver_id: int
-    subject: str = Field(min_length=1, max_length=255)
-    body: str = Field(max_length=10_000)
+    subject: str = Field(min_length=1, max_length=250)
+    body: str = Field(min_length=1, max_length=500)
 
 
 class Health(BaseModel):

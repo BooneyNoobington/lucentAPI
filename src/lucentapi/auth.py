@@ -3,8 +3,8 @@
 The API doesn't handle passwords. Clients log in at the identity provider (Keycloak, Authentik,
 Entra ID, …) and send the access token they get. The API checks its signature against the
 provider's published keys (JWKS), its issuer, audience and expiry, and then looks up the
-lucentBASE person whose `unix_account` equals the token's username claim. Every change in the
-database is attributed to that person, so machine clients (instrument imports) need a person
+lucentBASE person whose `linux_user` equals the token's username claim. Every change in the
+database is logged under that person, so machine clients (instrument imports) need a person
 row too.
 """
 
@@ -136,7 +136,7 @@ def current_caller(
         raise APIError(401, "invalid_token", f"The token has no {settings.username_claim} claim.", headers=challenge("invalid_token"))
     with request.app.state.engine.connect() as conn:
         person_id = conn.scalar(
-            select(person.c.id_person).where(person.c.unix_account == username, visible(person))
+            select(person.c.id_person).where(person.c.linux_user == username, visible(person))
         )
     if person_id is None:
         raise APIError(403, "unknown_person", f"No person in lucentBASE has the account {username!r}.")

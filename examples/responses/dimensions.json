@@ -1,27 +1,22 @@
 [
   {
     "id": 1,
-    "name": "Dimensionslos",
-    "description": "Größen ohne Einheit, z. B. der pH-Wert"
-  },
-  {
-    "id": 2,
     "name": "Temperatur",
     "description": "Thermodynamische Temperatur"
   },
   {
-    "id": 3,
+    "id": 2,
     "name": "Elektrische Leitfähigkeit",
     "description": "Leitwert pro Länge"
   },
   {
-    "id": 4,
+    "id": 3,
     "name": "Massenkonzentration",
     "description": "Masse pro Volumen"
   },
   {
-    "id": 5,
+    "id": 4,
     "name": "Anzahlkonzentration",
-    "description": "Anzahl pro Volumen, z. B. koloniebildende Einheiten"
+    "description": "Anzahl pro Volumen, z. B. KBE"
   }
 ]

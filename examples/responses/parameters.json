@@ -1,0 +1,121 @@
+[
+  {
+    "id": 1,
+    "name": "Probenahmezeitpunkt",
+    "description": "Wann die Probe genommen wurde",
+    "unit_id": null,
+    "value_class": "datetime"
+  },
+  {
+    "id": 2,
+    "name": "Temperatur",
+    "description": "Wassertemperatur bei der Probenahme",
+    "unit_id": 1,
+    "value_class": "decimal"
+  },
+  {
+    "id": 3,
+    "name": "Färbung",
+    "description": "Visuelle Prüfung",
+    "unit_id": null,
+    "value_class": "text"
+  },
+  {
+    "id": 4,
+    "name": "Geruch auffällig",
+    "description": "Olfaktorische Prüfung",
+    "unit_id": null,
+    "value_class": "boolean"
+  },
+  {
+    "id": 5,
+    "name": "pH-Wert",
+    "description": "Negativer dekadischer Logarithmus der Oxoniumaktivität",
+    "unit_id": null,
+    "value_class": "decimal"
+  },
+  {
+    "id": 6,
+    "name": "Elektrische Leitfähigkeit",
+    "description": "Bezogen auf 25 °C",
+    "unit_id": 2,
+    "value_class": "decimal"
+  },
+  {
+    "id": 7,
+    "name": "Nitrat",
+    "description": "NO₃⁻",
+    "unit_id": 3,
+    "value_class": "decimal"
+  },
+  {
+    "id": 8,
+    "name": "Chlorid",
+    "description": "Cl⁻",
+    "unit_id": 3,
+    "value_class": "decimal"
+  },
+  {
+    "id": 9,
+    "name": "Sulfat",
+    "description": "SO₄²⁻",
+    "unit_id": 3,
+    "value_class": "decimal"
+  },
+  {
+    "id": 10,
+    "name": "Blei",
+    "description": "Pb, gesamt",
+    "unit_id": 4,
+    "value_class": "decimal"
+  },
+  {
+    "id": 11,
+    "name": "Kupfer",
+    "description": "Cu, gesamt",
+    "unit_id": 3,
+    "value_class": "decimal"
+  },
+  {
+    "id": 12,
+    "name": "Nickel",
+    "description": "Ni, gesamt",
+    "unit_id": 4,
+    "value_class": "decimal"
+  },
+  {
+    "id": 13,
+    "name": "Escherichia coli",
+    "description": "Fäkalindikator",
+    "unit_id": 6,
+    "value_class": "decimal"
+  },
+  {
+    "id": 14,
+    "name": "Coliforme Bakterien",
+    "description": "Hygieneindikator",
+    "unit_id": 6,
+    "value_class": "decimal"
+  },
+  {
+    "id": 15,
+    "name": "Feinstaub PM10",
+    "description": "Partikel ≤ 10 µm, Tagesmittel",
+    "unit_id": 5,
+    "value_class": "decimal"
+  },
+  {
+    "id": 16,
+    "name": "Feinstaub PM2,5",
+    "description": "Partikel ≤ 2,5 µm, Tagesmittel",
+    "unit_id": 5,
+    "value_class": "decimal"
+  },
+  {
+    "id": 17,
+    "name": "Stickstoffdioxid",
+    "description": "NO₂, Tagesmittel",
+    "unit_id": 5,
+    "value_class": "decimal"
+  }
+]

@@ -1,48 +1,55 @@
 [
   {
-    "value_id": 11,
+    "raw_value_id": 13,
+    "value_id": 13,
     "collection_id": 2,
     "sampled_at": "2026-09-07T09:48:00Z",
     "value": 41.2,
     "exceeds": false
   },
   {
-    "value_id": 30,
+    "raw_value_id": 36,
+    "value_id": 36,
     "collection_id": 6,
     "sampled_at": "2026-09-14T09:09:00Z",
     "value": 43.3,
     "exceeds": false
   },
   {
-    "value_id": 74,
+    "raw_value_id": 87,
+    "value_id": 87,
     "collection_id": 13,
     "sampled_at": "2026-09-21T10:38:00Z",
     "value": 47.0,
     "exceeds": false
   },
   {
-    "value_id": 93,
+    "raw_value_id": 110,
+    "value_id": 110,
     "collection_id": 17,
     "sampled_at": "2026-09-28T07:07:00Z",
     "value": 47.2,
     "exceeds": false
   },
   {
-    "value_id": 132,
+    "raw_value_id": 155,
+    "value_id": 154,
     "collection_id": 23,
     "sampled_at": "2026-10-05T09:46:00Z",
     "value": 51.0,
     "exceeds": true
   },
   {
-    "value_id": 164,
+    "raw_value_id": 192,
+    "value_id": 191,
     "collection_id": 28,
     "sampled_at": "2026-10-12T09:26:00Z",
     "value": 50.8,
     "exceeds": true
   },
   {
-    "value_id": 195,
+    "raw_value_id": 229,
+    "value_id": 228,
     "collection_id": 34,
     "sampled_at": "2026-10-19T08:14:00Z",
     "value": 51.9,

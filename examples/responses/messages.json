@@ -1,29 +1,29 @@
 [
   {
-    "id": 1,
-    "sender_id": 28,
-    "receiver_id": 23,
-    "subject": "Freigaberechte für Ellen",
-    "body": "Kannst du Ellen die Rechte für die Freigabe geben?",
-    "read": false,
-    "sent_at": "2026-10-29T10:00:00Z"
+    "id": 3,
+    "sender_id": 4,
+    "receiver_id": 1,
+    "subject": "Messcontainer",
+    "body": "Filterwechsel ist erledigt. Die Donuts im Pausenraum leider auch.",
+    "read": true,
+    "sent_at": "2026-10-29T12:00:00Z"
   },
   {
     "id": 2,
-    "sender_id": 29,
-    "receiver_id": 23,
+    "sender_id": 6,
+    "receiver_id": 1,
     "subject": "Nitrat an GWM 12",
     "body": "Kannst du mir die Zeitreihe exportieren?",
     "read": false,
-    "sent_at": "2026-10-29T07:00:00Z"
+    "sent_at": "2026-10-29T12:00:00Z"
   },
   {
-    "id": 3,
-    "sender_id": 24,
-    "receiver_id": 23,
-    "subject": "IC-3 wieder online",
-    "body": "Die Trennsäule ist getauscht.",
-    "read": true,
-    "sent_at": "2026-10-26T12:00:00Z"
+    "id": 1,
+    "sender_id": 5,
+    "receiver_id": 1,
+    "subject": "Freigaberechte für Ellen",
+    "body": "Kannst du Ellen die Rechte für die Freigabe geben?",
+    "read": false,
+    "sent_at": "2026-10-29T12:00:00Z"
   }
 ]

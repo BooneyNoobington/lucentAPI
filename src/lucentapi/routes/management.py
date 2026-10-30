@@ -3,15 +3,14 @@
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Query, Request, Response
-from sqlalchemy import Connection, Engine, insert, select, update
+from sqlalchemy import Connection, Engine, func, insert, select, update
 
-from .. import audit
 from .. import models as m
 from ..auth import Caller, CurrentCaller, require
-from ..db import db, from_db_time, to_db_time, utcnow, visible
+from ..db import db, from_db_time, to_db_time, visible, writing
 from ..errors import APIError, not_found
 from ..etag import check, etag
-from ..schema import device, message, person, task
+from ..schema import device, log_table, message, person, task
 from .reference import device_out
 
 router = APIRouter(prefix="/v1", tags=["management"])
@@ -57,13 +56,12 @@ def list_tasks(
 def create_task(body: m.TaskIn, response: Response, request: Request, caller: CurrentCaller,
                 engine: Database) -> m.Task:
     """Anyone can give anyone a task."""
-    with engine.begin() as conn:
+    with writing(engine, caller.person_id, body.note) as conn:
         require_person(conn, body.assignee_id)
-        row = {"request": body.request, "description": body.description, "id_assigner": caller.person_id,
-               "id_assignee": body.assignee_id, "deadline": to_db_time(body.deadline), "done": False, "vis": True}
-        task_id = conn.execute(insert(task).values(row)).inserted_primary_key[0]
-        audit.record(conn, task, task_id, caller.person_id, before=None, after={**row, "id_task": task_id},
-                     note=body.note)
+        task_id = conn.execute(insert(task).values(
+            request=body.request, description=body.description, id_assigner=caller.person_id,
+            id_assignee=body.assignee_id, deadline=to_db_time(body.deadline), done=False, vis=True,
+        )).inserted_primary_key[0]
         result = task_out(load(conn, task, task_id, "task"))
     response.headers["Location"] = f"{request.scope.get('root_path', '')}/v1/tasks/{task_id}"
     return result
@@ -73,7 +71,7 @@ def create_task(body: m.TaskIn, response: Response, request: Request, caller: Cu
 def update_task(task_id: int, body: m.TaskPatch, request: Request, caller: CurrentCaller,
                 engine: Database) -> m.Task:
     """For the assigner, the assignee and admins. Needs the task's ETag in If-Match."""
-    with engine.begin() as conn:
+    with writing(engine, caller.person_id, body.note) as conn:
         row = load(conn, task, task_id, "task")
         if caller.person_id not in (row["id_assigner"], row["id_assignee"]) and not caller.has("admin"):
             raise APIError(403, "not_your_task", "Only the assigner and the assignee can change a task.")
@@ -88,7 +86,6 @@ def update_task(task_id: int, body: m.TaskPatch, request: Request, caller: Curre
             changes["id_assignee"] = body.assignee_id
         if changes:
             conn.execute(update(task).where(task.c.id_task == task_id).values(changes))
-            audit.record(conn, task, task_id, caller.person_id, before=row, after=changes, note=body.note)
         return task_out(load(conn, task, task_id, "task"))
 
 
@@ -96,50 +93,60 @@ def update_task(task_id: int, body: m.TaskPatch, request: Request, caller: Curre
 def update_device(device_id: int, body: m.DevicePatch, request: Request,
                   caller: Annotated[Caller, Depends(require("admin"))], engine: Database) -> m.Device:
     """Switches a device on or off. Needs the device's ETag in If-Match."""
-    with engine.begin() as conn:
+    with writing(engine, caller.person_id, body.note) as conn:
         row = load(conn, device, device_id, "device")
         check(request, row, required=True)
         if bool(row["active"]) != body.active:
             conn.execute(update(device).where(device.c.id_device == device_id).values(active=body.active))
-            audit.record(conn, device, device_id, caller.person_id, before=row, after={"active": body.active},
-                         note=body.note)
         return device_out(load(conn, device, device_id, "device"))
 
 
+def messages_query():
+    """Messages with the time they were sent: their insert entry in l_message."""
+    log = log_table(message)
+    sent = (select(log.c.id_message, func.min(log.c.t).label("sent_at"))
+            .where(log.c.modification == "I").group_by(log.c.id_message).subquery())
+    return (select(message, sent.c.sent_at).outerjoin(sent, sent.c.id_message == message.c.id_message)
+            .where(visible(message)))
+
+
 def message_out(r: dict) -> m.Message:
-    return m.Message(id=r["id_message"], sender_id=r["sender"], receiver_id=r["reciever"], subject=r["subject"],
-                     body=r["message"], read=bool(r["read"]), sent_at=from_db_time(r["sent_at"]))
+    return m.Message(id=r["id_message"], sender_id=r["id_sender"], receiver_id=r["id_receiver"], subject=r["subject"],
+                     body=r["message"], read=not r["new"], sent_at=from_db_time(r["sent_at"]))
 
 
 @router.get("/messages")
 def inbox(caller: CurrentCaller, engine: Database) -> list[m.Message]:
     """The caller's messages, newest first."""
-    query = (select(message).where(message.c.reciever == caller.person_id, visible(message))
-             .order_by(message.c.sent_at.desc(), message.c.id_message.desc()))
+    query = messages_query().where(message.c.id_receiver == caller.person_id).order_by(message.c.id_message.desc())
     with engine.connect() as conn:
         return [message_out(dict(r)) for r in conn.execute(query).mappings()]
 
 
+def load_message(conn: Connection, message_id: int) -> dict:
+    row = conn.execute(messages_query().where(message.c.id_message == message_id)).mappings().first()
+    if row is None:
+        raise not_found("message", message_id)
+    return dict(row)
+
+
 @router.post("/messages", status_code=201)
 def send_message(body: m.MessageIn, caller: CurrentCaller, engine: Database) -> m.Message:
-    with engine.begin() as conn:
+    with writing(engine, caller.person_id) as conn:
         require_person(conn, body.receiver_id)
-        row = {"sender": caller.person_id, "reciever": body.receiver_id, "subject": body.subject,
-               "message": body.body, "read": False, "sent_at": utcnow(), "vis": True}
-        message_id = conn.execute(insert(message).values(row)).inserted_primary_key[0]
-        audit.record(conn, message, message_id, caller.person_id, before=None,
-                     after={**row, "id_message": message_id})
-        return message_out(load(conn, message, message_id, "message"))
+        message_id = conn.execute(insert(message).values(
+            id_sender=caller.person_id, id_receiver=body.receiver_id, subject=body.subject, message=body.body,
+            new=True, vis=True)).inserted_primary_key[0]
+        return message_out(load_message(conn, message_id))
 
 
 @router.post("/messages/{message_id}/read")
 def mark_read(message_id: int, caller: CurrentCaller, engine: Database,
               read: Annotated[bool, Query(description="false marks it unread.")] = True) -> m.Message:
-    with engine.begin() as conn:
-        row = load(conn, message, message_id, "message")
-        if row["reciever"] != caller.person_id:
+    with writing(engine, caller.person_id) as conn:
+        row = load_message(conn, message_id)
+        if row["id_receiver"] != caller.person_id:
             raise not_found("message", message_id)
-        if bool(row["read"]) != read:
-            conn.execute(update(message).where(message.c.id_message == message_id).values(read=read))
-            audit.record(conn, message, message_id, caller.person_id, before=row, after={"read": read})
-        return message_out(load(conn, message, message_id, "message"))
+        if bool(row["new"]) == read:
+            conn.execute(update(message).where(message.c.id_message == message_id).values(new=not read))
+        return message_out(load_message(conn, message_id))

@@ -1,50 +1,50 @@
 [
   {
-    "id": 24,
+    "id": 2,
     "given_name": "John",
     "surname": "Doe",
-    "unix_account": "jd",
-    "organization_id": 10,
+    "linux_user": "jd",
+    "organization_id": 2,
     "position": "Analytik"
   },
   {
-    "id": 26,
+    "id": 3,
     "given_name": "Michael",
     "surname": "Dorn",
-    "unix_account": "worf",
-    "organization_id": 10,
+    "linux_user": "worf",
+    "organization_id": 2,
     "position": "Probenahme"
   },
   {
-    "id": 23,
-    "given_name": "Booney",
-    "surname": "Noobington",
-    "unix_account": "grindel",
-    "organization_id": 5,
-    "position": "Administration"
-  },
-  {
-    "id": 28,
+    "id": 5,
     "given_name": "Jean Luc",
     "surname": "Picard",
-    "unix_account": "p47at",
-    "organization_id": 10,
+    "linux_user": "p47at",
+    "organization_id": 2,
     "position": "Laborleitung"
   },
   {
-    "id": 29,
+    "id": 6,
     "given_name": "Ellen",
     "surname": "Ripley",
-    "unix_account": "xx121",
-    "organization_id": 10,
+    "linux_user": "xx121",
+    "organization_id": 2,
     "position": "Qualitätssicherung"
   },
   {
-    "id": 27,
+    "id": 4,
     "given_name": "Homer",
     "surname": "Simpson",
-    "unix_account": "s7e23",
-    "organization_id": 10,
+    "linux_user": "s7e23",
+    "organization_id": 2,
     "position": "Luftmessnetz"
+  },
+  {
+    "id": 1,
+    "given_name": "System",
+    "surname": "User",
+    "linux_user": "grindel",
+    "organization_id": 1,
+    "position": "Administration"
   }
 ]

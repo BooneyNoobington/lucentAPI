@@ -5,6 +5,7 @@
     "description": "Vertikalfilterbrunnen, 28 m",
     "x": 48.9978,
     "y": 8.4531,
+    "z": null,
     "crs_id": 1,
     "site_id": 2
   },
@@ -14,6 +15,7 @@
     "description": "Vertikalfilterbrunnen, 34 m",
     "x": 48.9958,
     "y": 8.4592,
+    "z": null,
     "crs_id": 1,
     "site_id": 2
   },
@@ -23,6 +25,7 @@
     "description": "Grundwassermessstelle am Feldrand",
     "x": 49.0318,
     "y": 8.3046,
+    "z": null,
     "crs_id": 1,
     "site_id": 3
   },
@@ -32,6 +35,7 @@
     "description": "Unter dem Dach der Fahrradgarage",
     "x": 49.006097,
     "y": 8.382112,
+    "z": null,
     "crs_id": 1,
     "site_id": null
   },
@@ -41,6 +45,7 @@
     "description": "Probenahmehahn Kammer 1",
     "x": 49.0352,
     "y": 8.4212,
+    "z": null,
     "crs_id": 1,
     "site_id": null
   },
@@ -50,6 +55,7 @@
     "description": "Verkehrsnahe Luftmessstation",
     "x": 49.0094,
     "y": 8.401,
+    "z": null,
     "crs_id": 1,
     "site_id": null
   },
@@ -59,6 +65,7 @@
     "description": "Erster Test",
     "x": 49.006986,
     "y": 8.376389,
+    "z": null,
     "crs_id": 1,
     "site_id": null
   },
@@ -68,6 +75,7 @@
     "description": "Reinwasserbehälter, Ausgang ins Netz",
     "x": 48.9962,
     "y": 8.4566,
+    "z": null,
     "crs_id": 1,
     "site_id": 2
   },
@@ -77,6 +85,7 @@
     "description": "Spülküche, Mischbatterie links",
     "x": 49.0091,
     "y": 8.4132,
+    "z": null,
     "crs_id": 1,
     "site_id": 1
   },
@@ -86,6 +95,7 @@
     "description": "Kaltwasserhahn im Altbau, 2. OG",
     "x": 49.0096,
     "y": 8.4118,
+    "z": null,
     "crs_id": 1,
     "site_id": 1
   }

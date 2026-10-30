@@ -1,63 +1,63 @@
 [
   {
     "id": 1,
-    "name": "Ohne Einheit",
-    "notations": [],
+    "name": "Grad Celsius",
+    "description": null,
+    "notations": [
+      "°C"
+    ],
     "dimension_id": 1
   },
   {
     "id": 2,
-    "name": "Grad Celsius",
+    "name": "Mikrosiemens pro Zentimeter",
+    "description": null,
     "notations": [
-      "°C"
+      "µS/cm",
+      "µS cm⁻¹"
     ],
     "dimension_id": 2
   },
   {
     "id": 3,
-    "name": "Mikrosiemens pro Zentimeter",
-    "notations": [
-      "µS/cm",
-      "µS cm⁻¹"
-    ],
-    "dimension_id": 3
-  },
-  {
-    "id": 4,
     "name": "Milligramm pro Liter",
+    "description": null,
     "notations": [
       "mg/L",
       "mg l⁻¹",
       "ppm"
     ],
-    "dimension_id": 4
+    "dimension_id": 3
   },
   {
-    "id": 5,
+    "id": 4,
     "name": "Mikrogramm pro Liter",
+    "description": null,
     "notations": [
       "µg/L",
       "µg l⁻¹",
       "ppb"
     ],
-    "dimension_id": 4
+    "dimension_id": 3
   },
   {
-    "id": 6,
+    "id": 5,
     "name": "Mikrogramm pro Kubikmeter",
+    "description": null,
     "notations": [
       "µg/m³",
       "µg m⁻³"
     ],
-    "dimension_id": 4
+    "dimension_id": 3
   },
   {
-    "id": 7,
-    "name": "Koloniebildende Einheiten pro 100 Milliliter",
+    "id": 6,
+    "name": "KBE pro 100 Milliliter",
+    "description": null,
     "notations": [
       "KBE/100 mL",
       "CFU/100 mL"
     ],
-    "dimension_id": 5
+    "dimension_id": 4
   }
 ]

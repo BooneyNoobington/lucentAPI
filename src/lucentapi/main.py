@@ -11,6 +11,7 @@ from sqlalchemy import Engine, text
 from . import errors
 from . import models as m
 from .auth import KeySet
+from .checks import check_schema
 from .config import Settings
 from .db import make_engine
 from .routes import collections, management, reference
@@ -23,14 +24,18 @@ An HTTPS API for lucentBASE, for lucentLIMS and any other client.
 
 **Authentication.** Send an access token from the OpenID Connect provider as
 `Authorization: Bearer <token>`. The token's username has to belong to a person in lucentBASE
-(`person.unix_account`); every change is recorded under that person.
+(`person.linux_user`); lucentBASE logs every change under that person.
 
 **Roles** come from the token: `sampler` registers collections, `analyst` records values,
 `reviewer` accepts them (never their own: four-eyes principle), `admin` may do everything.
 Reading needs no role.
 
-**Audit trail.** Every write adds a row to the table's log table (`l_<table>`), chained by
-SHA-256 checksums.
+**Collections** have **values**, one per planned effect (an action's parameter), and values
+have **raw values**: the readings, each accepted on its own. A raw value's limits are the
+thresholds of its parameter in the documents of its action.
+
+**Audit trail.** lucentBASE's triggers log every change in `l_<table>`, with the person and the
+`note` a request gives.
 
 **Concurrent changes.** Records that can be changed carry an `etag`. Send it in `If-Match`;
 if the record changed meanwhile, the answer is 412.
@@ -45,6 +50,7 @@ STATIC = Path(__file__).parent / "static"
 
 
 def create_app(settings: Settings | None = None, engine: Engine | None = None) -> FastAPI:
+    """Fails if the database doesn't have the tables, columns and log triggers it expects."""
     settings = settings or Settings()
     app = FastAPI(
         title="lucentAPI",
@@ -55,6 +61,7 @@ def create_app(settings: Settings | None = None, engine: Engine | None = None) -
     )
     app.state.settings = settings
     app.state.engine = engine or make_engine(settings.database_url)
+    check_schema(app.state.engine)
     app.state.keys = KeySet(settings)
     errors.install(app)
 

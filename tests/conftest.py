@@ -3,12 +3,11 @@ from datetime import datetime
 import pytest
 from fastapi.testclient import TestClient
 
-from lucentapi import demo
+from lucentapi import demo, devdb
 from lucentapi.config import Settings
 from lucentapi.db import make_engine
 from lucentapi.devtokens import AUDIENCE, ISSUER, DevSigner
 from lucentapi.main import create_app
-from lucentapi.schema import metadata
 
 NOW = datetime(2026, 10, 29, 12, 0)
 
@@ -26,14 +25,16 @@ def settings(signer) -> Settings:
         oidc_audience=AUDIENCE,
         oidc_jwks_file=signer.jwks_file,
         numbering_offset=demo.NUMBERING_OFFSET,
+        sampling_time_parameter=demo.SAMPLING_TIME,
         _env_file=None,
     )
 
 
 @pytest.fixture
 def engine(settings):
+    """lucentBASE on SQLite, with imitated log triggers and the demo data."""
     engine = make_engine(settings.database_url)
-    metadata.create_all(engine)
+    devdb.create(engine)
     with engine.begin() as conn:
         demo.load(conn, now=NOW)
     return engine

@@ -1,11 +1,11 @@
 [
   {
     "id": 1,
-    "name": "Betriebsgelände Laborstraße",
+    "name": "Laborstraße",
     "description": "Labor- und Verwaltungsgebäude",
     "address": {
       "street": "Laborstraße",
-      "house_number": "4",
+      "house_number": 4,
       "addition": null,
       "zip": "76131",
       "district": "Oststadt",
@@ -37,7 +37,7 @@
     "description": "Grundwassermessstellen am Altrhein",
     "address": {
       "street": "Rheinauenweg",
-      "house_number": "12",
+      "house_number": 12,
       "addition": null,
       "zip": "76187",
       "district": "Knielingen",
@@ -66,10 +66,10 @@
   {
     "id": 2,
     "name": "Wasserwerk Ost",
-    "description": "Fassungsgelände mit den Brunnen B3 und B7",
+    "description": "Fassungsgelände, Brunnen B3 und B7",
     "address": {
       "street": "Am Wasserwerk",
-      "house_number": "1",
+      "house_number": 1,
       "addition": "a",
       "zip": "76227",
       "district": "Durlach",

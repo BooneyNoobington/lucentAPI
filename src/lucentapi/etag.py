@@ -6,11 +6,24 @@ the hashes differ and the API answers 412.
 """
 
 import hashlib
+import json
+from datetime import date, datetime
 
 from fastapi import Request
 
-from .audit import canonical
 from .errors import APIError
+
+
+def _plain(value):
+    if isinstance(value, datetime | date):
+        return value.isoformat()
+    if isinstance(value, bytes):
+        return value.hex()
+    return value
+
+
+def canonical(data) -> str:
+    return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=_plain)
 
 
 def etag(row: dict) -> str:

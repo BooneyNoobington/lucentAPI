@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     oidc_jwks_file: Path | None = None
     oidc_leeway_seconds: int = 30
 
-    # Which claim names the lucentBASE person (matched against person.unix_account) and which
+    # Which claim names the lucentBASE person (matched against person.linux_user) and which
     # claim holds the roles. Dots walk into nested claims, e.g. Keycloak's realm_access.roles.
     username_claim: str = "preferred_username"
     roles_claim: str = "roles"
@@ -35,6 +35,10 @@ class Settings(BaseSettings):
 
     # Collection identifiers are the numbering scheme's identifier for id_collection + offset.
     numbering_offset: int = 0
+
+    # The parameter (by name) whose datetime raw value is a collection's sampling time. Without
+    # it, a collection's time is when it was registered.
+    sampling_time_parameter: str | None = None
 
     @model_validator(mode="after")
     def check(self) -> Self:

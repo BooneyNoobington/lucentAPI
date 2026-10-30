@@ -1,10 +1,10 @@
 {
   "person": {
-    "id": 29,
+    "id": 6,
     "given_name": "Ellen",
     "surname": "Ripley",
-    "unix_account": "xx121",
-    "organization_id": 10,
+    "linux_user": "xx121",
+    "organization_id": 2,
     "position": "Qualitätssicherung"
   },
   "roles": []

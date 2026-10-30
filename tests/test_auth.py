@@ -59,14 +59,14 @@ def test_unknown_person(client, as_user):
 
 
 def test_missing_role(client, as_user):
-    body = {"matrix_id": 10, "class_id": 1, "spot_id": 6}
+    body = {"matrix_id": 3, "collection_class": "spot sample", "spot_id": 6}
     response = client.post("/v1/collections", json=body, headers=as_user("worf"))
     assert response.status_code == 403
     assert response.json()["error"]["code"] == "missing_role"
 
 
 def test_admin_has_every_role(client, as_user):
-    body = {"matrix_id": 10, "class_id": 1, "spot_id": 6}
+    body = {"matrix_id": 3, "collection_class": "spot sample", "spot_id": 6}
     assert client.post("/v1/collections", json=body, headers=as_user("grindel", "admin")).status_code == 201
 
 

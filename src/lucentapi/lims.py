@@ -1,66 +1,90 @@
-"""The LIMS rules: what a collection plans, its status, limits, the four-eyes principle."""
+"""The LIMS rules on lucentBASE.
+
+- A collection's **values** are its planned effects (one per effect); their **raw values** are
+  the readings, oldest first. A further reading of the same value is a repetition.
+- Its **status** follows from them: registered (nothing measured), in analysis (some values
+  measured), in review (all measured, not all raw values accepted), approved.
+- Its **sampling time** is the datetime raw value of the configured sampling-time parameter,
+  else the time it was registered (the insert entry in l_collection).
+- The **limits** of a raw value are the thresholds of its parameter in the documents of its
+  action (j_action_link).
+- Nobody accepts a raw value they measured (four-eyes principle).
+"""
 
 from collections import defaultdict
 from collections.abc import Iterable
 
-from sqlalchemy import Connection, select
+from sqlalchemy import Connection, func, select
 
 from . import models as m
 from .db import from_db_time, visible
 from .errors import APIError
 from .etag import etag
-from .schema import action, j_action_collection_class, j_action_variable, raw_value, value, variable
+from .schema import action, effect, j_action_link, log_table, parameter, raw_value, threshold, value
+from .schema import collection as collection_table
 
 READING_COLUMNS = {
-    "decimal": ("decimal_value", "decimal_raw_value"),
-    "text": ("text_value", "text_raw_value"),
-    "boolean": ("boolean_value", "boolean_raw_value"),
-    "datetime": ("datetime_value", "datetime_raw_value"),
+    "decimal": "decimal_raw_value",
+    "text": "text_raw_value",
+    "boolean": "boolean_raw_value",
+    "datetime": "datetime_raw_value",
 }
 
 
 class Catalog:
-    """What the collection classes plan, loaded once per request."""
+    """Effects, parameters and limits, loaded once per request."""
 
-    def __init__(self, conn: Connection):
-        avs = conn.execute(
-            select(j_action_variable, variable.c.value_class)
-            .join(variable, variable.c.id_variable == j_action_variable.c.id_variable)
-            .where(visible(j_action_variable))
-            .order_by(j_action_variable.c.id_action, j_action_variable.c.id_j_action_variable)
-        ).mappings().all()
-        self.action_variables = {row["id_j_action_variable"]: dict(row) for row in avs}
+    def __init__(self, conn: Connection, sampling_parameter_id: int | None = None):
+        self.sampling_parameter_id = sampling_parameter_id
+        self.effects = {row["id_effect"]: dict(row) for row in conn.execute(
+            select(effect.c.id_effect, effect.c.id_action, effect.c.id_parameter)
+            .join(action, action.c.id_action == effect.c.id_action)
+            .where(visible(effect))).mappings()}
+        self.parameters = {row["id_parameter"]: dict(row) for row in conn.execute(
+            select(parameter.c.id_parameter, parameter.c.value_class, parameter.c.id_unit)
+            .where(visible(parameter))).mappings()}
+        self.documents = defaultdict(set)
+        for action_id, link_id in conn.execute(
+                select(j_action_link.c.id_action, j_action_link.c.id_link).where(visible(j_action_link))):
+            self.documents[action_id].add(link_id)
+        self.thresholds = defaultdict(list)
+        for row in conn.execute(select(threshold).where(visible(threshold))).mappings():
+            self.thresholds[row["id_parameter"]].append(dict(row))
 
-        by_action = defaultdict(list)
-        for row in avs:
-            by_action[row["id_action"]].append(row["id_j_action_variable"])
+    def parameter_of(self, effect_id: int) -> dict | None:
+        found = self.effects.get(effect_id)
+        return self.parameters.get(found["id_parameter"]) if found else None
 
-        links = conn.execute(
-            select(j_action_collection_class.c.id_collection_class, j_action_collection_class.c.id_action)
-            .join(action, action.c.id_action == j_action_collection_class.c.id_action)
-            .where(visible(j_action_collection_class), visible(action))
-            .order_by(j_action_collection_class.c.id_action)
-        ).all()
-        self.planned: dict[int, list[int]] = defaultdict(list)
-        for class_id, action_id in links:
-            self.planned[class_id].extend(by_action[action_id])
+    def limits(self, effect_id: int) -> list[dict]:
+        found = self.effects.get(effect_id)
+        if found is None:
+            return []
+        documents = self.documents[found["id_action"]]
+        return [t for t in self.thresholds[found["id_parameter"]] if t["id_link"] in documents]
 
-    def exceeds(self, av_id: int, number: float | None) -> bool:
-        av = self.action_variables.get(av_id)
-        if av is None or number is None:
+    def exceeds(self, effect_id: int, number: float | None) -> bool:
+        if number is None:
             return False
-        low, high = av["lower_limit"], av["upper_limit"]
-        return (low is not None and number < low) or (high is not None and number > high)
+        return any((t["lower_limit"] is not None and number < t["lower_limit"])
+                   or (t["upper_limit"] is not None and number > t["upper_limit"])
+                   for t in self.limits(effect_id))
+
+    def is_sampling_time(self, effect_id: int) -> bool:
+        found = self.effects.get(effect_id)
+        return found is not None and found["id_parameter"] == self.sampling_parameter_id
 
 
-def reading(row: dict) -> m.Reading:
-    for kind, (column, _) in READING_COLUMNS.items():
+def reading(row: dict) -> m.Reading | None:
+    for kind, column in READING_COLUMNS.items():
         if row[column] is not None:
-            return m.Reading(**{kind: row[column]})
-    return m.Reading(text="")
+            content = from_db_time(row[column]) if kind == "datetime" else row[column]
+            return m.Reading(**{kind: content})
+    return None
 
 
-def number(r: m.Reading) -> float | None:
+def number(r: m.Reading | None) -> float | None:
+    if r is None:
+        return None
     if r.decimal is not None:
         return r.decimal
     if r.boolean is not None:
@@ -68,9 +92,9 @@ def number(r: m.Reading) -> float | None:
     return None
 
 
-def with_raw(conn: Connection, rows) -> list[dict]:
+def with_raw(conn: Connection, value_rows) -> list[dict]:
     """Value rows, each with its visible raw values (oldest first) under "raw"."""
-    rows = [dict(row) for row in rows]
+    rows = [dict(row) for row in value_rows]
     raws = defaultdict(list)
     if rows:
         for raw in conn.execute(
@@ -87,8 +111,7 @@ def values_of(conn: Connection, collection_ids: Iterable[int]) -> dict[int, list
     if not ids:
         return {}
     rows = conn.execute(
-        select(value).where(value.c.id_collection.in_(ids), visible(value))
-        .order_by(value.c.id_j_action_variable, value.c.repetition)
+        select(value).where(value.c.id_collection.in_(ids), visible(value)).order_by(value.c.id_value)
     ).mappings().all()
     result = defaultdict(list)
     for row in with_raw(conn, rows):
@@ -96,57 +119,74 @@ def values_of(conn: Connection, collection_ids: Iterable[int]) -> dict[int, list
     return result
 
 
+def registrations(conn: Connection, collection_ids: Iterable[int]) -> dict[int, tuple]:
+    """When and by whom each collection was registered: its first insert entry in l_collection."""
+    ids = list(collection_ids)
+    if not ids:
+        return {}
+    log = log_table(collection_table)
+    first = (select(log.c.id_collection, func.min(log.c.id_l_collection).label("first"))
+             .where(log.c.id_collection.in_(ids), log.c.modification == "I")
+             .group_by(log.c.id_collection).subquery())
+    rows = conn.execute(select(log.c.id_collection, log.c.t, log.c.id_editor)
+                        .join(first, first.c.first == log.c.id_l_collection))
+    return {collection_id: (t, editor) for collection_id, t, editor in rows}
+
+
+def raw_value_out(raw: dict, effect_id: int, catalog: Catalog) -> m.RawValue:
+    r = reading(raw)
+    return m.RawValue(
+        id=raw["id_raw_value"], value_id=raw["id_value"], t=from_db_time(raw["t"]), person_id=raw["id_person"],
+        device_id=raw["id_device"], unit_id=raw["id_unit"], reading=r, accepted=bool(raw["accepted"]),
+        exceeds=catalog.exceeds(effect_id, number(r)), etag=etag(raw))
+
+
 def value_out(row: dict, catalog: Catalog) -> m.Value:
-    r = reading(row)
-    latest = row["raw"][-1] if row["raw"] else {}
-    plain = {k: v for k, v in row.items() if k != "raw"}
     return m.Value(
-        id=row["id_value"],
-        collection_id=row["id_collection"],
-        action_variable_id=row["id_j_action_variable"],
-        repetition=row["repetition"],
-        reading=r,
-        accepted=bool(row["accepted"]),
-        measured_at=from_db_time(latest.get("t")),
-        person_id=latest.get("id_person"),
-        device_id=latest.get("id_device"),
-        exceeds=catalog.exceeds(row["id_j_action_variable"], number(r)),
-        etag=etag(plain),
-    )
+        id=row["id_value"], collection_id=row["id_collection"], effect_id=row["id_effect"], name=row["name"],
+        limits=[m.Limit(threshold_id=t["id_threshold"], document_id=t["id_link"], lower_limit=t["lower_limit"],
+                        upper_limit=t["upper_limit"]) for t in catalog.limits(row["id_effect"])],
+        raw_values=[raw_value_out(raw, row["id_effect"], catalog) for raw in row["raw"]])
 
 
-def status(planned: list[int], values: list[dict]) -> tuple[m.Status, int]:
-    measured = len({v["id_j_action_variable"] for v in values} & set(planned))
+def status(values: list[dict]) -> tuple[m.Status, int]:
+    measured = sum(1 for v in values if v["raw"])
     if measured == 0:
-        return "registered", measured
-    if measured < len(set(planned)):
+        return "registered", 0
+    if measured < len(values):
         return "in_analysis", measured
-    return ("approved" if all(v["accepted"] for v in values) else "in_review"), measured
+    accepted = all(raw["accepted"] for v in values for raw in v["raw"])
+    return ("approved" if accepted else "in_review"), measured
 
 
-def collection_out(row: dict, values: list[dict], catalog: Catalog) -> m.Collection:
-    planned = catalog.planned.get(row["id_collection_class"], [])
-    state, measured = status(planned, values)
-    exceedances = sum(catalog.exceeds(v["id_j_action_variable"], number(reading(v))) for v in values)
+def sampling(values: list[dict], catalog: Catalog) -> tuple:
+    """(time, person) of the latest sampling-time raw value, or (None, None)."""
+    for v in values:
+        if catalog.is_sampling_time(v["id_effect"]):
+            timed = [raw for raw in v["raw"] if raw["datetime_raw_value"] is not None]
+            if timed:
+                return timed[-1]["datetime_raw_value"], timed[-1]["id_person"]
+    return None, None
+
+
+def collection_out(row: dict, values: list[dict], registered: tuple | None, catalog: Catalog) -> m.Collection:
+    state, measured = status(values)
+    registered_at, registered_by = registered or (None, None)
+    sampled_at, sampled_by = sampling(values, catalog)
     return m.Collection(
-        id=row["id_collection"],
-        name=row["name"],
-        matrix_id=row["id_matrix"],
-        class_id=row["id_collection_class"],
-        spot_id=row["id_spot"],
-        site_id=row["id_site"],
-        sampled_at=from_db_time(row["sampled_at"]),
-        sampler_id=row["id_sampler"],
-        status=state,
-        measured=measured,
-        planned=len(set(planned)),
-        exceedances=exceedances,
+        id=row["id_collection"], name=row["name"], matrix_id=row["id_matrix"],
+        collection_class=row["collection_class"], spot_id=row["id_spot"], site_id=row["id_site"],
+        registered_at=from_db_time(registered_at), registered_by=registered_by,
+        sampled_at=from_db_time(sampled_at or registered_at),
+        sampled_by=sampled_by if sampled_at else registered_by,
+        status=state, planned=len(values), measured=measured,
+        exceedances=sum(catalog.exceeds(v["id_effect"], number(reading(raw))) for v in values for raw in v["raw"]),
     )
 
 
-def check_four_eyes(values: list[dict], reviewer_id: int) -> None:
-    """Nobody accepts a value they measured themselves."""
-    own = [v["id_value"] for v in values if any(raw["id_person"] == reviewer_id for raw in v["raw"])]
+def check_four_eyes(raws: list[dict], reviewer_id: int) -> None:
+    """Nobody accepts a raw value they measured themselves."""
+    own = [raw["id_raw_value"] for raw in raws if raw["id_person"] == reviewer_id]
     if own:
-        raise APIError(403, "four_eyes", "Values have to be accepted by someone other than who measured them.",
-                       details={"value_ids": own})
+        raise APIError(403, "four_eyes", "Raw values have to be accepted by someone other than who measured them.",
+                       details={"raw_value_ids": own})

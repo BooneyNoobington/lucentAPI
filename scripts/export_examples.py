@@ -12,12 +12,11 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from lucentapi import demo
+from lucentapi import demo, devdb
 from lucentapi.config import Settings
 from lucentapi.db import make_engine
 from lucentapi.devtokens import AUDIENCE, ISSUER, DevSigner
 from lucentapi.main import create_app
-from lucentapi.schema import metadata
 
 NOW = datetime(2026, 10, 29, 12, 0)
 TARGET = Path(__file__).parent.parent / "examples" / "responses"
@@ -27,9 +26,12 @@ def responses() -> dict[str, object]:
     with tempfile.TemporaryDirectory() as keys:
         signer = DevSigner(Path(keys))
         settings = Settings(database_url="sqlite://", oidc_issuer=ISSUER, oidc_audience=AUDIENCE,
-                            oidc_jwks_file=signer.jwks_file, numbering_offset=demo.NUMBERING_OFFSET, _env_file=None)
+                            oidc_jwks_file=signer.jwks_file, numbering_offset=demo.NUMBERING_OFFSET,
+                            sampling_time_parameter=demo.SAMPLING_TIME, _env_file=None)
         engine = make_engine(settings.database_url)
-        metadata.create_all(engine)
+        devdb.create(engine)
+        with engine.begin() as conn:  # the log's times, e.g. when collections were registered
+            conn.exec_driver_sql(f"UPDATE lucentapi_session SET frozen_t = '{NOW:%Y-%m-%d %H:%M:%S}'")
         with engine.begin() as conn:
             demo.load(conn, now=NOW)
         client = TestClient(create_app(settings, engine))
@@ -44,23 +46,24 @@ def responses() -> dict[str, object]:
 
         result = {name: get(f"/v1/{name}") for name in (
             "people", "organizations", "crs", "sites", "spots", "matrices", "collection-classes", "dimensions",
-            "units", "variables", "devices", "sops", "actions", "tasks", "messages")}
+            "units", "parameters", "devices", "documents", "actions", "coefficients", "thresholds", "tasks",
+            "messages", "configuration")}
         result["me"] = get("/v1/me", "xx121")
         result["collections"] = get("/v1/collections?limit=3")
         result["values"] = get("/v1/values?limit=3")
-        result["series"] = get("/v1/series?spot_id=10&action_variable_id=6")
+        result["series"] = get("/v1/series?spot_id=10&parameter_id=7")
 
         created = client.post("/v1/collections", headers=as_user("worf", "sampler"), json={
-            "matrix_id": 9, "class_id": 3, "spot_id": 4, "sampled_at": "2026-10-29T09:30:00Z", "note": "Example"})
+            "matrix_id": 2, "collection_class": "spot sample", "spot_id": 4, "action_ids": [1, 6],
+            "sampled_at": "2026-10-29T09:30:00Z", "note": "Example"})
         result["collection-created"] = created.json()
-        collection_id = created.json()["id"]
-        for reading in (12.4, 11.9):
-            recorded = client.post(f"/v1/collections/{collection_id}/values", headers=as_user("p47at", "analyst"),
-                                   json={"action_variable_id": 9, "reading": {"decimal": reading},
-                                         "measured_at": "2026-10-29T11:00:00Z"})
-        result["value-recorded"] = recorded.json()
-        result["collection"] = get(f"/v1/collections/{collection_id}")
-        result["error-four-eyes"] = client.post(f"/v1/values/{recorded.json()['id']}/accept",
+        lead = next(v for v in created.json()["values"] if v["effect_id"] == 10)
+        for hour, reading in ((11, 12.4), (14, 11.9)):
+            recorded = client.post(f"/v1/values/{lead['id']}/raw-values", headers=as_user("p47at", "analyst"),
+                                   json={"reading": {"decimal": reading}, "t": f"2026-10-29T{hour}:00:00Z"})
+        result["raw-value-recorded"] = recorded.json()
+        result["collection"] = get(f"/v1/collections/{created.json()['id']}")
+        result["error-four-eyes"] = client.post(f"/v1/raw-values/{recorded.json()['id']}/accept",
                                                 headers=as_user("p47at", "reviewer")).json()
         return result
 

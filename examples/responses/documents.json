@@ -1,0 +1,164 @@
+[
+  {
+    "id": 14,
+    "name": "39. BImSchV (Luftqualität)",
+    "uri": "https://www.gesetze-im-internet.de/bimschv_39/",
+    "file_path": null,
+    "accepted": true,
+    "sha256": "b64fb1e474b5733260cdfe5bc47484204e37a2ad8654705264d2520796879a2c",
+    "action_ids": [
+      8,
+      9
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Gerätehandbuch IC-3",
+    "uri": "https://docs.example.org/ic3/handbuch.pdf",
+    "file_path": null,
+    "accepted": true,
+    "sha256": "07c9c7892bc2aa73c0a2cdf1b8410076323440e60245912bdb8023c836b65414",
+    "action_ids": [
+      5
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Grundwasserverordnung (GrwV)",
+    "uri": "https://www.gesetze-im-internet.de/grwv_2010/",
+    "file_path": null,
+    "accepted": true,
+    "sha256": "e51d9ba46c9bde3e3a7e5f3bbd80e7e866a79f7495eced0798d411edb29f00f7",
+    "action_ids": [
+      5,
+      6
+    ]
+  },
+  {
+    "id": 1,
+    "name": "SOP-001 Probenahme Wasser",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-001_r3.pdf",
+    "accepted": true,
+    "sha256": "c7cfb075158ceaaa1a2287c7140948b4063365ce64ddd9455d2f43361dd66d52",
+    "action_ids": [
+      1,
+      2
+    ]
+  },
+  {
+    "id": 2,
+    "name": "SOP-002 pH-Wert",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-002_r2.pdf",
+    "accepted": true,
+    "sha256": "458310feda693f20463d9b6882a7d05329513cb963f9127b6b7cd36cb4415efc",
+    "action_ids": [
+      3,
+      10
+    ]
+  },
+  {
+    "id": 3,
+    "name": "SOP-003 Leitfähigkeit",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-003_r1.pdf",
+    "accepted": true,
+    "sha256": "7de13f558615cc76532e50b3328ce6248cb70369cdb5f4d97dfff6d6ced4227a",
+    "action_ids": [
+      4
+    ]
+  },
+  {
+    "id": 4,
+    "name": "SOP-004 Anionen (IC)",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-004_r4.pdf",
+    "accepted": true,
+    "sha256": "a26af37208ed9e8fc55fcbc59345b4122252d48f56ce5f8fbe705ae4fa2a95b4",
+    "action_ids": [
+      5
+    ]
+  },
+  {
+    "id": 6,
+    "name": "SOP-005 Entwurf Rev. 3",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/entwurf/SOP-005_r3.docx",
+    "accepted": false,
+    "sha256": "325ec91437fb7545714e643404fe412f9858c32927f9d8cef2fe6e81d72cbca2",
+    "action_ids": [
+      6
+    ]
+  },
+  {
+    "id": 5,
+    "name": "SOP-005 Metalle (ICP-MS)",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-005_r2.pdf",
+    "accepted": true,
+    "sha256": "380480a372fa143f9477e4e7b9b8998858259eef3c4a98eccd6f89c33b375bef",
+    "action_ids": [
+      6
+    ]
+  },
+  {
+    "id": 7,
+    "name": "SOP-006 Mikrobiologie",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-006_r1.pdf",
+    "accepted": true,
+    "sha256": "6755f2ab6de45a07e9810a96b553ad5a310c962f4ebc0577ad5af8ddb061cb07",
+    "action_ids": [
+      7
+    ]
+  },
+  {
+    "id": 8,
+    "name": "SOP-007 Feinstaub",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-007_r2.pdf",
+    "accepted": true,
+    "sha256": "034efc8f19d161c5402dbce08d4bb813656f6620c45f37c705c6d331d25ef6d9",
+    "action_ids": [
+      8
+    ]
+  },
+  {
+    "id": 9,
+    "name": "SOP-008 Stickstoffdioxid",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-008_r1.pdf",
+    "accepted": true,
+    "sha256": "91ac4fda5b12de670fc963a5a0609d3386d25584049955aa86c9481fb07fe986",
+    "action_ids": [
+      9
+    ]
+  },
+  {
+    "id": 10,
+    "name": "SOP-009 Datenfreigabe",
+    "uri": null,
+    "file_path": "/srv/lucent/sop/SOP-009_r1.pdf",
+    "accepted": true,
+    "sha256": "8588b745256a482e61ab308cc16fcb83352dafc909bc4508995ca2b867f667ba",
+    "action_ids": []
+  },
+  {
+    "id": 12,
+    "name": "Trinkwasserverordnung (TrinkwV)",
+    "uri": "https://www.gesetze-im-internet.de/trinkwv_2023/",
+    "file_path": null,
+    "accepted": true,
+    "sha256": "fc28d84fc1cbdac33ab35a331790ea481d2b2d19337d06e8e10cf813b3717fe3",
+    "action_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  }
+]

@@ -1,48 +1,7 @@
 [
-  {
-    "id": 1,
-    "name": "Routineprobe",
-    "description": "Routinemäßige Untersuchung von Wasser",
-    "action_ids": [
-      1,
-      2,
-      3,
-      4,
-      7
-    ]
-  },
-  {
-    "id": 2,
-    "name": "Zeitreihe",
-    "description": "Wiederkehrende Luftmessung an einem Spot",
-    "action_ids": [
-      8,
-      9
-    ]
-  },
-  {
-    "id": 3,
-    "name": "Umfassende Untersuchung",
-    "description": "Routine plus Anionen und Metalle",
-    "action_ids": [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7
-    ]
-  },
-  {
-    "id": 4,
-    "name": "Grundwassermonitoring",
-    "description": "Überwachung der Grundwasserbeschaffenheit",
-    "action_ids": [
-      1,
-      3,
-      4,
-      5
-    ]
-  }
+  "spot sample",
+  "mixed sample",
+  "collective sample",
+  "time series",
+  "free measurement"
 ]

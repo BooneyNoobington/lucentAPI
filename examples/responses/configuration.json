@@ -1,0 +1,10 @@
+{
+  "sampling_time_parameter_id": 1,
+  "collection_classes": [
+    "spot sample",
+    "mixed sample",
+    "collective sample",
+    "time series",
+    "free measurement"
+  ]
+}

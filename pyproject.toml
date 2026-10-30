@@ -14,9 +14,6 @@ dependencies = [
     "pymysql>=1.1",
 ]
 
-[project.scripts]
-lucentapi-verify-log = "lucentapi.audit:main"
-
 [dependency-groups]
 dev = [
     "httpx2>=2.16.0",

@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "parameter_id": 4,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 0.0,
+    "description": "Ohne anormale Veränderung"
+  },
+  {
+    "id": 2,
+    "parameter_id": 5,
+    "document_id": 12,
+    "lower_limit": 6.5,
+    "upper_limit": 9.5,
+    "description": "Anlage 3"
+  },
+  {
+    "id": 3,
+    "parameter_id": 6,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 2790.0,
+    "description": "Anlage 3"
+  },
+  {
+    "id": 4,
+    "parameter_id": 7,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 50.0,
+    "description": "Anlage 2 Teil I"
+  },
+  {
+    "id": 5,
+    "parameter_id": 8,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 250.0,
+    "description": "Anlage 3"
+  },
+  {
+    "id": 6,
+    "parameter_id": 9,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 250.0,
+    "description": "Anlage 3"
+  },
+  {
+    "id": 7,
+    "parameter_id": 10,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 10.0,
+    "description": "Anlage 2 Teil II"
+  },
+  {
+    "id": 8,
+    "parameter_id": 11,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 2.0,
+    "description": "Anlage 2 Teil II"
+  },
+  {
+    "id": 9,
+    "parameter_id": 12,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 20.0,
+    "description": "Anlage 2 Teil II"
+  },
+  {
+    "id": 10,
+    "parameter_id": 13,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 0.0,
+    "description": "Anlage 1"
+  },
+  {
+    "id": 11,
+    "parameter_id": 14,
+    "document_id": 12,
+    "lower_limit": null,
+    "upper_limit": 0.0,
+    "description": "Anlage 3"
+  },
+  {
+    "id": 12,
+    "parameter_id": 7,
+    "document_id": 13,
+    "lower_limit": null,
+    "upper_limit": 50.0,
+    "description": "Schwellenwert Anlage 2"
+  },
+  {
+    "id": 13,
+    "parameter_id": 8,
+    "document_id": 13,
+    "lower_limit": null,
+    "upper_limit": 250.0,
+    "description": "Schwellenwert Anlage 2"
+  },
+  {
+    "id": 14,
+    "parameter_id": 9,
+    "document_id": 13,
+    "lower_limit": null,
+    "upper_limit": 250.0,
+    "description": "Schwellenwert Anlage 2"
+  },
+  {
+    "id": 15,
+    "parameter_id": 10,
+    "document_id": 13,
+    "lower_limit": null,
+    "upper_limit": 10.0,
+    "description": "Schwellenwert Anlage 2"
+  },
+  {
+    "id": 16,
+    "parameter_id": 15,
+    "document_id": 14,
+    "lower_limit": null,
+    "upper_limit": 50.0,
+    "description": "Tagesgrenzwert"
+  },
+  {
+    "id": 17,
+    "parameter_id": 16,
+    "document_id": 14,
+    "lower_limit": null,
+    "upper_limit": 25.0,
+    "description": "Jahresgrenzwert"
+  },
+  {
+    "id": 18,
+    "parameter_id": 17,
+    "document_id": 14,
+    "lower_limit": null,
+    "upper_limit": 40.0,
+    "description": "Jahresgrenzwert"
+  }
+]
