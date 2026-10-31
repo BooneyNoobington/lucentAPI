@@ -556,6 +556,122 @@
         ]
       }
     },
+    "/v1/sites/{site_id}": {
+      "patch": {
+        "tags": [
+          "locations"
+        ],
+        "summary": "Update Site",
+        "description": "Renames a site or redraws its border. Needs the site's ETag in If-Match.",
+        "operationId": "update_site_v1_sites__site_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "site_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Site Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SitePatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Site"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spots/{spot_id}": {
+      "patch": {
+        "tags": [
+          "locations"
+        ],
+        "summary": "Update Spot",
+        "description": "Renames or moves a spot, or puts it in another site. Needs the spot's ETag in If-Match.",
+        "operationId": "update_spot_v1_spots__spot_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "spot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Spot Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpotPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Spot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/configuration": {
       "get": {
         "tags": [
@@ -4274,6 +4390,11 @@
               }
             ],
             "title": "Crs Id"
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag",
+            "description": "Send it as If-Match when changing the site."
           }
         },
         "type": "object",
@@ -4283,7 +4404,8 @@
           "description",
           "address",
           "border",
-          "crs_id"
+          "crs_id",
+          "etag"
         ],
         "title": "Site"
       },
@@ -4351,6 +4473,69 @@
           "border"
         ],
         "title": "SiteIn"
+      },
+      "SitePatch": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "border": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/GeoPoint"
+                },
+                "type": "array",
+                "maxItems": 500,
+                "minItems": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Border",
+            "description": "All corners in order, replacing the old border."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "SitePatch",
+        "description": "Fields left out stay as they are. An empty description removes it."
       },
       "Spot": {
         "properties": {
@@ -4429,6 +4614,11 @@
               }
             ],
             "title": "Site Id"
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag",
+            "description": "Send it as If-Match when changing the spot."
           }
         },
         "type": "object",
@@ -4440,7 +4630,8 @@
           "y",
           "z",
           "crs_id",
-          "site_id"
+          "site_id",
+          "etag"
         ],
         "title": "Spot"
       },
@@ -4525,6 +4716,89 @@
           "y"
         ],
         "title": "SpotIn"
+      },
+      "SpotPatch": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "x": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 90.0,
+                "minimum": -90.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "X"
+          },
+          "y": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 180.0,
+                "minimum": -180.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Y"
+          },
+          "site_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "SpotPatch",
+        "description": "Fields left out stay as they are. An empty description or a `site_id` of null removes it."
       },
       "Task": {
         "properties": {

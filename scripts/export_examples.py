@@ -82,6 +82,9 @@ def responses() -> dict[str, object]:
         result["spot-created"] = client.post("/v1/spots", headers=as_user("worf"), json={
             "name": "Pegel Hafen", "description": "Am Steg", "x": 49.014, "y": 8.329,
             "site_id": result["site-created"]["id"]}).json()
+        result["spot-changed"] = client.patch(
+            f"/v1/spots/{result['spot-created']['id']}", json={"y": 8.3301, "note": "Neu eingemessen"},
+            headers=as_user("worf", **{"If-Match": result["spot-created"]["etag"]})).json()
         return result
 
 

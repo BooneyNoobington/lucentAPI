@@ -92,7 +92,7 @@ change applies from the person's next request.
 | Role | May |
 |---|---|
 | (any person) | read everything, including everyone's roles and history; create tasks; send and read their own messages |
-| `sampler` | register collections; add spots and sites |
+| `sampler` | register collections; add and change spots and sites |
 | `analyst` | record raw values |
 | `reviewer` | accept and withdraw raw values, never ones they measured (four-eyes principle) |
 | `admin` | everything, including managing people and roles and switching devices on and off |
@@ -146,6 +146,7 @@ and at `/docs`.
 | `GET /organizations` | |
 | `GET /sites`, `/spots`, `/crs` | sites with address and border |
 | `POST /spots`, `POST /sites` | add a spot or a site by its border (sampler); names are unique, and a border must not cross itself |
+| `PATCH /spots/{id}`, `PATCH /sites/{id}` | rename, move, redraw (sampler, `If-Match`); `"site_id": null` takes a spot out of its site |
 | `GET /matrices`, `/collection-classes`, `/dimensions`, `/units`, `/parameters` | |
 | `GET /actions` | methods with their effects, documents, devices, people and dependencies |
 | `GET /documents`, `/thresholds`, `/coefficients` | documents (`link`) and the limits they set |
@@ -218,7 +219,7 @@ rows.
 
 ## Concurrent changes
 
-Records that can be changed (devices, tasks, raw values) carry an `etag`, a hash of the record's
+Records that can be changed (devices, tasks, raw values, people, spots, sites) carry an `etag`, a hash of the record's
 columns. Send it back as `If-Match`. If the record changed in the meantime, through the API
 or not, the answer is 412 with the current ETag. `PATCH` requires `If-Match` (428 without);
 accepting and withdrawing raw values check it when it is sent.

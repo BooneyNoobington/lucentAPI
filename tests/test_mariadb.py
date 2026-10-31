@@ -190,6 +190,14 @@ def test_sites_are_spatial_polygons(maria, mariadb, as_user):
                                          "site_id": created.json()["id"]}, headers=as_user("worf"))
     assert spot.status_code == 201 and spot.json()["site_id"] == created.json()["id"]
 
+    smaller = border[:3]
+    changed = maria.patch(f"/v1/sites/{created.json()['id']}", json={"border": smaller},
+                          headers=as_user("worf", **{"If-Match": created.json()["etag"]}))
+    assert changed.status_code == 200, changed.text
+    with mariadb.connect() as conn:
+        area = conn.execute(text("SELECT ST_Area(borders) FROM site WHERE name = 'Rheinhafen'")).scalar_one()
+    assert round(area, 6) == 0.000014
+
 
 def test_the_api_account_cannot_delete(mariadb):
     with mariadb.connect() as conn, pytest.raises(OperationalError, match="DELETE command denied"):

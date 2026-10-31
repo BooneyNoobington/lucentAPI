@@ -114,6 +114,7 @@ class Site(BaseModel):
     address: Address | None
     border: list[GeoPoint]
     crs_id: int | None
+    etag: str = Field(description="Send it as If-Match when changing the site.")
 
 
 class Spot(BaseModel):
@@ -125,6 +126,7 @@ class Spot(BaseModel):
     z: float | None
     crs_id: int | None
     site_id: int | None
+    etag: str = Field(description="Send it as If-Match when changing the spot.")
 
 
 class SpotIn(Note):
@@ -136,12 +138,31 @@ class SpotIn(Note):
     crs_id: int | None = Field(None, description="Defaults to WGS 84 (EPSG:4326) if lucentBASE has it.")
 
 
+class SpotPatch(Note):
+    """Fields left out stay as they are. An empty description or a `site_id` of null removes it."""
+
+    name: str | None = Field(None, min_length=1, max_length=50)
+    description: str | None = Field(None, max_length=50)
+    x: float | None = Field(None, ge=-90, le=90)
+    y: float | None = Field(None, ge=-180, le=180)
+    site_id: int | None = None
+
+
 class SiteIn(Note):
     name: str = Field(min_length=1, max_length=20, description="Unique among sites.")
     description: str | None = Field(None, max_length=50)
     border: list[GeoPoint] = Field(min_length=3, max_length=500,
                                    description="The corners in order, without repeating the first.")
     crs_id: int | None = Field(None, description="Defaults to WGS 84 (EPSG:4326) if lucentBASE has it.")
+
+
+class SitePatch(Note):
+    """Fields left out stay as they are. An empty description removes it."""
+
+    name: str | None = Field(None, min_length=1, max_length=20)
+    description: str | None = Field(None, max_length=50)
+    border: list[GeoPoint] | None = Field(None, min_length=3, max_length=500,
+                                          description="All corners in order, replacing the old border.")
 
 
 # Catalog

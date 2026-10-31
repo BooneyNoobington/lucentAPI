@@ -29,7 +29,8 @@
         "longitude": 8.4108
       }
     ],
-    "crs_id": 1
+    "crs_id": 1,
+    "etag": "\"d880edb858984a1a4a6ad5ac\""
   },
   {
     "id": 3,
@@ -61,7 +62,8 @@
         "longitude": 8.302
       }
     ],
-    "crs_id": 1
+    "crs_id": 1,
+    "etag": "\"619d3f1142b66c6857943b32\""
   },
   {
     "id": 2,
@@ -93,6 +95,7 @@
         "longitude": 8.4515
       }
     ],
-    "crs_id": 1
+    "crs_id": 1,
+    "etag": "\"106aa3dd75d5ce5a6e5ec3c4\""
   }
 ]
