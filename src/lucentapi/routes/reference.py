@@ -1,4 +1,4 @@
-"""Reference data: organizations, locations, the scientific catalog, devices and documents."""
+"""Reference data: organizations, the scientific catalog, devices and documents."""
 
 from collections import defaultdict
 from typing import Annotated
@@ -10,18 +10,13 @@ from .. import models as m
 from ..auth import CurrentCaller
 from ..db import db, from_db_time, visible
 from ..etag import etag
-from ..geometry import as_text, parse_polygon
 from ..schema import (
     COLLECTION_CLASSES,
     action,
-    city,
     coefficient,
-    crs,
     device,
     dimension,
-    district,
     effect,
-    house,
     j_action_action,
     j_action_device,
     j_action_link,
@@ -30,9 +25,6 @@ from ..schema import (
     matrix,
     organization,
     parameter,
-    site,
-    spot,
-    street,
     threshold,
     unit,
     unit_notation,
@@ -63,49 +55,6 @@ def organizations(_: CurrentCaller, engine: Database) -> list[m.Organization]:
         rows = conn.execute(select(organization).where(visible(organization)).order_by(organization.c.name)).mappings()
         return [m.Organization(id=r["id_organization"], name=r["name"], shorthand=r["shorthand"],
                                relation=r["relation"]) for r in rows]
-
-
-@router.get("/crs", tags=["locations"])
-def reference_systems(_: CurrentCaller, engine: Database) -> list[m.ReferenceSystem]:
-    with engine.connect() as conn:
-        rows = conn.execute(select(crs).where(visible(crs))).mappings()
-        return [m.ReferenceSystem(id=r["id_crs"], epsg=r["epsg"], name=r["name"], description=r["description"])
-                for r in rows]
-
-
-@router.get("/sites", tags=["locations"])
-def sites(_: CurrentCaller, engine: Database) -> list[m.Site]:
-    """Sites with address and border. WKT stores (longitude latitude); the border is converted."""
-    query = (
-        select(site.c.id_site, site.c.name, site.c.description, site.c.id_crs, as_text(site.c.borders).label("wkt"),
-               house.c.number, house.c.number_addition, street.c.name.label("street"),
-               district.c.name.label("district"), district.c.zip, city.c.name.label("city"))
-        .outerjoin(house, house.c.id_house == site.c.id_house)
-        .outerjoin(street, street.c.id_street == house.c.id_street)
-        .outerjoin(district, district.c.id_district == street.c.id_district)
-        .outerjoin(city, city.c.id_city == district.c.id_city)
-        .where(visible(site))
-        .order_by(site.c.name)
-    )
-    with engine.connect() as conn:
-        result = []
-        for r in conn.execute(query).mappings():
-            address = None
-            if r["street"] or r["city"]:
-                address = m.Address(street=r["street"], house_number=r["number"], addition=r["number_addition"],
-                                    zip=r["zip"], district=r["district"], city=r["city"])
-            border = [m.GeoPoint(latitude=lat, longitude=lon) for lon, lat in parse_polygon(r["wkt"])]
-            result.append(m.Site(id=r["id_site"], name=r["name"], description=r["description"], address=address,
-                                 border=border, crs_id=r["id_crs"]))
-        return result
-
-
-@router.get("/spots", tags=["locations"])
-def spots(_: CurrentCaller, engine: Database) -> list[m.Spot]:
-    with engine.connect() as conn:
-        rows = conn.execute(select(spot).where(visible(spot)).order_by(spot.c.name)).mappings()
-        return [m.Spot(id=r["id_spot"], name=r["name"], description=r["description"], x=r["x"], y=r["y"], z=r["z"],
-                       crs_id=r["id_crs"], site_id=r["id_site"]) for r in rows]
 
 
 @router.get("/matrices", tags=["catalog"])

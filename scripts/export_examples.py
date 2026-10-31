@@ -74,6 +74,14 @@ def responses() -> dict[str, object]:
             f"/v1/people/{demo.RIPLEY}/roles", json={"roles": ["analyst", "reviewer"], "note": "Übernimmt die QS"},
             headers=as_user("grindel", **{"If-Match": ripley["etag"]})).json()
         result["person-history"] = get(f"/v1/people/{demo.RIPLEY}/history")
+
+        harbour = [{"latitude": 49.016, "longitude": 8.325}, {"latitude": 49.016, "longitude": 8.332},
+                   {"latitude": 49.012, "longitude": 8.332}, {"latitude": 49.012, "longitude": 8.325}]
+        result["site-created"] = client.post("/v1/sites", headers=as_user("worf"), json={
+            "name": "Rheinhafen", "description": "Hafenbecken 2", "border": harbour}).json()
+        result["spot-created"] = client.post("/v1/spots", headers=as_user("worf"), json={
+            "name": "Pegel Hafen", "description": "Am Steg", "x": 49.014, "y": 8.329,
+            "site_id": result["site-created"]["id"]}).json()
         return result
 
 

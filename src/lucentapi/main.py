@@ -14,7 +14,7 @@ from .auth import KeySet
 from .checks import check_schema
 from .config import Settings
 from .db import make_engine
-from .routes import collections, management, people, reference
+from .routes import collections, locations, management, people, reference
 
 # The logo is a relative link, so it works under any root path (/docs and /redoc sit beside /static).
 DESCRIPTION = """
@@ -89,6 +89,7 @@ def create_app(settings: Settings | None = None, engine: Engine | None = None) -
                               redoc_favicon_url=f"{root}/static/lucentLIMS-icon.svg")
 
     app.include_router(people.router)
+    app.include_router(locations.router)
     app.include_router(reference.router)
     app.include_router(collections.router)
     app.include_router(management.router)

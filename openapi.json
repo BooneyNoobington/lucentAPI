@@ -375,6 +375,187 @@
         }
       }
     },
+    "/v1/crs": {
+      "get": {
+        "tags": [
+          "locations"
+        ],
+        "summary": "Reference Systems",
+        "operationId": "reference_systems_v1_crs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ReferenceSystem"
+                  },
+                  "type": "array",
+                  "title": "Response Reference Systems V1 Crs Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/sites": {
+      "get": {
+        "tags": [
+          "locations"
+        ],
+        "summary": "List Sites",
+        "description": "Sites with address and border. WKT stores (longitude latitude); the border is converted.",
+        "operationId": "list_sites_v1_sites_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Site"
+                  },
+                  "type": "array",
+                  "title": "Response List Sites V1 Sites Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "locations"
+        ],
+        "summary": "Create Site",
+        "description": "Adds an area by its border. The border must not cross itself.",
+        "operationId": "create_site_v1_sites_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiteIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Site"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/spots": {
+      "get": {
+        "tags": [
+          "locations"
+        ],
+        "summary": "List Spots",
+        "operationId": "list_spots_v1_spots_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Spot"
+                  },
+                  "type": "array",
+                  "title": "Response List Spots V1 Spots Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "locations"
+        ],
+        "summary": "Create Spot",
+        "description": "Adds a point where samples are taken.",
+        "operationId": "create_spot_v1_spots_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpotIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Spot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/v1/configuration": {
       "get": {
         "tags": [
@@ -421,100 +602,6 @@
                   },
                   "type": "array",
                   "title": "Response Organizations V1 Organizations Get"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/v1/crs": {
-      "get": {
-        "tags": [
-          "reference",
-          "locations"
-        ],
-        "summary": "Reference Systems",
-        "operationId": "reference_systems_v1_crs_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ReferenceSystem"
-                  },
-                  "type": "array",
-                  "title": "Response Reference Systems V1 Crs Get"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/v1/sites": {
-      "get": {
-        "tags": [
-          "reference",
-          "locations"
-        ],
-        "summary": "Sites",
-        "description": "Sites with address and border. WKT stores (longitude latitude); the border is converted.",
-        "operationId": "sites_v1_sites_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Site"
-                  },
-                  "type": "array",
-                  "title": "Response Sites V1 Sites Get"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/v1/spots": {
-      "get": {
-        "tags": [
-          "reference",
-          "locations"
-        ],
-        "summary": "Spots",
-        "operationId": "spots_v1_spots_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Spot"
-                  },
-                  "type": "array",
-                  "title": "Response Spots V1 Spots Get"
                 }
               }
             }
@@ -2981,10 +3068,14 @@
         "properties": {
           "latitude": {
             "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
             "title": "Latitude"
           },
           "longitude": {
             "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
             "title": "Longitude"
           }
         },
@@ -4196,6 +4287,71 @@
         ],
         "title": "Site"
       },
+      "SiteIn": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Name",
+            "description": "Unique among sites."
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "border": {
+            "items": {
+              "$ref": "#/components/schemas/GeoPoint"
+            },
+            "type": "array",
+            "maxItems": 500,
+            "minItems": 3,
+            "title": "Border",
+            "description": "The corners in order, without repeating the first."
+          },
+          "crs_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs Id",
+            "description": "Defaults to WGS 84 (EPSG:4326) if lucentBASE has it."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "border"
+        ],
+        "title": "SiteIn"
+      },
       "Spot": {
         "properties": {
           "id": {
@@ -4287,6 +4443,88 @@
           "site_id"
         ],
         "title": "Spot"
+      },
+      "SpotIn": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "title": "Name",
+            "description": "Unique among spots."
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "x": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "X",
+            "description": "Latitude, as in lucentBASE."
+          },
+          "y": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Y",
+            "description": "Longitude, as in lucentBASE."
+          },
+          "site_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Id",
+            "description": "The site the spot lies in, if any."
+          },
+          "crs_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs Id",
+            "description": "Defaults to WGS 84 (EPSG:4326) if lucentBASE has it."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "x",
+          "y"
+        ],
+        "title": "SpotIn"
       },
       "Task": {
         "properties": {

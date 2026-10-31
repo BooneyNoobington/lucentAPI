@@ -58,3 +58,35 @@ def parse_polygon(wkt: str | None) -> list[tuple[float, float]]:
 def polygon_wkt(points: list[tuple[float, float]]) -> str:
     ring = [*points, points[0]] if points and points[0] != points[-1] else points
     return "POLYGON((" + ", ".join(f"{x} {y}" for x, y in ring) + "))"
+
+
+def crosses_itself(points: list[tuple[float, float]]) -> bool:
+    """Whether the closed ring through `points` crosses or touches itself (not a simple polygon)."""
+    ring = [*points, points[0]]
+    edges = list(zip(ring, ring[1:]))
+    for i, (a, b) in enumerate(edges):
+        for j in range(i + 1, len(edges)):
+            if j == i + 1 or (i == 0 and j == len(edges) - 1):
+                continue  # neighbours share a corner
+            c, d = edges[j]
+            if _segments_meet(a, b, c, d):
+                return True
+    return False
+
+
+def _orientation(p, q, r) -> int:
+    value = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+    return 0 if value == 0 else (1 if value > 0 else -1)
+
+
+def _on_segment(p, q, r) -> bool:
+    """Whether q, collinear with p and r, lies between them."""
+    return min(p[0], r[0]) <= q[0] <= max(p[0], r[0]) and min(p[1], r[1]) <= q[1] <= max(p[1], r[1])
+
+
+def _segments_meet(a, b, c, d) -> bool:
+    o1, o2, o3, o4 = _orientation(a, b, c), _orientation(a, b, d), _orientation(c, d, a), _orientation(c, d, b)
+    if o1 != o2 and o3 != o4:
+        return True
+    return ((o1 == 0 and _on_segment(a, c, b)) or (o2 == 0 and _on_segment(a, d, b))
+            or (o3 == 0 and _on_segment(c, a, d)) or (o4 == 0 and _on_segment(c, b, d)))

@@ -175,6 +175,22 @@ def test_people_and_roles_logged_by_lucentbase(maria, mariadb, as_user):
     assert maria.get("/v1/me", headers=as_user("ash")).json()["error"]["code"] == "inactive_person"
 
 
+def test_sites_are_spatial_polygons(maria, mariadb, as_user):
+    border = [{"latitude": 49.016, "longitude": 8.325}, {"latitude": 49.016, "longitude": 8.332},
+              {"latitude": 49.012, "longitude": 8.332}, {"latitude": 49.012, "longitude": 8.325}]
+    created = maria.post("/v1/sites", json={"name": "Rheinhafen", "border": border}, headers=as_user("worf"))
+    assert created.status_code == 201, created.text
+    assert created.json()["border"] == border
+    with mariadb.connect() as conn:
+        kind, area, inside = conn.execute(text(
+            "SELECT ST_GeometryType(borders), ST_Area(borders), ST_Contains(borders, POINT(8.329, 49.014))"
+            " FROM site WHERE name = 'Rheinhafen'")).one()
+    assert kind == "POLYGON" and round(area, 6) == 0.000028 and inside == 1
+    spot = maria.post("/v1/spots", json={"name": "Pegel Hafen", "x": 49.014, "y": 8.329,
+                                         "site_id": created.json()["id"]}, headers=as_user("worf"))
+    assert spot.status_code == 201 and spot.json()["site_id"] == created.json()["id"]
+
+
 def test_the_api_account_cannot_delete(mariadb):
     with mariadb.connect() as conn, pytest.raises(OperationalError, match="DELETE command denied"):
         conn.execute(text("DELETE FROM task"))

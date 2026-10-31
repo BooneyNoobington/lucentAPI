@@ -87,8 +87,8 @@ class HistoryEntry(BaseModel):
 # Locations
 
 class GeoPoint(BaseModel):
-    latitude: float
-    longitude: float
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
 
 
 class Address(BaseModel):
@@ -125,6 +125,23 @@ class Spot(BaseModel):
     z: float | None
     crs_id: int | None
     site_id: int | None
+
+
+class SpotIn(Note):
+    name: str = Field(min_length=1, max_length=50, description="Unique among spots.")
+    description: str | None = Field(None, max_length=50)
+    x: float = Field(ge=-90, le=90, description="Latitude, as in lucentBASE.")
+    y: float = Field(ge=-180, le=180, description="Longitude, as in lucentBASE.")
+    site_id: int | None = Field(None, description="The site the spot lies in, if any.")
+    crs_id: int | None = Field(None, description="Defaults to WGS 84 (EPSG:4326) if lucentBASE has it.")
+
+
+class SiteIn(Note):
+    name: str = Field(min_length=1, max_length=20, description="Unique among sites.")
+    description: str | None = Field(None, max_length=50)
+    border: list[GeoPoint] = Field(min_length=3, max_length=500,
+                                   description="The corners in order, without repeating the first.")
+    crs_id: int | None = Field(None, description="Defaults to WGS 84 (EPSG:4326) if lucentBASE has it.")
 
 
 # Catalog

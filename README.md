@@ -92,7 +92,7 @@ change applies from the person's next request.
 | Role | May |
 |---|---|
 | (any person) | read everything, including everyone's roles and history; create tasks; send and read their own messages |
-| `sampler` | register collections |
+| `sampler` | register collections; add spots and sites |
 | `analyst` | record raw values |
 | `reviewer` | accept and withdraw raw values, never ones they measured (four-eyes principle) |
 | `admin` | everything, including managing people and roles and switching devices on and off |
@@ -145,6 +145,7 @@ and at `/docs`.
 | `GET /configuration` | the sampling-time parameter and lucentBASE's collection classes |
 | `GET /organizations` | |
 | `GET /sites`, `/spots`, `/crs` | sites with address and border |
+| `POST /spots`, `POST /sites` | add a spot or a site by its border (sampler); names are unique, and a border must not cross itself |
 | `GET /matrices`, `/collection-classes`, `/dimensions`, `/units`, `/parameters` | |
 | `GET /actions` | methods with their effects, documents, devices, people and dependencies |
 | `GET /documents`, `/thresholds`, `/coefficients` | documents (`link`) and the limits they set |
@@ -332,7 +333,7 @@ src/lucentapi/
   lims.py        status, sampling time, limits, four-eyes
   etag.py        If-Match
   numbering.py   collection identifiers
-  routes/        people, reference, collections, management
+  routes/        people, locations, reference, collections, management
   demo.py        demo data (development and tests)
   devtokens.py   local signing key for development tokens
 dev/             seed.py, mint_token.py

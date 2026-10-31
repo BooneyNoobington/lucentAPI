@@ -1,0 +1,25 @@
+{
+  "id": 4,
+  "name": "Rheinhafen",
+  "description": "Hafenbecken 2",
+  "address": null,
+  "border": [
+    {
+      "latitude": 49.016,
+      "longitude": 8.325
+    },
+    {
+      "latitude": 49.016,
+      "longitude": 8.332
+    },
+    {
+      "latitude": 49.012,
+      "longitude": 8.332
+    },
+    {
+      "latitude": 49.012,
+      "longitude": 8.325
+    }
+  ],
+  "crs_id": 1
+}
