@@ -22,8 +22,8 @@ The parts of the lucent family can be used separately:
 
 > **Status.** The API follows lucentBASE's DDL: it checks the tables, columns and log
 > triggers at startup, and its tests run against a database generated from lucentBASE's
-> `DATABASE_GENERATION.SQL` on MariaDB. It needs lucentBASE's branch
-> `harmonize-with-lucentapi` (see [The database](#the-database)). It has not run against a
+> `DATABASE_GENERATION.SQL` on MariaDB. It needs lucentBASE's branch `people-and-roles`
+> (see [The database](#the-database)). It has not run against a
 > real identity provider or in production yet.
 
 ## Quick start (SQLite, no identity provider)
@@ -48,7 +48,7 @@ In a second terminal, get a development token (the first run creates a signing k
 `dev/.keys/` and `dev/jwks.json`) and call the API:
 
 ```bash
-TOKEN=$(uv run python dev/mint_token.py grindel admin)
+TOKEN=$(uv run python dev/mint_token.py grindel)
 ```
 
 ```bash
@@ -72,8 +72,6 @@ Environment variables, or a `.env` file in the working directory:
 | `LUCENT_OIDC_JWKS_URL` | Optional. Without it the keys are found through `<issuer>/.well-known/openid-configuration`. |
 | `LUCENT_OIDC_JWKS_FILE` | Keys from a file instead. Only for development (`dev/jwks.json`). |
 | `LUCENT_USERNAME_CLAIM` | Default `preferred_username`. Matched against `person.linux_user`. |
-| `LUCENT_ROLES_CLAIM` | Default `roles`. Dots walk into nested claims: Keycloak needs `realm_access.roles`. |
-| `LUCENT_ROLE_MAP` | JSON, e.g. `{"lims-reviewers": "reviewer"}`, if your role or group names differ. |
 | `LUCENT_NUMBERING_OFFSET` | Collection identifiers continue at `id_collection + offset`. Default 0. |
 | `LUCENT_SAMPLING_TIME_PARAMETER` | The parameter (by name) whose datetime raw value is a collection's sampling time, e.g. `Probenahmezeitpunkt`. Without it, a collection's time is when it was registered. |
 
@@ -82,45 +80,54 @@ Unknown `LUCENT_` variables stop the start, so a typo doesn't go unnoticed.
 ## Authentication and roles
 
 The API handles no passwords. It accepts a token when its signature matches one of the
-provider's keys and its issuer, audience and expiry are right. The token's username must
-belong to a visible person in lucentBASE (`person.linux_user`). Otherwise the answer is 403
-`unknown_person`. Every change is recorded under that person, so machine clients need a
-person row as well.
+provider's keys and its issuer, audience and expiry are right. The token only says who is
+calling: its username must belong to a visible, active person in lucentBASE
+(`person.linux_user`), otherwise the answer is 403 `unknown_person` or `inactive_person`.
+Every change is recorded under that person, so machine clients need a person row as well.
+
+What that person may do comes from lucentBASE, not from the token: `role` and
+`j_person_role`. Admins manage people and roles through the API (or lucentLIMS), and a
+change applies from the person's next request.
 
 | Role | May |
 |---|---|
-| (any person) | read everything; create tasks; send and read their own messages |
+| (any person) | read everything, including everyone's roles and history; create tasks; send and read their own messages |
 | `sampler` | register collections |
 | `analyst` | record raw values |
 | `reviewer` | accept and withdraw raw values, never ones they measured (four-eyes principle) |
-| `admin` | everything, including switching devices on and off |
+| `admin` | everything, including managing people and roles and switching devices on and off |
 
-Tasks can be changed by their assigner, their assignee and admins.
+Tasks can be changed by their assigner, their assignee and admins. Two rules keep a lucentBASE
+manageable: nobody deactivates themselves (409 `cannot_deactivate_yourself`), and the last
+active admin keeps the admin role and stays active (409 `last_admin`).
+
+lucentBASE's log tables record that a row changed, not what changed. So the API writes it
+into the note: `Granted reviewer: Takes over QA`, `Deactivated`, `Changed surname, Linux
+user`, followed by the reason the request gave. `GET /people/{id}/history` reads these back.
+The log is to the second; changes within the same second are listed roles first, then the
+organization, then the person.
 
 ### Keycloak
 
 1. Create a realm, e.g. `lucent`, and connect your user directory (LDAP) or add users. The
-   username has to equal `person.linux_user`.
-2. Create the realm roles `sampler`, `analyst`, `reviewer` and `admin` and assign them to
-   users or groups.
-3. Create a client `lucentapi` for the API. It needs no login flows; it only names the
+   username has to equal `person.linux_user`. Roles aren't needed there.
+2. Create a client `lucentapi` for the API. It needs no login flows; it only names the
    audience.
-4. Create a client `lucentlims` for the app:
+3. Create a client `lucentlims` for the app:
    - client authentication off (a public client);
    - standard flow on;
    - PKCE method `S256`;
    - redirect URI `lucentlims://oauth/callback`.
 
    Give it a client scope with an *Audience* mapper that adds `lucentapi` to access tokens.
-5. Configure the API with `LUCENT_OIDC_ISSUER=https://<host>/realms/lucent`,
-   `LUCENT_OIDC_AUDIENCE=lucentapi` and `LUCENT_ROLES_CLAIM=realm_access.roles`.
+4. Configure the API with `LUCENT_OIDC_ISSUER=https://<host>/realms/lucent` and
+   `LUCENT_OIDC_AUDIENCE=lucentapi`.
 
 For an instrument or import script, create a confidential client with service accounts
 enabled. It gets tokens through the client-credentials flow, and its username is
-`service-account-<client>`, which needs a person row.
+`service-account-<client>`, which needs a person row with the roles it should have.
 
-Other providers work the same way: an issuer, an audience, a username claim and a roles
-claim. With Entra ID the app roles arrive in `roles`.
+Other providers work the same way: an issuer, an audience and a username claim.
 
 ## Endpoints
 
@@ -130,8 +137,13 @@ and at `/docs`.
 | | |
 |---|---|
 | `GET /me` | the caller and their roles |
+| `GET /people`, `GET /people/{id}` | everyone with organization, position, roles and whether they're active |
+| `POST /people`, `PATCH /people/{id}` | add and change people (admin, `PATCH` with `If-Match`) |
+| `PUT /people/{id}/roles` | grant and revoke so the person has exactly these roles (admin, `If-Match`) |
+| `GET /people/{id}/history` | changes to the person, their roles and organization, from lucentBASE's log |
+| `GET /roles` | the roles and what they allow |
 | `GET /configuration` | the sampling-time parameter and lucentBASE's collection classes |
-| `GET /people`, `/organizations` | |
+| `GET /organizations` | |
 | `GET /sites`, `/spots`, `/crs` | sites with address and border |
 | `GET /matrices`, `/collection-classes`, `/dimensions`, `/units`, `/parameters` | |
 | `GET /actions` | methods with their effects, documents, devices, people and dependencies |
@@ -221,15 +233,13 @@ can't guarantee.
 ## The database
 
 lucentBASE has the final say: [schema.py](src/lucentapi/schema.py) mirrors its DDL, and the
-API refuses to start when a table, column or log trigger it needs is missing. A few things
-the API needs weren't in lucentBASE yet; they are on lucentBASE's branch
-`harmonize-with-lucentapi`:
+API refuses to start when a table, column or log trigger it needs is missing. What the API
+added to lucentBASE so far:
 
-- `threshold`: limits of a parameter in the context of a document;
-- `parameter.value_class`: which kind of raw value a parameter takes;
-- `task.done`;
-- `@change_note` in the log triggers;
-- fixes to `v_raw_value`, a district's uniqueness and the checksum's separator.
+- in `main`: `threshold` (limits of a parameter in the context of a document),
+  `parameter.value_class`, `task.done`, `@change_note` in the log triggers;
+- on the branch `people-and-roles`: `role`, `j_person_role` and `person.active`. The initial
+  data adds the four roles and makes the initial user admin.
 
 **[sql/lucentapi-account.sql](sql/lucentapi-account.sql)** creates the API's database
 account. It gets `SELECT, INSERT, UPDATE`: no `DELETE`, no schema changes.
@@ -275,7 +285,8 @@ uv run pytest
 
 The tests run on SQLite with the demo data, with tokens signed by a throwaway key, and cover:
 
-- authentication;
+- authentication, and roles from lucentBASE rather than from the token;
+- people and roles, including the last-admin and self-deactivation rules and the history;
 - the reference endpoints;
 - the collection workflow: planning, raw values, repetitions, sampling time, limits and the
   four-eyes principle;
@@ -312,7 +323,8 @@ src/lucentapi/
   main.py        create_app(), /health, /docs and /redoc
   static/        the lucentLIMS logo (SVG), as in lucentLIMS's Branding/
   config.py      settings (LUCENT_…)
-  auth.py        token check, person lookup, roles
+  auth.py        token check, person lookup
+  people.py      people, roles from lucentBASE, history notes
   schema.py      lucentBASE's tables, as its DDL defines them
   checks.py      the startup check against the database
   db.py          engine, session variables for the log triggers, UTC
@@ -320,7 +332,7 @@ src/lucentapi/
   lims.py        status, sampling time, limits, four-eyes
   etag.py        If-Match
   numbering.py   collection identifiers
-  routes/        reference, collections, management
+  routes/        people, reference, collections, management
   demo.py        demo data (development and tests)
   devtokens.py   local signing key for development tokens
 dev/             seed.py, mint_token.py

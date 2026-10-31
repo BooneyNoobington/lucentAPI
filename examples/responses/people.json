@@ -5,7 +5,12 @@
     "surname": "Doe",
     "linux_user": "jd",
     "organization_id": 2,
-    "position": "Analytik"
+    "position": "Analytik",
+    "active": true,
+    "roles": [
+      "analyst"
+    ],
+    "etag": "\"c969d17553ba0893f04d1072\""
   },
   {
     "id": 3,
@@ -13,7 +18,13 @@
     "surname": "Dorn",
     "linux_user": "worf",
     "organization_id": 2,
-    "position": "Probenahme"
+    "position": "Probenahme",
+    "active": true,
+    "roles": [
+      "sampler",
+      "analyst"
+    ],
+    "etag": "\"de602846caf52d4f3074d420\""
   },
   {
     "id": 5,
@@ -21,7 +32,13 @@
     "surname": "Picard",
     "linux_user": "p47at",
     "organization_id": 2,
-    "position": "Laborleitung"
+    "position": "Laborleitung",
+    "active": true,
+    "roles": [
+      "reviewer",
+      "admin"
+    ],
+    "etag": "\"4685529619f1379259fde27d\""
   },
   {
     "id": 6,
@@ -29,7 +46,12 @@
     "surname": "Ripley",
     "linux_user": "xx121",
     "organization_id": 2,
-    "position": "Qualitätssicherung"
+    "position": "Qualitätssicherung",
+    "active": true,
+    "roles": [
+      "analyst"
+    ],
+    "etag": "\"bbb8ce8ae6c60bd6a635bcff\""
   },
   {
     "id": 4,
@@ -37,7 +59,13 @@
     "surname": "Simpson",
     "linux_user": "s7e23",
     "organization_id": 2,
-    "position": "Luftmessnetz"
+    "position": "Luftmessnetz",
+    "active": true,
+    "roles": [
+      "sampler",
+      "analyst"
+    ],
+    "etag": "\"8467a3f8f23a1994b569b81d\""
   },
   {
     "id": 1,
@@ -45,6 +73,11 @@
     "surname": "User",
     "linux_user": "grindel",
     "organization_id": 1,
-    "position": "Administration"
+    "position": "Administration",
+    "active": true,
+    "roles": [
+      "admin"
+    ],
+    "etag": "\"ed8a502d187341114c4ea193\""
   }
 ]

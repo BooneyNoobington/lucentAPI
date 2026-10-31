@@ -1,0 +1,13 @@
+{
+  "id": 7,
+  "given_name": "Ash",
+  "surname": "Science Officer",
+  "linux_user": "ash",
+  "organization_id": 2,
+  "position": "Mikrobiologie",
+  "active": true,
+  "roles": [
+    "analyst"
+  ],
+  "etag": "\"4c62642c6b3d234db34d5f40\""
+}

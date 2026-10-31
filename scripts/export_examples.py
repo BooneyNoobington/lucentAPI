@@ -36,8 +36,8 @@ def responses() -> dict[str, object]:
             demo.load(conn, now=NOW)
         client = TestClient(create_app(settings, engine))
 
-        def as_user(username, *roles):
-            return {"Authorization": f"Bearer {signer.token(username, list(roles))}", "X-Request-ID": "example"}
+        def as_user(username, **extra):  # roles as the demo data grants them
+            return {"Authorization": f"Bearer {signer.token(username)}", "X-Request-ID": "example", **extra}
 
         def get(path, user="grindel"):
             response = client.get(path, headers=as_user(user))
@@ -47,24 +47,33 @@ def responses() -> dict[str, object]:
         result = {name: get(f"/v1/{name}") for name in (
             "people", "organizations", "crs", "sites", "spots", "matrices", "collection-classes", "dimensions",
             "units", "parameters", "devices", "documents", "actions", "coefficients", "thresholds", "tasks",
-            "messages", "configuration")}
+            "messages", "configuration", "roles")}
         result["me"] = get("/v1/me", "xx121")
         result["collections"] = get("/v1/collections?limit=3")
         result["values"] = get("/v1/values?limit=3")
         result["series"] = get("/v1/series?spot_id=10&parameter_id=7")
 
-        created = client.post("/v1/collections", headers=as_user("worf", "sampler"), json={
+        created = client.post("/v1/collections", headers=as_user("worf"), json={
             "matrix_id": 2, "collection_class": "spot sample", "spot_id": 4, "action_ids": [1, 6],
             "sampled_at": "2026-10-29T09:30:00Z", "note": "Example"})
         result["collection-created"] = created.json()
         lead = next(v for v in created.json()["values"] if v["effect_id"] == 10)
         for hour, reading in ((11, 12.4), (14, 11.9)):
-            recorded = client.post(f"/v1/values/{lead['id']}/raw-values", headers=as_user("p47at", "analyst"),
+            recorded = client.post(f"/v1/values/{lead['id']}/raw-values", headers=as_user("p47at"),
                                    json={"reading": {"decimal": reading}, "t": f"2026-10-29T{hour}:00:00Z"})
         result["raw-value-recorded"] = recorded.json()
         result["collection"] = get(f"/v1/collections/{created.json()['id']}")
         result["error-four-eyes"] = client.post(f"/v1/raw-values/{recorded.json()['id']}/accept",
-                                                headers=as_user("p47at", "reviewer")).json()
+                                                headers=as_user("p47at")).json()
+
+        result["person-created"] = client.post("/v1/people", headers=as_user("grindel"), json={
+            "given_name": "Ash", "surname": "Science Officer", "linux_user": "ash", "organization_id": demo.LAB,
+            "position": "Mikrobiologie", "roles": ["analyst"], "note": "Neu im Labor"}).json()
+        ripley = get(f"/v1/people/{demo.RIPLEY}")
+        result["person-roles-set"] = client.put(
+            f"/v1/people/{demo.RIPLEY}/roles", json={"roles": ["analyst", "reviewer"], "note": "Übernimmt die QS"},
+            headers=as_user("grindel", **{"If-Match": ripley["etag"]})).json()
+        result["person-history"] = get(f"/v1/people/{demo.RIPLEY}/history")
         return result
 
 

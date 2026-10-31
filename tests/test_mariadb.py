@@ -30,7 +30,7 @@ from lucentapi.db import make_engine
 from lucentapi.main import create_app
 from lucentapi.schema import Polygon, collection, log_table, metadata, raw_value
 
-from conftest import NOW
+from conftest import NOW, signed_in
 
 URL = os.environ.get("MARIADB_TEST_URL")
 BASE = os.environ.get("LUCENTBASE_DIR")
@@ -67,6 +67,11 @@ def mariadb():
         demo.load(conn, now=NOW)
     yield engine
     engine.dispose()
+
+
+@pytest.fixture
+def as_user(signer, mariadb):
+    return signed_in(signer, mariadb)
 
 
 @pytest.fixture
@@ -142,6 +147,32 @@ def test_tasks_and_messages(maria, as_user):
     assert done.status_code == 200 and done.json()["done"] is True
     inbox = maria.get("/v1/messages", headers=as_user("grindel")).json()
     assert len(inbox) == 3 and all(m["sent_at"] for m in inbox)
+
+
+def test_people_and_roles_logged_by_lucentbase(maria, mariadb, as_user):
+    # lucentBASE's initial data makes grindel admin; the token only says who's calling.
+    assert maria.get("/v1/me", headers=as_user("grindel")).json()["roles"] == ["admin"]
+    created = maria.post("/v1/people", headers=as_user("grindel"), json={
+        "given_name": "Ash", "surname": "Science Officer", "linux_user": "ash", "organization_id": demo.LAB,
+        "position": "Mikrobiologie", "roles": ["analyst"], "note": "Neu im Labor"})
+    assert created.status_code == 201, created.text
+    ash = created.json()
+    assert (ash["roles"], ash["position"], ash["active"]) == (["analyst"], "Mikrobiologie", True)
+
+    roles = maria.put(f"/v1/people/{ash['id']}/roles", json={"roles": ["reviewer"], "note": "Übernimmt die QS"},
+                      headers=as_user("grindel", **{"If-Match": ash["etag"]}))
+    assert roles.status_code == 200, roles.text
+    assert maria.get("/v1/me", headers=as_user("ash")).json()["roles"] == ["reviewer"]
+
+    history = maria.get(f"/v1/people/{ash['id']}/history", headers=as_user("grindel")).json()
+    assert [entry["note"] for entry in history][:2] == ["Granted reviewer: Übernimmt die QS",
+                                                         "Revoked analyst: Übernimmt die QS"]
+    assert history[-1]["note"] == "Created: Neu im Labor" and all(e["editor_id"] == demo.SYSTEM for e in history)
+
+    gone = maria.patch(f"/v1/people/{ash['id']}", json={"active": False},
+                       headers=as_user("grindel", **{"If-Match": roles.json()["etag"]}))
+    assert gone.status_code == 200 and gone.json()["active"] is False
+    assert maria.get("/v1/me", headers=as_user("ash")).json()["error"]["code"] == "inactive_person"
 
 
 def test_the_api_account_cannot_delete(mariadb):

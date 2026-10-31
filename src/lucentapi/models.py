@@ -32,14 +32,56 @@ class Person(BaseModel):
     id: int
     given_name: str
     surname: str
-    linux_user: str | None
+    linux_user: str | None = Field(description="The account the person signs in with (the token's username).")
     organization_id: int | None
-    position: str | None = Field(description="From j_person_organization.")
+    position: str | None = Field(description="In their organization, from j_person_organization.")
+    active: bool = Field(description="Whether the person can sign in. Inactive people stay in the history.")
+    roles: list[Role] = Field(description="What the person may do, from j_person_role.")
+    etag: str = Field(description="Send it as If-Match when changing the person or their roles.")
 
 
 class Me(BaseModel):
     person: Person
     roles: list[Role]
+
+
+class RoleInfo(BaseModel):
+    name: Role
+    description: str | None
+
+
+class PersonIn(Note):
+    given_name: str = Field(min_length=1, max_length=50)
+    surname: str = Field(min_length=1, max_length=50)
+    linux_user: str | None = Field(None, min_length=1, max_length=50, description="Must be unique.")
+    organization_id: int | None = None
+    position: str | None = Field(None, max_length=20, description="Needs an organization.")
+    roles: list[Role] = []
+
+
+class PersonPatch(Note):
+    """Fields left out stay as they are."""
+
+    given_name: str | None = Field(None, min_length=1, max_length=50)
+    surname: str | None = Field(None, min_length=1, max_length=50)
+    linux_user: str | None = Field(None, min_length=1, max_length=50)
+    organization_id: int | None = None
+    position: str | None = Field(None, max_length=20)
+    active: bool | None = None
+
+
+class RolesIn(Note):
+    roles: list[Role] = Field(description="All roles the person should have; the others are revoked.")
+
+
+class HistoryEntry(BaseModel):
+    t: dt.datetime | None
+    editor_id: int | None
+    modification: Literal["created", "changed"]
+    subject: Literal["person", "role", "organization"] = Field(
+        description="The person row, one of their roles (j_person_role) or their organization (j_person_organization).")
+    role: Role | None = None
+    note: str | None = Field(description="What changed and why, as the API wrote it.")
 
 
 # Locations

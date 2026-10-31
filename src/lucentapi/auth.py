@@ -3,9 +3,10 @@
 The API doesn't handle passwords. Clients log in at the identity provider (Keycloak, Authentik,
 Entra ID, …) and send the access token they get. The API checks its signature against the
 provider's published keys (JWKS), its issuer, audience and expiry, and then looks up the
-lucentBASE person whose `linux_user` equals the token's username claim. Every change in the
-database is logged under that person, so machine clients (instrument imports) need a person
-row too.
+lucentBASE person whose `linux_user` equals the token's username claim. That person has to be
+active, and their roles come from lucentBASE (j_person_role), not from the token. Every change
+in the database is logged under that person, so machine clients (instrument imports) need a
+person row too.
 """
 
 import json
@@ -20,9 +21,10 @@ from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy import select
 
-from .config import ROLES, Settings
+from .config import Settings
 from .db import visible
 from .errors import APIError
+from .people import roles_of
 from .schema import person
 
 ALGORITHMS = ["RS256", "RS384", "RS512", "ES256", "ES384", "PS256"]
@@ -112,14 +114,6 @@ def verify(token: str, settings: Settings, keys: KeySet) -> dict:
         raise APIError(401, "invalid_token", f"The token is not valid: {e}", headers=challenge("invalid_token"))
 
 
-def roles_from(claims: dict, settings: Settings) -> frozenset[str]:
-    names = claim(claims, settings.roles_claim) or []
-    if isinstance(names, str):
-        names = names.split()
-    roles = {settings.role_map.get(name, name) for name in names}
-    return frozenset(roles & set(ROLES))
-
-
 bearer = HTTPBearer(auto_error=False, description="An access token from the OpenID Connect provider.")
 
 
@@ -135,12 +129,15 @@ def current_caller(
     if not isinstance(username, str) or not username:
         raise APIError(401, "invalid_token", f"The token has no {settings.username_claim} claim.", headers=challenge("invalid_token"))
     with request.app.state.engine.connect() as conn:
-        person_id = conn.scalar(
-            select(person.c.id_person).where(person.c.linux_user == username, visible(person))
-        )
-    if person_id is None:
-        raise APIError(403, "unknown_person", f"No person in lucentBASE has the account {username!r}.")
-    caller = Caller(person_id=person_id, username=username, roles=roles_from(claims, settings))
+        found = conn.execute(
+            select(person.c.id_person, person.c.active).where(person.c.linux_user == username, visible(person))
+        ).first()
+        if found is None:
+            raise APIError(403, "unknown_person", f"No person in lucentBASE has the account {username!r}.")
+        if not found.active:
+            raise APIError(403, "inactive_person", f"{username!r} is deactivated in lucentBASE and can't sign in.")
+        roles = roles_of(conn, found.id_person)
+    caller = Caller(person_id=found.id_person, username=username, roles=roles)
     request.state.caller = caller
     return caller
 

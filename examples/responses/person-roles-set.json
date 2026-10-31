@@ -1,0 +1,14 @@
+{
+  "id": 6,
+  "given_name": "Ellen",
+  "surname": "Ripley",
+  "linux_user": "xx121",
+  "organization_id": 2,
+  "position": "Qualitätssicherung",
+  "active": true,
+  "roles": [
+    "analyst",
+    "reviewer"
+  ],
+  "etag": "\"313b61f380c5541761bf73f5\""
+}

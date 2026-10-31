@@ -7,6 +7,7 @@ from typing import Self
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# The roles (lucentBASE's role.name) the API checks. admin may do everything.
 ROLES = ("sampler", "analyst", "reviewer", "admin")
 
 
@@ -25,13 +26,10 @@ class Settings(BaseSettings):
     oidc_jwks_file: Path | None = None
     oidc_leeway_seconds: int = 30
 
-    # Which claim names the lucentBASE person (matched against person.linux_user) and which
-    # claim holds the roles. Dots walk into nested claims, e.g. Keycloak's realm_access.roles.
+    # Which claim names the lucentBASE person (matched against person.linux_user). Dots walk
+    # into nested claims. What the person may do comes from lucentBASE (j_person_role), not
+    # from the token.
     username_claim: str = "preferred_username"
-    roles_claim: str = "roles"
-    # Maps names in the roles claim to API roles, e.g. {"lims-reviewers": "reviewer"}. Names that
-    # are API roles themselves (sampler, analyst, reviewer, admin) always count.
-    role_map: dict[str, str] = {}
 
     # Collection identifiers are the numbering scheme's identifier for id_collection + offset.
     numbering_offset: int = 0
@@ -50,7 +48,4 @@ class Settings(BaseSettings):
             raise ValueError(f"unknown settings in the environment: {unknown}")
         if self.oidc_jwks_url and self.oidc_jwks_file:
             raise ValueError("set LUCENT_OIDC_JWKS_URL or LUCENT_OIDC_JWKS_FILE, not both")
-        unknown = sorted(set(self.role_map.values()) - set(ROLES))
-        if unknown:
-            raise ValueError(f"LUCENT_ROLE_MAP maps to unknown roles {unknown}; roles are {list(ROLES)}")
         return self

@@ -14,7 +14,7 @@ from .auth import KeySet
 from .checks import check_schema
 from .config import Settings
 from .db import make_engine
-from .routes import collections, management, reference
+from .routes import collections, management, people, reference
 
 # The logo is a relative link, so it works under any root path (/docs and /redoc sit beside /static).
 DESCRIPTION = """
@@ -23,12 +23,13 @@ DESCRIPTION = """
 An HTTPS API for lucentBASE, for lucentLIMS and any other client.
 
 **Authentication.** Send an access token from the OpenID Connect provider as
-`Authorization: Bearer <token>`. The token's username has to belong to a person in lucentBASE
-(`person.linux_user`); lucentBASE logs every change under that person.
+`Authorization: Bearer <token>`. The token's username has to belong to an active person in
+lucentBASE (`person.linux_user`); lucentBASE logs every change under that person.
 
-**Roles** come from the token: `sampler` registers collections, `analyst` records values,
-`reviewer` accepts them (never their own: four-eyes principle), `admin` may do everything.
-Reading needs no role.
+**Roles** come from lucentBASE (`j_person_role`), not from the token: `sampler` registers
+collections, `analyst` records raw values, `reviewer` accepts them (never their own: four-eyes
+principle), `admin` may do everything, including managing people and their roles. Reading
+needs no role.
 
 **Collections** have **values**, one per planned effect (an action's parameter), and values
 have **raw values**: the readings, each accepted on its own. A raw value's limits are the
@@ -87,6 +88,7 @@ def create_app(settings: Settings | None = None, engine: Engine | None = None) -
         return get_redoc_html(openapi_url=root + app.openapi_url, title=f"{app.title} · documentation",
                               redoc_favicon_url=f"{root}/static/lucentLIMS-icon.svg")
 
+    app.include_router(people.router)
     app.include_router(reference.router)
     app.include_router(collections.router)
     app.include_router(management.router)

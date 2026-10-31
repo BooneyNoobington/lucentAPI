@@ -34,11 +34,12 @@ class DevSigner:
         jwk.update(kid=kid, use="sig", alg="RS256")
         self.jwks_file.write_text(json.dumps({"keys": [jwk]}, indent=2) + "\n")
 
-    def token(self, username: str, roles: list[str] = (), *, lifetime: int = 3600, issuer: str = ISSUER,
-              audience: str = AUDIENCE, **claims) -> str:
+    def token(self, username: str, *, lifetime: int = 3600, issuer: str = ISSUER, audience: str = AUDIENCE,
+              **claims) -> str:
+        """A token for `username`. What they may do comes from lucentBASE, not from the token."""
         now = int(time.time())
         payload = {
             "iss": issuer, "aud": audience, "sub": str(uuid.uuid5(uuid.NAMESPACE_URL, username)),
-            "iat": now, "exp": now + lifetime, "preferred_username": username, "roles": list(roles), **claims,
+            "iat": now, "exp": now + lifetime, "preferred_username": username, **claims,
         }
         return jwt.encode(payload, self.key, algorithm="RS256", headers={"kid": self.kid})

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "lucentAPI",
-    "description": "\n<img src=\"static/lucentLIMS-logo.svg\" alt=\"lucentLIMS\" width=\"300\">\n\nAn HTTPS API for lucentBASE, for lucentLIMS and any other client.\n\n**Authentication.** Send an access token from the OpenID Connect provider as\n`Authorization: Bearer <token>`. The token's username has to belong to a person in lucentBASE\n(`person.linux_user`); lucentBASE logs every change under that person.\n\n**Roles** come from the token: `sampler` registers collections, `analyst` records values,\n`reviewer` accepts them (never their own: four-eyes principle), `admin` may do everything.\nReading needs no role.\n\n**Collections** have **values**, one per planned effect (an action's parameter), and values\nhave **raw values**: the readings, each accepted on its own. A raw value's limits are the\nthresholds of its parameter in the documents of its action.\n\n**Audit trail.** lucentBASE's triggers log every change in `l_<table>`, with the person and the\n`note` a request gives.\n\n**Concurrent changes.** Records that can be changed carry an `etag`. Send it in `If-Match`;\nif the record changed meanwhile, the answer is 412.\n\n**Errors** look like `{\"error\": {\"code\", \"message\", \"request_id\", \"details\"?}}`.\n\n**Times** are UTC.\n",
+    "description": "\n<img src=\"static/lucentLIMS-logo.svg\" alt=\"lucentLIMS\" width=\"300\">\n\nAn HTTPS API for lucentBASE, for lucentLIMS and any other client.\n\n**Authentication.** Send an access token from the OpenID Connect provider as\n`Authorization: Bearer <token>`. The token's username has to belong to an active person in\nlucentBASE (`person.linux_user`); lucentBASE logs every change under that person.\n\n**Roles** come from lucentBASE (`j_person_role`), not from the token: `sampler` registers\ncollections, `analyst` records raw values, `reviewer` accepts them (never their own: four-eyes\nprinciple), `admin` may do everything, including managing people and their roles. Reading\nneeds no role.\n\n**Collections** have **values**, one per planned effect (an action's parameter), and values\nhave **raw values**: the readings, each accepted on its own. A raw value's limits are the\nthresholds of its parameter in the documents of its action.\n\n**Audit trail.** lucentBASE's triggers log every change in `l_<table>`, with the person and the\n`note` a request gives.\n\n**Concurrent changes.** Records that can be changed carry an `etag`. Send it in `If-Match`;\nif the record changed meanwhile, the answer is 412.\n\n**Errors** look like `{\"error\": {\"code\", \"message\", \"request_id\", \"details\"?}}`.\n\n**Times** are UTC.\n",
     "version": "0.1.0"
   },
   "paths": {
@@ -31,11 +31,10 @@
     "/v1/me": {
       "get": {
         "tags": [
-          "reference",
           "people"
         ],
         "summary": "Me",
-        "description": "The person behind the token and the roles it grants.",
+        "description": "The person behind the token and their roles.",
         "operationId": "me_v1_me_get",
         "responses": {
           "200": {
@@ -56,6 +55,326 @@
         ]
       }
     },
+    "/v1/people": {
+      "get": {
+        "tags": [
+          "people"
+        ],
+        "summary": "List People",
+        "description": "Everyone, including people who can no longer sign in.",
+        "operationId": "list_people_v1_people_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Person"
+                  },
+                  "type": "array",
+                  "title": "Response List People V1 People Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "people"
+        ],
+        "summary": "Create Person",
+        "description": "Adds a person. They can sign in once their identity provider account has `linux_user` as\nusername.",
+        "operationId": "create_person_v1_people_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/people/{person_id}": {
+      "get": {
+        "tags": [
+          "people"
+        ],
+        "summary": "Get Person",
+        "operationId": "get_person_v1_people__person_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "person_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Person Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "people"
+        ],
+        "summary": "Update Person",
+        "description": "Changes names, sign-in, organization, position or whether the person is active. Needs the\nperson's ETag in If-Match.",
+        "operationId": "update_person_v1_people__person_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "person_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Person Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/roles": {
+      "get": {
+        "tags": [
+          "people"
+        ],
+        "summary": "List Roles",
+        "description": "The roles lucentBASE grants and the API checks. admin may do everything.",
+        "operationId": "list_roles_v1_roles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RoleInfo"
+                  },
+                  "type": "array",
+                  "title": "Response List Roles V1 Roles Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/people/{person_id}/roles": {
+      "put": {
+        "tags": [
+          "people"
+        ],
+        "summary": "Set Roles",
+        "description": "Grants and revokes so the person has exactly these roles. Needs the person's ETag in\nIf-Match.",
+        "operationId": "set_roles_v1_people__person_id__roles_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "person_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Person Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RolesIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/people/{person_id}/history": {
+      "get": {
+        "tags": [
+          "people"
+        ],
+        "summary": "Person History",
+        "description": "Changes to the person, their roles and their organization, newest first, from lucentBASE's\nlog. Rows from lucentBASE's initial data have no log entries.",
+        "operationId": "person_history_v1_people__person_id__history_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "person_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Person Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HistoryEntry"
+                  },
+                  "title": "Response Person History V1 People  Person Id  History Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/configuration": {
       "get": {
         "tags": [
@@ -71,37 +390,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Configuration"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
-      }
-    },
-    "/v1/people": {
-      "get": {
-        "tags": [
-          "reference",
-          "people"
-        ],
-        "summary": "People",
-        "operationId": "people_v1_people_get",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Person"
-                  },
-                  "type": "array",
-                  "title": "Response People V1 People Get"
                 }
               }
             }
@@ -2739,6 +3027,89 @@
         ],
         "title": "Health"
       },
+      "HistoryEntry": {
+        "properties": {
+          "t": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "T"
+          },
+          "editor_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Editor Id"
+          },
+          "modification": {
+            "type": "string",
+            "enum": [
+              "created",
+              "changed"
+            ],
+            "title": "Modification"
+          },
+          "subject": {
+            "type": "string",
+            "enum": [
+              "person",
+              "role",
+              "organization"
+            ],
+            "title": "Subject",
+            "description": "The person row, one of their roles (j_person_role) or their organization (j_person_organization)."
+          },
+          "role": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "sampler",
+                  "analyst",
+                  "reviewer",
+                  "admin"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "What changed and why, as the API wrote it."
+          }
+        },
+        "type": "object",
+        "required": [
+          "t",
+          "editor_id",
+          "modification",
+          "subject",
+          "note"
+        ],
+        "title": "HistoryEntry"
+      },
       "Limit": {
         "properties": {
           "threshold_id": {
@@ -3125,7 +3496,8 @@
                 "type": "null"
               }
             ],
-            "title": "Linux User"
+            "title": "Linux User",
+            "description": "The account the person signs in with (the token's username)."
           },
           "organization_id": {
             "anyOf": [
@@ -3148,7 +3520,31 @@
               }
             ],
             "title": "Position",
-            "description": "From j_person_organization."
+            "description": "In their organization, from j_person_organization."
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "description": "Whether the person can sign in. Inactive people stay in the history."
+          },
+          "roles": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "sampler",
+                "analyst",
+                "reviewer",
+                "admin"
+              ]
+            },
+            "type": "array",
+            "title": "Roles",
+            "description": "What the person may do, from j_person_role."
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag",
+            "description": "Send it as If-Match when changing the person or their roles."
           }
         },
         "type": "object",
@@ -3158,9 +3554,194 @@
           "surname",
           "linux_user",
           "organization_id",
-          "position"
+          "position",
+          "active",
+          "roles",
+          "etag"
         ],
         "title": "Person"
+      },
+      "PersonIn": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "given_name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "title": "Given Name"
+          },
+          "surname": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "title": "Surname"
+          },
+          "linux_user": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linux User",
+            "description": "Must be unique."
+          },
+          "organization_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Organization Id"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position",
+            "description": "Needs an organization."
+          },
+          "roles": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "sampler",
+                "analyst",
+                "reviewer",
+                "admin"
+              ]
+            },
+            "type": "array",
+            "title": "Roles",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "given_name",
+          "surname"
+        ],
+        "title": "PersonIn"
+      },
+      "PersonPatch": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "given_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Given Name"
+          },
+          "surname": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Surname"
+          },
+          "linux_user": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linux User"
+          },
+          "organization_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Organization Id"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PersonPatch",
+        "description": "Fields left out stay as they are."
       },
       "PlanIn": {
         "properties": {
@@ -3439,6 +4020,74 @@
           "description"
         ],
         "title": "ReferenceSystem"
+      },
+      "RoleInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "sampler",
+              "analyst",
+              "reviewer",
+              "admin"
+            ],
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "description"
+        ],
+        "title": "RoleInfo"
+      },
+      "RolesIn": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note",
+            "description": "Why, for lucentBASE's log (l_<table>.note)."
+          },
+          "roles": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "sampler",
+                "analyst",
+                "reviewer",
+                "admin"
+              ]
+            },
+            "type": "array",
+            "title": "Roles",
+            "description": "All roles the person should have; the others are revoked."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "roles"
+        ],
+        "title": "RolesIn"
       },
       "SeriesPoint": {
         "properties": {

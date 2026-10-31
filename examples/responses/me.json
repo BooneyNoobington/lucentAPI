@@ -5,7 +5,14 @@
     "surname": "Ripley",
     "linux_user": "xx121",
     "organization_id": 2,
-    "position": "Qualitätssicherung"
+    "position": "Qualitätssicherung",
+    "active": true,
+    "roles": [
+      "analyst"
+    ],
+    "etag": "\"bbb8ce8ae6c60bd6a635bcff\""
   },
-  "roles": []
+  "roles": [
+    "analyst"
+  ]
 }

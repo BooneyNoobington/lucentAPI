@@ -1,7 +1,7 @@
 """The lucentBASE tables, as SQLAlchemy Core metadata.
 
 This mirrors lucentBASE's DDL (github.com/BooneyNoobington/lucentBase, including the branch
-harmonize-with-lucentapi: threshold, parameter.value_class, task.done). lucentBASE has the
+people-and-roles: role, j_person_role, person.active). lucentBASE has the
 final say: `checks.check_schema()` compares a live database with these tables at startup, and
 the MariaDB tests compare them with lucentBASE's real DDL.
 
@@ -179,6 +179,18 @@ person = lucent_table(
     Column("given_name", String(50), nullable=False),
     Column("surname", String(50), nullable=False),
     Column("linux_user", String(50), unique=True),
+    Column("active", Boolean, nullable=False, server_default=text("1")),
+)
+role = lucent_table(
+    "role",
+    Column("name", String(20), nullable=False, unique=True),
+    Column("description", String(250)),
+)
+j_person_role = lucent_table(
+    "j_person_role",
+    ref("person", nullable=False),
+    ref("role", nullable=False),
+    UniqueConstraint("id_person", "id_role", name="id_person_id_role_unique"),
 )
 j_person_house = lucent_table("j_person_house", ref("person"), ref("house"), Column("address_class", String(20)))
 j_organization_house = lucent_table(

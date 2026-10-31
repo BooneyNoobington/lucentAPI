@@ -1,4 +1,4 @@
-"""Reference data: people, locations, the scientific catalog, devices and documents."""
+"""Reference data: organizations, locations, the scientific catalog, devices and documents."""
 
 from collections import defaultdict
 from typing import Annotated
@@ -26,12 +26,10 @@ from ..schema import (
     j_action_device,
     j_action_link,
     j_action_person,
-    j_person_organization,
     link,
     matrix,
     organization,
     parameter,
-    person,
     site,
     spot,
     street,
@@ -44,34 +42,11 @@ router = APIRouter(prefix="/v1", tags=["reference"])
 Database = Annotated[Engine, Depends(db)]
 
 
-def person_out(row) -> m.Person:
-    return m.Person(id=row["id_person"], given_name=row["given_name"], surname=row["surname"],
-                    linux_user=row["linux_user"], organization_id=row["id_organization"], position=row["position"])
-
-
-def people_query():
-    return (
-        select(person, j_person_organization.c.position)
-        .outerjoin(j_person_organization,
-                   (j_person_organization.c.id_person == person.c.id_person) & visible(j_person_organization))
-        .where(visible(person))
-        .order_by(person.c.surname, person.c.given_name)
-    )
-
-
 def sampling_parameter_id(request: Request, conn) -> int | None:
     name = request.app.state.settings.sampling_time_parameter
     if not name:
         return None
     return conn.scalar(select(parameter.c.id_parameter).where(parameter.c.name == name, visible(parameter)))
-
-
-@router.get("/me", tags=["people"])
-def me(caller: CurrentCaller, engine: Database) -> m.Me:
-    """The person behind the token and the roles it grants."""
-    with engine.connect() as conn:
-        row = conn.execute(people_query().where(person.c.id_person == caller.person_id)).mappings().first()
-    return m.Me(person=person_out(row), roles=sorted(caller.roles))
 
 
 @router.get("/configuration")
@@ -80,17 +55,6 @@ def configuration(_: CurrentCaller, request: Request, engine: Database) -> m.Con
     with engine.connect() as conn:
         return m.Configuration(sampling_time_parameter_id=sampling_parameter_id(request, conn),
                                collection_classes=list(COLLECTION_CLASSES))
-
-
-@router.get("/people", tags=["people"])
-def people(_: CurrentCaller, engine: Database) -> list[m.Person]:
-    with engine.connect() as conn:
-        seen, result = set(), []
-        for row in conn.execute(people_query()).mappings():
-            if row["id_person"] not in seen:
-                seen.add(row["id_person"])
-                result.append(person_out(row))
-        return result
 
 
 @router.get("/organizations", tags=["people"])

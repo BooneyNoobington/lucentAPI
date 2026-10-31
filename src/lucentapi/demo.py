@@ -1,12 +1,15 @@
 """Demo data for development and tests, in lucentBASE's model.
 
 `load(conn, now)` fills a lucentBASE that holds only its initial data (the "System User" with
-linux_user grindel and the organization Redhsoft.org, as INITIAL_DATA.SQL inserts them; on
-SQLite they're added here). Everything is written as that user, so the log triggers record it.
+linux_user grindel, the organization Redhsoft.org, the four roles and grindel as admin, as
+INITIAL_DATA.SQL inserts them; on SQLite they're added here). Everything is written as that user, so the log triggers record it.
 Collections and raw values are generated with a fixed seed relative to `now`.
 
 Regulations are documents too: an action that refers to the TrinkwV makes the TrinkwV's
 thresholds apply to its raw values.
+
+Ellen Ripley takes over quality assurance, and Picard asks for her to get the reviewer role:
+granting it is left to whoever tries the people management.
 """
 
 import hashlib
@@ -34,6 +37,7 @@ from .schema import (
     j_action_link,
     j_action_person,
     j_person_organization,
+    j_person_role,
     link,
     matrix,
     message,
@@ -41,6 +45,7 @@ from .schema import (
     parameter,
     person,
     raw_value,
+    role,
     site,
     spot,
     street,
@@ -55,6 +60,17 @@ SYSTEM, DOE, DORN, SIMPSON, PICARD, RIPLEY = 1, 2, 3, 4, 5, 6
 LAB = 2
 NUMBERING_OFFSET = 3000
 SAMPLING_TIME = "Probenahmezeitpunkt"
+
+# As in lucentBASE's INITIAL_DATA.SQL.
+INITIAL_ROLES = [
+    ("sampler", "Registers collections."),
+    ("analyst", "Records raw values."),
+    ("reviewer", "Accepts and withdraws raw values, except their own."),
+    ("admin", "May do everything, including managing people, roles and devices."),
+]
+# Who may do what in the demo. The System User is admin from the initial data.
+DEMO_ROLES = {DOE: ["analyst"], DORN: ["sampler", "analyst"], SIMPSON: ["sampler", "analyst"],
+              PICARD: ["reviewer", "admin"], RIPLEY: ["analyst"]}
 
 
 def rows(table, columns: str, *values) -> tuple:
@@ -253,6 +269,10 @@ def ensure_initial_data(conn: Connection) -> None:
         conn.execute(insert(organization).values(id_organization=1, name="Redhsoft.org", shorthand="redhsoft", vis=True))
         conn.execute(insert(person).values(id_person=SYSTEM, given_name="System", surname="User",
                                            linux_user="grindel", id_organization=1, vis=True))
+        for name, description in INITIAL_ROLES:
+            conn.execute(insert(role).values(name=name, description=description, vis=True))
+        admin = conn.scalar(select(role.c.id_role).where(role.c.name == "admin"))
+        conn.execute(insert(j_person_role).values(id_person=SYSTEM, id_role=admin, vis=True))
 
 
 def load(conn: Connection, now: datetime | None = None, weeks: int = 8) -> None:
@@ -266,6 +286,10 @@ def load(conn: Connection, now: datetime | None = None, weeks: int = 8) -> None:
             if table is site:
                 row["borders"] = from_text(polygon_wkt(row["borders"]))
             conn.execute(insert(table).values(row))
+    role_ids = dict(conn.execute(select(role.c.name, role.c.id_role)).all())
+    for person_id, names in DEMO_ROLES.items():
+        for name in names:
+            conn.execute(insert(j_person_role).values(id_person=person_id, id_role=role_ids[name], vis=True))
 
     effects = next(items for table, items in data if table is effect)
     rng = random.Random(1997)

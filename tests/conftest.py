@@ -3,11 +3,15 @@ from datetime import datetime
 import pytest
 from fastapi.testclient import TestClient
 
+from sqlalchemy import select
+
 from lucentapi import demo, devdb
-from lucentapi.config import Settings
-from lucentapi.db import make_engine
+from lucentapi.config import ROLES, Settings
+from lucentapi.db import make_engine, writing
 from lucentapi.devtokens import AUDIENCE, ISSUER, DevSigner
 from lucentapi.main import create_app
+from lucentapi.people import set_roles
+from lucentapi.schema import person
 
 NOW = datetime(2026, 10, 29, 12, 0)
 
@@ -36,7 +40,10 @@ def engine(settings):
     engine = make_engine(settings.database_url)
     devdb.create(engine)
     with engine.begin() as conn:
+        # The demo data is logged at NOW, what the tests change at the real time after it.
+        conn.exec_driver_sql(f"UPDATE lucentapi_session SET frozen_t = '{NOW:%Y-%m-%d %H:%M:%S}'")
         demo.load(conn, now=NOW)
+        conn.exec_driver_sql("UPDATE lucentapi_session SET frozen_t = NULL")
     return engine
 
 
@@ -50,11 +57,21 @@ def client(app) -> TestClient:
     return TestClient(app)
 
 
-@pytest.fixture
-def as_user(signer):
-    """Headers for a request as `username` with `roles`."""
+def signed_in(signer, engine):
+    """Headers for a request as `username`. With `roles`, the person gets exactly these roles in
+    lucentBASE first; without, they keep the ones they have (see demo.DEMO_ROLES)."""
 
     def headers(username: str, *roles: str, **extra) -> dict:
-        return {"Authorization": f"Bearer {signer.token(username, list(roles))}", **extra}
+        if roles:
+            with writing(engine, demo.SYSTEM, "Test") as conn:
+                person_id = conn.scalar(select(person.c.id_person).where(person.c.linux_user == username))
+                if person_id is not None:
+                    set_roles(conn, person_id, set(roles) & set(ROLES), demo.SYSTEM)
+        return {"Authorization": f"Bearer {signer.token(username)}", **extra}
 
     return headers
+
+
+@pytest.fixture
+def as_user(signer, engine):
+    return signed_in(signer, engine)
