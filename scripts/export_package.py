@@ -1,5 +1,6 @@
-"""Writes lucent-package.schema.json, the format's JSON Schema, and the demo data's master data as
-a package (src/lucentapi/data/demo.lucent.yaml).
+"""Writes lucent-package.schema.json, the format's JSON Schema, and puts the demo data's package
+(src/lucentapi/data/demo.lucent.yaml, written by hand) in its canonical form: imported into a fresh
+lucentBASE and exported again, so the file reads the way lucentAPI writes packages.
 
     uv run python scripts/export_package.py
 """
@@ -28,7 +29,7 @@ def demo_package() -> str:
     with engine.begin() as conn:
         demo.load(conn, now=NOW)
     with engine.connect() as conn:
-        exported = package.export(conn, description="The demo data of lucentAPI, an environmental lab in Karlsruhe")
+        exported = package.export(conn, description=demo.master_data().description)
     # The editor finds the schema relative to this file.
     return package.as_yaml(exported, schema_url="../../../lucent-package.schema.json")
 

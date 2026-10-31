@@ -7,7 +7,7 @@ WATER_ROUTINE = [1, 2, 3, 4, 7]  # sampling, sensory, pH, conductivity, microbio
 
 
 def register(client, as_user, **body):
-    body = {"matrix_id": 3, "collection_class": "spot sample", "spot_id": 6, "action_ids": WATER_ROUTINE, **body}
+    body = {"matrix_id": 3, "collection_class": "spot sample", "spot_id": 5, "action_ids": WATER_ROUTINE, **body}
     response = client.post("/v1/collections", json=body, headers=as_user("worf", "sampler"))
     assert response.status_code == 201, response.text
     return response.json()
@@ -38,7 +38,7 @@ def test_status_filter(client, as_user):
 
 def test_site_includes_its_spots(client, as_user):
     items = client.get("/v1/collections?site_id=3&limit=1000", headers=as_user("grindel")).json()["items"]
-    assert {c["spot_id"] for c in items} == {10, None}
+    assert {c["spot_id"] for c in items} == {9, None}
 
 
 def test_sampling_time_comes_from_its_raw_value(client, as_user):
@@ -76,7 +76,7 @@ def test_register_is_logged_by_the_triggers(client, engine, as_user):
 
 def test_sampling_time_needs_its_parameter_planned(client, as_user):
     response = client.post("/v1/collections", headers=as_user("worf", "sampler"), json={
-        "matrix_id": 3, "collection_class": "spot sample", "spot_id": 6, "action_ids": [3],
+        "matrix_id": 3, "collection_class": "spot sample", "spot_id": 5, "action_ids": [3],
         "sampled_at": "2026-10-29T08:15:00Z"})
     assert response.status_code == 422
     assert response.json()["error"]["code"] == "sampling_time_not_planned"
@@ -84,7 +84,7 @@ def test_sampling_time_needs_its_parameter_planned(client, as_user):
 
 def test_register_checks_its_input(client, as_user):
     headers = as_user("worf", "sampler")
-    base = {"matrix_id": 3, "collection_class": "spot sample", "spot_id": 6}
+    base = {"matrix_id": 3, "collection_class": "spot sample", "spot_id": 5}
     for body, code in [
         ({"spot_id": None}, "invalid_request"),
         ({"site_id": 1}, "invalid_request"),
@@ -139,7 +139,7 @@ def test_reading_needs_exactly_one_kind(client, as_user):
 
 
 def test_repetitions_and_limits(client, as_user):
-    created = register(client, as_user, matrix_id=2, spot_id=4, action_ids=[6])
+    created = register(client, as_user, matrix_id=2, spot_id=3, action_ids=[6])
     lead = value_for(created, 10)
     assert {limit["document_id"] for limit in lead["limits"]} == {12, 13}  # TrinkwV and GrwV, from the action
     first = record(client, as_user, lead["id"], {"decimal": 12.4}, user="p47at").json()
@@ -206,7 +206,7 @@ def test_accept_honours_if_match(client, as_user):
 
 
 def test_series(client, as_user):
-    points = client.get("/v1/series?spot_id=10&parameter_id=7", headers=as_user("grindel")).json()
+    points = client.get("/v1/series?spot_id=9&parameter_id=7", headers=as_user("grindel")).json()
     assert len(points) > 4
     assert [p["sampled_at"] for p in points] == sorted(p["sampled_at"] for p in points)
     assert all(p["exceeds"] == (p["value"] > 50) for p in points)

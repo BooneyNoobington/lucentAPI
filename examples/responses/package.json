@@ -1,0 +1,1309 @@
+{
+  "format": "lucent/1",
+  "description": null,
+  "organizations": [
+    {
+      "name": "Redhsoft.org",
+      "shorthand": "redhsoft",
+      "relation": null
+    },
+    {
+      "name": "Umweltlabor Lucent",
+      "shorthand": "Lucent",
+      "relation": "Labor"
+    },
+    {
+      "name": "Ionic Instruments GmbH",
+      "shorthand": "Ionic",
+      "relation": "Hersteller"
+    },
+    {
+      "name": "Spectra Analytik AG",
+      "shorthand": "Spectra",
+      "relation": "Hersteller"
+    },
+    {
+      "name": "Klarsicht Messtechnik KG",
+      "shorthand": "Klarsicht",
+      "relation": "Hersteller"
+    },
+    {
+      "name": "Aerosol Systems GmbH",
+      "shorthand": "Aerosol",
+      "relation": "Hersteller"
+    }
+  ],
+  "people": [
+    {
+      "given_name": "Booney",
+      "surname": "Noobington",
+      "linux_user": "grindel",
+      "organization": "Redhsoft.org",
+      "position": "Administration",
+      "active": true,
+      "roles": [
+        "admin"
+      ]
+    },
+    {
+      "given_name": "John",
+      "surname": "Doe",
+      "linux_user": "jd",
+      "organization": "Umweltlabor Lucent",
+      "position": "Analytik",
+      "active": true,
+      "roles": [
+        "analyst"
+      ]
+    },
+    {
+      "given_name": "Michael",
+      "surname": "Dorn",
+      "linux_user": "worf",
+      "organization": "Umweltlabor Lucent",
+      "position": "Probenahme",
+      "active": true,
+      "roles": [
+        "sampler",
+        "analyst"
+      ]
+    },
+    {
+      "given_name": "Homer",
+      "surname": "Simpson",
+      "linux_user": "s7e23",
+      "organization": "Umweltlabor Lucent",
+      "position": "Luftmessnetz",
+      "active": true,
+      "roles": [
+        "sampler",
+        "analyst"
+      ]
+    },
+    {
+      "given_name": "Jean Luc",
+      "surname": "Picard",
+      "linux_user": "p47at",
+      "organization": "Umweltlabor Lucent",
+      "position": "Laborleitung",
+      "active": true,
+      "roles": [
+        "reviewer",
+        "admin"
+      ]
+    },
+    {
+      "given_name": "Ellen",
+      "surname": "Ripley",
+      "linux_user": "xx121",
+      "organization": "Umweltlabor Lucent",
+      "position": "Qualitätssicherung",
+      "active": true,
+      "roles": [
+        "analyst"
+      ]
+    }
+  ],
+  "reference_systems": [
+    {
+      "name": "WGS 84",
+      "epsg": 4326,
+      "description": "World Geodetic System 1984"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "Temperatur",
+      "description": "Thermodynamische Temperatur"
+    },
+    {
+      "name": "Elektrische Leitfähigkeit",
+      "description": "Leitwert pro Länge"
+    },
+    {
+      "name": "Massenkonzentration",
+      "description": "Masse pro Volumen"
+    },
+    {
+      "name": "Anzahlkonzentration",
+      "description": "Anzahl pro Volumen, z. B. KBE"
+    }
+  ],
+  "units": [
+    {
+      "name": "Grad Celsius",
+      "description": null,
+      "dimension": "Temperatur",
+      "notations": [
+        "°C"
+      ]
+    },
+    {
+      "name": "Mikrosiemens pro Zentimeter",
+      "description": null,
+      "dimension": "Elektrische Leitfähigkeit",
+      "notations": [
+        "µS/cm",
+        "µS cm⁻¹"
+      ]
+    },
+    {
+      "name": "Milligramm pro Liter",
+      "description": null,
+      "dimension": "Massenkonzentration",
+      "notations": [
+        "mg/L",
+        "mg l⁻¹",
+        "ppm"
+      ]
+    },
+    {
+      "name": "Mikrogramm pro Liter",
+      "description": null,
+      "dimension": "Massenkonzentration",
+      "notations": [
+        "µg/L",
+        "µg l⁻¹",
+        "ppb"
+      ]
+    },
+    {
+      "name": "Mikrogramm pro Kubikmeter",
+      "description": null,
+      "dimension": "Massenkonzentration",
+      "notations": [
+        "µg/m³",
+        "µg m⁻³"
+      ]
+    },
+    {
+      "name": "KBE pro 100 Milliliter",
+      "description": null,
+      "dimension": "Anzahlkonzentration",
+      "notations": [
+        "KBE/100 mL",
+        "CFU/100 mL"
+      ]
+    }
+  ],
+  "matrices": [
+    {
+      "name": "Luft",
+      "description": "Außen- oder Innenluft"
+    },
+    {
+      "name": "Leitungswasser",
+      "description": "Aus der Hausinstallation"
+    },
+    {
+      "name": "Trinkwasser",
+      "description": "Gemäß Trinkwasserverordnung"
+    },
+    {
+      "name": "Grundwasser",
+      "description": "Aus Brunnen und Messstellen"
+    }
+  ],
+  "parameters": [
+    {
+      "name": "Probenahmezeitpunkt",
+      "description": "Wann die Probe genommen wurde",
+      "unit": null,
+      "value_class": "datetime"
+    },
+    {
+      "name": "Temperatur",
+      "description": "Wassertemperatur bei der Probenahme",
+      "unit": "°C",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Färbung",
+      "description": "Visuelle Prüfung",
+      "unit": null,
+      "value_class": "text"
+    },
+    {
+      "name": "Geruch auffällig",
+      "description": "Olfaktorische Prüfung",
+      "unit": null,
+      "value_class": "boolean"
+    },
+    {
+      "name": "pH-Wert",
+      "description": "Negativer dekadischer Logarithmus der Oxoniumaktivität",
+      "unit": null,
+      "value_class": "decimal"
+    },
+    {
+      "name": "Elektrische Leitfähigkeit",
+      "description": "Bezogen auf 25 °C",
+      "unit": "µS/cm",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Nitrat",
+      "description": "NO₃⁻",
+      "unit": "mg/L",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Chlorid",
+      "description": "Cl⁻",
+      "unit": "mg/L",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Sulfat",
+      "description": "SO₄²⁻",
+      "unit": "mg/L",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Blei",
+      "description": "Pb, gesamt",
+      "unit": "µg/L",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Kupfer",
+      "description": "Cu, gesamt",
+      "unit": "mg/L",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Nickel",
+      "description": "Ni, gesamt",
+      "unit": "µg/L",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Escherichia coli",
+      "description": "Fäkalindikator",
+      "unit": "KBE/100 mL",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Coliforme Bakterien",
+      "description": "Hygieneindikator",
+      "unit": "KBE/100 mL",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Feinstaub PM10",
+      "description": "Partikel ≤ 10 µm, Tagesmittel",
+      "unit": "µg/m³",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Feinstaub PM2,5",
+      "description": "Partikel ≤ 2,5 µm, Tagesmittel",
+      "unit": "µg/m³",
+      "value_class": "decimal"
+    },
+    {
+      "name": "Stickstoffdioxid",
+      "description": "NO₂, Tagesmittel",
+      "unit": "µg/m³",
+      "value_class": "decimal"
+    }
+  ],
+  "devices": [
+    {
+      "name": "pH-Meter Lab 1",
+      "number": 2207114,
+      "manufacturer": "Ionic Instruments GmbH",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "pH-Meter Lab 2",
+      "number": 1903027,
+      "manufacturer": "Ionic Instruments GmbH",
+      "operator": "Umweltlabor Lucent",
+      "active": false
+    },
+    {
+      "name": "Leitfähigkeitsmessgerät LF 4",
+      "number": 2105033,
+      "manufacturer": "Ionic Instruments GmbH",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "Ionenchromatograph IC-3",
+      "number": 98,
+      "manufacturer": "Spectra Analytik AG",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "ICP-MS Q2",
+      "number": 4411,
+      "manufacturer": "Spectra Analytik AG",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "Brutschrank 36 °C",
+      "number": 2,
+      "manufacturer": "Klarsicht Messtechnik KG",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "Feinstaubsammler LVS-3",
+      "number": 1187,
+      "manufacturer": "Aerosol Systems GmbH",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "Feinstaubsammler LVS-3",
+      "number": 1192,
+      "manufacturer": "Aerosol Systems GmbH",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "NO₂-Analysator",
+      "number": 500221,
+      "manufacturer": "Aerosol Systems GmbH",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "Feinwaage XS205",
+      "number": 205778,
+      "manufacturer": "Klarsicht Messtechnik KG",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    },
+    {
+      "name": "Einstichthermometer",
+      "number": 42,
+      "manufacturer": "Klarsicht Messtechnik KG",
+      "operator": "Umweltlabor Lucent",
+      "active": true
+    }
+  ],
+  "documents": [
+    {
+      "name": "SOP-001 Probenahme Wasser",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-001_r3.pdf",
+      "accepted": true,
+      "sha256": "c7cfb075158ceaaa1a2287c7140948b4063365ce64ddd9455d2f43361dd66d52"
+    },
+    {
+      "name": "SOP-002 pH-Wert",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-002_r2.pdf",
+      "accepted": true,
+      "sha256": "458310feda693f20463d9b6882a7d05329513cb963f9127b6b7cd36cb4415efc"
+    },
+    {
+      "name": "SOP-003 Leitfähigkeit",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-003_r1.pdf",
+      "accepted": true,
+      "sha256": "7de13f558615cc76532e50b3328ce6248cb70369cdb5f4d97dfff6d6ced4227a"
+    },
+    {
+      "name": "SOP-004 Anionen (IC)",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-004_r4.pdf",
+      "accepted": true,
+      "sha256": "a26af37208ed9e8fc55fcbc59345b4122252d48f56ce5f8fbe705ae4fa2a95b4"
+    },
+    {
+      "name": "SOP-005 Metalle (ICP-MS)",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-005_r2.pdf",
+      "accepted": true,
+      "sha256": "380480a372fa143f9477e4e7b9b8998858259eef3c4a98eccd6f89c33b375bef"
+    },
+    {
+      "name": "SOP-005 Entwurf Rev. 3",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/entwurf/SOP-005_r3.docx",
+      "accepted": false,
+      "sha256": "325ec91437fb7545714e643404fe412f9858c32927f9d8cef2fe6e81d72cbca2"
+    },
+    {
+      "name": "SOP-006 Mikrobiologie",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-006_r1.pdf",
+      "accepted": true,
+      "sha256": "6755f2ab6de45a07e9810a96b553ad5a310c962f4ebc0577ad5af8ddb061cb07"
+    },
+    {
+      "name": "SOP-007 Feinstaub",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-007_r2.pdf",
+      "accepted": true,
+      "sha256": "034efc8f19d161c5402dbce08d4bb813656f6620c45f37c705c6d331d25ef6d9"
+    },
+    {
+      "name": "SOP-008 Stickstoffdioxid",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-008_r1.pdf",
+      "accepted": true,
+      "sha256": "91ac4fda5b12de670fc963a5a0609d3386d25584049955aa86c9481fb07fe986"
+    },
+    {
+      "name": "SOP-009 Datenfreigabe",
+      "uri": null,
+      "file_path": "/srv/lucent/sop/SOP-009_r1.pdf",
+      "accepted": true,
+      "sha256": "8588b745256a482e61ab308cc16fcb83352dafc909bc4508995ca2b867f667ba"
+    },
+    {
+      "name": "Gerätehandbuch IC-3",
+      "uri": "https://docs.example.org/ic3/handbuch.pdf",
+      "file_path": null,
+      "accepted": true,
+      "sha256": "07c9c7892bc2aa73c0a2cdf1b8410076323440e60245912bdb8023c836b65414"
+    },
+    {
+      "name": "Trinkwasserverordnung (TrinkwV)",
+      "uri": "https://www.gesetze-im-internet.de/trinkwv_2023/",
+      "file_path": null,
+      "accepted": true,
+      "sha256": "fc28d84fc1cbdac33ab35a331790ea481d2b2d19337d06e8e10cf813b3717fe3"
+    },
+    {
+      "name": "Grundwasserverordnung (GrwV)",
+      "uri": "https://www.gesetze-im-internet.de/grwv_2010/",
+      "file_path": null,
+      "accepted": true,
+      "sha256": "e51d9ba46c9bde3e3a7e5f3bbd80e7e866a79f7495eced0798d411edb29f00f7"
+    },
+    {
+      "name": "39. BImSchV (Luftqualität)",
+      "uri": "https://www.gesetze-im-internet.de/bimschv_39/",
+      "file_path": null,
+      "accepted": true,
+      "sha256": "b64fb1e474b5733260cdfe5bc47484204e37a2ad8654705264d2520796879a2c"
+    }
+  ],
+  "sites": [
+    {
+      "name": "Laborstraße",
+      "description": "Labor- und Verwaltungsgebäude",
+      "address": {
+        "street": "Laborstraße",
+        "house_number": 4,
+        "addition": null,
+        "zip": "76131",
+        "district": "Oststadt",
+        "city": "Karlsruhe"
+      },
+      "border": [
+        {
+          "latitude": 49.0103,
+          "longitude": 8.4102
+        },
+        {
+          "latitude": 49.0106,
+          "longitude": 8.4139
+        },
+        {
+          "latitude": 49.0088,
+          "longitude": 8.4145
+        },
+        {
+          "latitude": 49.0084,
+          "longitude": 8.4108
+        }
+      ],
+      "reference_system": "WGS 84"
+    },
+    {
+      "name": "Wasserwerk Ost",
+      "description": "Fassungsgelände, Brunnen B3 und B7",
+      "address": {
+        "street": "Am Wasserwerk",
+        "house_number": 1,
+        "addition": "a",
+        "zip": "76227",
+        "district": "Durlach",
+        "city": "Karlsruhe"
+      },
+      "border": [
+        {
+          "latitude": 48.999,
+          "longitude": 8.451
+        },
+        {
+          "latitude": 48.9995,
+          "longitude": 8.46
+        },
+        {
+          "latitude": 48.995,
+          "longitude": 8.4612
+        },
+        {
+          "latitude": 48.9944,
+          "longitude": 8.4515
+        }
+      ],
+      "reference_system": "WGS 84"
+    },
+    {
+      "name": "Messfeld Rheinaue",
+      "description": "Grundwassermessstellen am Altrhein",
+      "address": {
+        "street": "Rheinauenweg",
+        "house_number": 12,
+        "addition": null,
+        "zip": "76187",
+        "district": "Knielingen",
+        "city": "Karlsruhe"
+      },
+      "border": [
+        {
+          "latitude": 49.0335,
+          "longitude": 8.301
+        },
+        {
+          "latitude": 49.034,
+          "longitude": 8.3095
+        },
+        {
+          "latitude": 49.029,
+          "longitude": 8.3105
+        },
+        {
+          "latitude": 49.0282,
+          "longitude": 8.302
+        }
+      ],
+      "reference_system": "WGS 84"
+    }
+  ],
+  "spots": [
+    {
+      "name": "Test 1",
+      "description": "Erster Test",
+      "latitude": 49.006986,
+      "longitude": 8.376389,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": null
+    },
+    {
+      "name": "Garten",
+      "description": "Unter dem Dach der Fahrradgarage",
+      "latitude": 49.006097,
+      "longitude": 8.382112,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": null
+    },
+    {
+      "name": "Zapfstelle Labor 2.14",
+      "description": "Kaltwasserhahn im Altbau, 2. OG",
+      "latitude": 49.0096,
+      "longitude": 8.4118,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": "Laborstraße"
+    },
+    {
+      "name": "Zapfstelle Kantine",
+      "description": "Spülküche, Mischbatterie links",
+      "latitude": 49.0091,
+      "longitude": 8.4132,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": "Laborstraße"
+    },
+    {
+      "name": "Hochbehälter Nord",
+      "description": "Probenahmehahn Kammer 1",
+      "latitude": 49.0352,
+      "longitude": 8.4212,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": null
+    },
+    {
+      "name": "Wasserwerk Reinwasser",
+      "description": "Reinwasserbehälter, Ausgang ins Netz",
+      "latitude": 48.9962,
+      "longitude": 8.4566,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": "Wasserwerk Ost"
+    },
+    {
+      "name": "Brunnen B3",
+      "description": "Vertikalfilterbrunnen, 28 m",
+      "latitude": 48.9978,
+      "longitude": 8.4531,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": "Wasserwerk Ost"
+    },
+    {
+      "name": "Brunnen B7",
+      "description": "Vertikalfilterbrunnen, 34 m",
+      "latitude": 48.9958,
+      "longitude": 8.4592,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": "Wasserwerk Ost"
+    },
+    {
+      "name": "GWM 12",
+      "description": "Grundwassermessstelle am Feldrand",
+      "latitude": 49.0318,
+      "longitude": 8.3046,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": "Messfeld Rheinaue"
+    },
+    {
+      "name": "Messcontainer Innenstadt",
+      "description": "Verkehrsnahe Luftmessstation",
+      "latitude": 49.0094,
+      "longitude": 8.401,
+      "z": null,
+      "z_class": null,
+      "z_unit": null,
+      "reference_system": "WGS 84",
+      "site": null
+    }
+  ],
+  "actions": [
+    {
+      "name": "Probenahme Wasser",
+      "iteration": "2024-03-01",
+      "active": true,
+      "description": "Entnahme nach DIN ISO 5667-5, Temperatur vor Ort.",
+      "documents": [
+        "SOP-001 Probenahme Wasser",
+        "Trinkwasserverordnung (TrinkwV)"
+      ],
+      "devices": [
+        {
+          "name": "Einstichthermometer",
+          "number": 42
+        }
+      ],
+      "people": [
+        {
+          "person": "worf",
+          "role": "worker"
+        },
+        {
+          "person": "p47at",
+          "role": "manager"
+        }
+      ],
+      "depends_on": [],
+      "effects": [
+        {
+          "parameter": "Probenahmezeitpunkt",
+          "uncertainty": null,
+          "uncertainty_class": null,
+          "uncertainty_unit": null,
+          "calculation": null
+        },
+        {
+          "parameter": "Temperatur",
+          "uncertainty": 0.2,
+          "uncertainty_class": "absolute",
+          "uncertainty_unit": null,
+          "calculation": null
+        }
+      ]
+    },
+    {
+      "name": "Sensorische Prüfung",
+      "iteration": "2023-06-01",
+      "active": true,
+      "description": "Färbung und Geruch nach DIN EN 1622.",
+      "documents": [
+        "SOP-001 Probenahme Wasser",
+        "Trinkwasserverordnung (TrinkwV)"
+      ],
+      "devices": [],
+      "people": [
+        {
+          "person": "worf",
+          "role": "worker"
+        }
+      ],
+      "depends_on": [
+        {
+          "action": "Probenahme Wasser",
+          "iteration": "2024-03-01",
+          "dependency_class": "strict",
+          "description": "Erst nach der Probenahme"
+        }
+      ],
+      "effects": [
+        {
+          "parameter": "Färbung",
+          "uncertainty": null,
+          "uncertainty_class": null,
+          "uncertainty_unit": null,
+          "calculation": null
+        },
+        {
+          "parameter": "Geruch auffällig",
+          "uncertainty": null,
+          "uncertainty_class": null,
+          "uncertainty_unit": null,
+          "calculation": null
+        }
+      ]
+    },
+    {
+      "name": "pH-Wert",
+      "iteration": "2024-09-15",
+      "active": true,
+      "description": "DIN EN ISO 10523, Glaselektrode, Drei-Punkt-Kalibrierung.",
+      "documents": [
+        "SOP-002 pH-Wert",
+        "Trinkwasserverordnung (TrinkwV)"
+      ],
+      "devices": [
+        {
+          "name": "pH-Meter Lab 1",
+          "number": 2207114
+        },
+        {
+          "name": "pH-Meter Lab 2",
+          "number": 1903027
+        }
+      ],
+      "people": [
+        {
+          "person": "jd",
+          "role": "worker"
+        },
+        {
+          "person": "p47at",
+          "role": "manager"
+        },
+        {
+          "person": "xx121",
+          "role": "auditor"
+        }
+      ],
+      "depends_on": [
+        {
+          "action": "Probenahme Wasser",
+          "iteration": "2024-03-01",
+          "dependency_class": "strict",
+          "description": "Erst nach der Probenahme"
+        }
+      ],
+      "effects": [
+        {
+          "parameter": "pH-Wert",
+          "uncertainty": 0.05,
+          "uncertainty_class": "absolute",
+          "uncertainty_unit": null,
+          "calculation": null
+        }
+      ]
+    },
+    {
+      "name": "Elektrische Leitfähigkeit",
+      "iteration": "2023-01-10",
+      "active": true,
+      "description": "DIN EN 27888, kompensiert auf 25 °C.",
+      "documents": [
+        "SOP-003 Leitfähigkeit",
+        "Trinkwasserverordnung (TrinkwV)"
+      ],
+      "devices": [
+        {
+          "name": "Leitfähigkeitsmessgerät LF 4",
+          "number": 2105033
+        }
+      ],
+      "people": [
+        {
+          "person": "jd",
+          "role": "worker"
+        }
+      ],
+      "depends_on": [
+        {
+          "action": "Probenahme Wasser",
+          "iteration": "2024-03-01",
+          "dependency_class": "strict",
+          "description": "Erst nach der Probenahme"
+        }
+      ],
+      "effects": [
+        {
+          "parameter": "Elektrische Leitfähigkeit",
+          "uncertainty": 2.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": "κ25 = κT · f25(T)"
+        }
+      ]
+    },
+    {
+      "name": "Anionen (IC)",
+      "iteration": "2025-02-01",
+      "active": true,
+      "description": "Nitrat, Chlorid und Sulfat nach DIN EN ISO 10304-1.",
+      "documents": [
+        "SOP-004 Anionen (IC)",
+        "Gerätehandbuch IC-3",
+        "Trinkwasserverordnung (TrinkwV)",
+        "Grundwasserverordnung (GrwV)"
+      ],
+      "devices": [
+        {
+          "name": "Ionenchromatograph IC-3",
+          "number": 98
+        }
+      ],
+      "people": [
+        {
+          "person": "jd",
+          "role": "worker"
+        },
+        {
+          "person": "p47at",
+          "role": "manager"
+        }
+      ],
+      "depends_on": [
+        {
+          "action": "Probenahme Wasser",
+          "iteration": "2024-03-01",
+          "dependency_class": "strict",
+          "description": "Erst nach der Probenahme"
+        },
+        {
+          "action": "Elektrische Leitfähigkeit",
+          "iteration": "2023-01-10",
+          "dependency_class": "possibility",
+          "description": "Ionenbilanz mit der Leitfähigkeit plausibilisieren"
+        }
+      ],
+      "effects": [
+        {
+          "parameter": "Nitrat",
+          "uncertainty": 5.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": null
+        },
+        {
+          "parameter": "Chlorid",
+          "uncertainty": 5.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": null
+        },
+        {
+          "parameter": "Sulfat",
+          "uncertainty": 5.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": null
+        }
+      ]
+    },
+    {
+      "name": "Metalle (ICP-MS)",
+      "iteration": "2024-11-20",
+      "active": true,
+      "description": "DIN EN ISO 17294-2, Stagnationsprobe S0. Überschreitungen werden wiederholt.",
+      "documents": [
+        "SOP-005 Metalle (ICP-MS)",
+        "SOP-005 Entwurf Rev. 3",
+        "Trinkwasserverordnung (TrinkwV)",
+        "Grundwasserverordnung (GrwV)"
+      ],
+      "devices": [
+        {
+          "name": "ICP-MS Q2",
+          "number": 4411
+        }
+      ],
+      "people": [
+        {
+          "person": "p47at",
+          "role": "worker"
+        },
+        {
+          "person": "xx121",
+          "role": "auditor"
+        }
+      ],
+      "depends_on": [
+        {
+          "action": "Probenahme Wasser",
+          "iteration": "2024-03-01",
+          "dependency_class": "strict",
+          "description": "Erst nach der Probenahme"
+        }
+      ],
+      "effects": [
+        {
+          "parameter": "Blei",
+          "uncertainty": 10.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": null
+        },
+        {
+          "parameter": "Kupfer",
+          "uncertainty": 8.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": null
+        },
+        {
+          "parameter": "Nickel",
+          "uncertainty": 10.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": null
+        }
+      ]
+    },
+    {
+      "name": "E. coli und coliforme Bakterien",
+      "iteration": "2023-05-05",
+      "active": true,
+      "description": "Membranfiltration nach DIN EN ISO 9308-1, 21 h bei 36 °C.",
+      "documents": [
+        "SOP-006 Mikrobiologie",
+        "Trinkwasserverordnung (TrinkwV)"
+      ],
+      "devices": [
+        {
+          "name": "Brutschrank 36 °C",
+          "number": 2
+        }
+      ],
+      "people": [
+        {
+          "person": "xx121",
+          "role": "worker"
+        }
+      ],
+      "depends_on": [
+        {
+          "action": "Probenahme Wasser",
+          "iteration": "2024-03-01",
+          "dependency_class": "strict",
+          "description": "Erst nach der Probenahme"
+        }
+      ],
+      "effects": [
+        {
+          "parameter": "Escherichia coli",
+          "uncertainty": null,
+          "uncertainty_class": null,
+          "uncertainty_unit": null,
+          "calculation": null
+        },
+        {
+          "parameter": "Coliforme Bakterien",
+          "uncertainty": null,
+          "uncertainty_class": null,
+          "uncertainty_unit": null,
+          "calculation": null
+        }
+      ]
+    },
+    {
+      "name": "Feinstaub (gravimetrisch)",
+      "iteration": "2024-04-01",
+      "active": true,
+      "description": "DIN EN 12341, 24-Stunden-Probenahme auf Filter.",
+      "documents": [
+        "SOP-007 Feinstaub",
+        "39. BImSchV (Luftqualität)"
+      ],
+      "devices": [
+        {
+          "name": "Feinstaubsammler LVS-3",
+          "number": 1187
+        },
+        {
+          "name": "Feinstaubsammler LVS-3",
+          "number": 1192
+        },
+        {
+          "name": "Feinwaage XS205",
+          "number": 205778
+        }
+      ],
+      "people": [
+        {
+          "person": "s7e23",
+          "role": "worker"
+        },
+        {
+          "person": "jd",
+          "role": "worker"
+        }
+      ],
+      "depends_on": [],
+      "effects": [
+        {
+          "parameter": "Probenahmezeitpunkt",
+          "uncertainty": null,
+          "uncertainty_class": null,
+          "uncertainty_unit": null,
+          "calculation": null
+        },
+        {
+          "parameter": "Feinstaub PM10",
+          "uncertainty": 7.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": "c = (m2 − m1) / V"
+        },
+        {
+          "parameter": "Feinstaub PM2,5",
+          "uncertainty": 7.0,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": "c = (m2 − m1) / V"
+        }
+      ]
+    },
+    {
+      "name": "Stickstoffdioxid",
+      "iteration": "2023-09-01",
+      "active": true,
+      "description": "Chemilumineszenz nach DIN EN 14211, Tagesmittel.",
+      "documents": [
+        "SOP-008 Stickstoffdioxid",
+        "39. BImSchV (Luftqualität)"
+      ],
+      "devices": [
+        {
+          "name": "NO₂-Analysator",
+          "number": 500221
+        }
+      ],
+      "people": [
+        {
+          "person": "s7e23",
+          "role": "worker"
+        }
+      ],
+      "depends_on": [],
+      "effects": [
+        {
+          "parameter": "Stickstoffdioxid",
+          "uncertainty": 7.5,
+          "uncertainty_class": "relative",
+          "uncertainty_unit": null,
+          "calculation": null
+        }
+      ]
+    },
+    {
+      "name": "pH-Wert",
+      "iteration": "2021-02-01",
+      "active": false,
+      "description": "Vorgängerversion mit Zwei-Punkt-Kalibrierung.",
+      "documents": [
+        "SOP-002 pH-Wert"
+      ],
+      "devices": [
+        {
+          "name": "pH-Meter Lab 2",
+          "number": 1903027
+        }
+      ],
+      "people": [
+        {
+          "person": "jd",
+          "role": "worker"
+        }
+      ],
+      "depends_on": [],
+      "effects": [
+        {
+          "parameter": "pH-Wert",
+          "uncertainty": 0.1,
+          "uncertainty_class": "absolute",
+          "uncertainty_unit": null,
+          "calculation": null
+        }
+      ]
+    }
+  ],
+  "thresholds": [
+    {
+      "parameter": "Geruch auffällig",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 0.0,
+      "description": "Ohne anormale Veränderung"
+    },
+    {
+      "parameter": "pH-Wert",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": 6.5,
+      "upper": 9.5,
+      "description": "Anlage 3"
+    },
+    {
+      "parameter": "Elektrische Leitfähigkeit",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 2790.0,
+      "description": "Anlage 3"
+    },
+    {
+      "parameter": "Nitrat",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 50.0,
+      "description": "Anlage 2 Teil I"
+    },
+    {
+      "parameter": "Chlorid",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 250.0,
+      "description": "Anlage 3"
+    },
+    {
+      "parameter": "Sulfat",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 250.0,
+      "description": "Anlage 3"
+    },
+    {
+      "parameter": "Blei",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 10.0,
+      "description": "Anlage 2 Teil II"
+    },
+    {
+      "parameter": "Kupfer",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 2.0,
+      "description": "Anlage 2 Teil II"
+    },
+    {
+      "parameter": "Nickel",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 20.0,
+      "description": "Anlage 2 Teil II"
+    },
+    {
+      "parameter": "Escherichia coli",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 0.0,
+      "description": "Anlage 1"
+    },
+    {
+      "parameter": "Coliforme Bakterien",
+      "document": "Trinkwasserverordnung (TrinkwV)",
+      "lower": null,
+      "upper": 0.0,
+      "description": "Anlage 3"
+    },
+    {
+      "parameter": "Nitrat",
+      "document": "Grundwasserverordnung (GrwV)",
+      "lower": null,
+      "upper": 50.0,
+      "description": "Schwellenwert Anlage 2"
+    },
+    {
+      "parameter": "Chlorid",
+      "document": "Grundwasserverordnung (GrwV)",
+      "lower": null,
+      "upper": 250.0,
+      "description": "Schwellenwert Anlage 2"
+    },
+    {
+      "parameter": "Sulfat",
+      "document": "Grundwasserverordnung (GrwV)",
+      "lower": null,
+      "upper": 250.0,
+      "description": "Schwellenwert Anlage 2"
+    },
+    {
+      "parameter": "Blei",
+      "document": "Grundwasserverordnung (GrwV)",
+      "lower": null,
+      "upper": 10.0,
+      "description": "Schwellenwert Anlage 2"
+    },
+    {
+      "parameter": "Feinstaub PM10",
+      "document": "39. BImSchV (Luftqualität)",
+      "lower": null,
+      "upper": 50.0,
+      "description": "Tagesgrenzwert"
+    },
+    {
+      "parameter": "Feinstaub PM2,5",
+      "document": "39. BImSchV (Luftqualität)",
+      "lower": null,
+      "upper": 25.0,
+      "description": "Jahresgrenzwert"
+    },
+    {
+      "parameter": "Stickstoffdioxid",
+      "document": "39. BImSchV (Luftqualität)",
+      "lower": null,
+      "upper": 40.0,
+      "description": "Jahresgrenzwert"
+    }
+  ],
+  "coefficients": [
+    {
+      "effects": [
+        {
+          "action": "Elektrische Leitfähigkeit",
+          "iteration": "2023-01-10",
+          "parameter": "Elektrische Leitfähigkeit"
+        },
+        {
+          "action": "Probenahme Wasser",
+          "iteration": "2024-03-01",
+          "parameter": "Temperatur"
+        }
+      ],
+      "description": "Die Leitfähigkeit wird auf die Probentemperatur bezogen"
+    }
+  ]
+}

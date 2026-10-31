@@ -1,5 +1,5 @@
 {
-  "id": 12,
+  "id": 11,
   "name": "Pegel Hafen",
   "description": "Am Steg",
   "x": 49.014,
@@ -7,5 +7,5 @@
   "z": null,
   "crs_id": 1,
   "site_id": 4,
-  "etag": "\"ec6bbeeed410bd44c8908589\""
+  "etag": "\"62fe132bbd966e5fce825121\""
 }

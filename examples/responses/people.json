@@ -27,6 +27,19 @@
     "etag": "\"de602846caf52d4f3074d420\""
   },
   {
+    "id": 1,
+    "given_name": "Booney",
+    "surname": "Noobington",
+    "linux_user": "grindel",
+    "organization_id": 1,
+    "position": "Administration",
+    "active": true,
+    "roles": [
+      "admin"
+    ],
+    "etag": "\"2d2e1692329be9137e0ff314\""
+  },
+  {
     "id": 5,
     "given_name": "Jean Luc",
     "surname": "Picard",
@@ -66,18 +79,5 @@
       "analyst"
     ],
     "etag": "\"8467a3f8f23a1994b569b81d\""
-  },
-  {
-    "id": 1,
-    "given_name": "System",
-    "surname": "User",
-    "linux_user": "grindel",
-    "organization_id": 1,
-    "position": "Administration",
-    "active": true,
-    "roles": [
-      "admin"
-    ],
-    "etag": "\"ed8a502d187341114c4ea193\""
   }
 ]

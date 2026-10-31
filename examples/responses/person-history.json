@@ -13,7 +13,7 @@
     "modification": "created",
     "subject": "role",
     "role": "analyst",
-    "note": "Demo data"
+    "note": "Granted analyst: Demo data"
   },
   {
     "t": "2026-10-29T12:00:00Z",
@@ -21,7 +21,7 @@
     "modification": "created",
     "subject": "organization",
     "role": null,
-    "note": "Demo data"
+    "note": "Linked from a package: Demo data"
   },
   {
     "t": "2026-10-29T12:00:00Z",
@@ -29,6 +29,6 @@
     "modification": "created",
     "subject": "person",
     "role": null,
-    "note": "Demo data"
+    "note": "Created from a package: Demo data"
   }
 ]

@@ -443,6 +443,29 @@ class MessageIn(Request):
     body: str = Field(min_length=1, max_length=500)
 
 
+# Packages
+
+class PackageChange(BaseModel):
+    section: str = Field(description="e.g. parameters, actions")
+    key: str = Field(description="The entry's natural key, e.g. a parameter's name.")
+    change: Literal["create", "update"]
+    fields: list[str] = Field([], description="For an update: what changes.")
+
+
+class PackageProblem(BaseModel):
+    path: str = Field(description="Where in the package, e.g. actions[3].effects[0].parameter.")
+    line: int | None = Field(None, description="The line in a YAML package.")
+    message: str
+
+
+class PackagePlan(BaseModel):
+    applied: bool = Field(description="Whether the changes were written; a plan never writes.")
+    summary: dict[str, dict[str, int]] = Field(
+        description="Per section, how many entries would be (or were) created, updated or left unchanged.")
+    changes: list[PackageChange]
+    problems: list[PackageProblem] = Field(description="If there are any, nothing is applied.")
+
+
 class Health(BaseModel):
     status: Literal["ok"]
     version: str

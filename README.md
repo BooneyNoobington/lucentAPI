@@ -163,6 +163,7 @@ and at `/docs`.
 | `GET /tasks`, `POST /tasks`, `PATCH /tasks/{id}` | `PATCH` needs `If-Match` |
 | `GET /messages`, `POST /messages`, `POST /messages/{id}/read` | |
 | `GET /package` | the master data as a lucent package, JSON or YAML (`?format=yaml`) |
+| `POST /package/plan`, `POST /package/apply` | what importing a package would change, and importing it (admin); JSON or YAML |
 
 `GET /health` needs no token.
 
@@ -220,9 +221,36 @@ not part of it.
   also served without a token at `/schemas/lucent-package-1.json`. The YAML export starts with a
   `# yaml-language-server: $schema=…` line, so editors such as VS Code check the file and complete
   names while you type. Unknown fields are refused, so a typo doesn't pass silently.
-- **The demo data** is also a package:
-  [src/lucentapi/data/demo.lucent.yaml](src/lucentapi/data/demo.lucent.yaml). It's still written by
-  `demo.py` for now; importing packages comes next, and then the file becomes the source.
+- **The demo data** is a package too:
+  [src/lucentapi/data/demo.lucent.yaml](src/lucentapi/data/demo.lucent.yaml). `demo.py` imports it
+  and only generates the measurements. lucentLIMS's demo uses the same package.
+
+Importing a package is two steps. `POST /v1/package/plan` says what would be created and changed,
+and lists the problems with their path and, for YAML, their line; it changes nothing.
+`POST /v1/package/apply` (admin) imports all of it in one transaction, or nothing if there is any
+problem. Both run the same import; a plan rolls it back, so the two can't disagree.
+
+- An entry is found by its natural key, also when it is hidden; a hidden one is shown again.
+- **Only what an entry mentions changes.** Fields it leaves out keep their value; a new entry gets
+  the defaults. A list it mentions (a person's roles, a unit's notations, an action's documents,
+  devices, people and dependencies) is made exactly so.
+- **Nothing is deleted:** what a list no longer has is hidden (`vis = 0`).
+- **A changed method needs a new iteration.** An action's effects are the method; a package that
+  changes the effects of an existing iteration is refused. The same name with a later iteration
+  is a new version beside the old one.
+- The endpoints' rules hold too: borders don't cross themselves, thresholds have a limit, a
+  parameter with raw values keeps its value class, nobody deactivates themselves, and an active
+  admin remains.
+- lucentBASE's triggers log every change under the importing person, e.g. "Changed unit from a
+  package: <reason>"; the reason is the `note` parameter or the package's description.
+- YAML is read strictly (YAML 1.2's booleans), so a matrix called `NO` stays a name.
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/yaml" --data-binary @lab.lucent.yaml localhost:8000/v1/package/plan
+```
+
+The export lists entries in the order they were entered, so a package imported into a fresh
+lucentBASE gives its entries the same ids, and new entries come last in a git diff.
 
 ```yaml
 actions:
@@ -373,6 +401,7 @@ src/lucentapi/
   lims.py        status, sampling time, limits, four-eyes
   etag.py        If-Match
   package.py     lucent packages: the format, its JSON Schema, the export
+  package_import.py  plan and apply
   data/          the demo data as a package
   numbering.py   collection identifiers
   routes/        people, locations, reference, collections, management, packages

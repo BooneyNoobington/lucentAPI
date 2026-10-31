@@ -15,6 +15,7 @@ Measurements (collections, values, raw values) are not master data and have thei
 """
 
 import datetime as dt
+import re
 from typing import Literal
 
 import yaml
@@ -261,26 +262,27 @@ def iteration(value: dt.datetime) -> dt.date | dt.datetime:
 
 
 def export(conn: Connection, description: str | None = None) -> Package:
-    """The visible master data of a lucentBASE, ordered so that the same data gives the same file."""
+    """The visible master data of a lucentBASE, in the order it was entered: the same data gives the same
+    file, new entries come last, and a package imported into a fresh lucentBASE gets the same ids."""
 
     def rows(table, *order):
         return conn.execute(select(table).where(visible(table)).order_by(*order)).mappings().all()
 
-    organizations = {r["id_organization"]: r for r in rows(organization, organization.c.name)}
-    units = {r["id_unit"]: r for r in rows(unit, unit.c.name)}
+    organizations = {r["id_organization"]: r for r in rows(organization, organization.c.id_organization)}
+    units = {r["id_unit"]: r for r in rows(unit, unit.c.id_unit)}
     notations: dict[int, list[str]] = {}
     for r in rows(unit_notation, unit_notation.c.id_unit_notation):
         if r["notation"]:
             notations.setdefault(r["id_unit"], []).append(r["notation"])
-    dimensions = {r["id_dimension"]: r for r in rows(dimension, dimension.c.name)}
-    systems = {r["id_crs"]: r for r in rows(crs, crs.c.name)}
-    parameters = {r["id_parameter"]: r for r in rows(parameter, parameter.c.name)}
-    documents = {r["id_link"]: r for r in rows(link, link.c.name)}
-    devices = {r["id_device"]: r for r in rows(device, device.c.name, device.c.number)}
-    actions = {r["id_action"]: r for r in rows(action_table, action_table.c.name, action_table.c.iteration)}
+    dimensions = {r["id_dimension"]: r for r in rows(dimension, dimension.c.id_dimension)}
+    systems = {r["id_crs"]: r for r in rows(crs, crs.c.id_crs)}
+    parameters = {r["id_parameter"]: r for r in rows(parameter, parameter.c.id_parameter)}
+    documents = {r["id_link"]: r for r in rows(link, link.c.id_link)}
+    devices = {r["id_device"]: r for r in rows(device, device.c.id_device)}
+    actions = {r["id_action"]: r for r in rows(action_table, action_table.c.id_action)}
     effects = {r["id_effect"]: r for r in rows(effect, effect.c.id_effect)}
-    sites = {r["id_site"]: r for r in rows(site, site.c.name)}
-    people = {r["id_person"]: r for r in rows(person, person.c.surname, person.c.given_name, person.c.id_person)}
+    sites = {r["id_site"]: r for r in rows(site, site.c.id_site)}
+    people = {r["id_person"]: r for r in rows(person, person.c.id_person)}
 
     def name(table: dict, id_, column="name"):
         row = table.get(id_)
@@ -358,7 +360,7 @@ def export(conn: Connection, description: str | None = None) -> Package:
         dimensions=[Dimension(name=r["name"], description=r["description"]) for r in dimensions.values()],
         units=[Unit(name=r["name"], description=r["description"], dimension=name(dimensions, r["id_dimension"]),
                     notations=notations.get(r["id_unit"], [])) for r in units.values()],
-        matrices=[Matrix(name=r["name"], description=r["description"]) for r in rows(matrix, matrix.c.name)],
+        matrices=[Matrix(name=r["name"], description=r["description"]) for r in rows(matrix, matrix.c.id_matrix)],
         parameters=[Parameter(name=r["name"], description=r["description"], unit=unit_ref(r["id_unit"]),
                               value_class=r["value_class"]) for r in parameters.values()],
         devices=[Device(name=r["name"], number=r["number"], manufacturer=name(organizations, r["id_manufacturer"]),
@@ -371,7 +373,7 @@ def export(conn: Connection, description: str | None = None) -> Package:
                     reference_system=name(systems, r["id_crs"])) for r in sites.values()],
         spots=[Spot(name=r["name"], description=r["description"], latitude=r["x"], longitude=r["y"], z=r["z"],
                     z_class=r["z_class"], z_unit=unit_ref(r["z_id_unit"]), reference_system=name(systems, r["id_crs"]),
-                    site=name(sites, r["id_site"])) for r in rows(spot, spot.c.name)],
+                    site=name(sites, r["id_site"])) for r in rows(spot, spot.c.id_spot)],
         actions=[Action(
             name=a["name"], iteration=iteration(a["iteration"]), active=bool(a["active"]), description=a["description"],
             documents=by_action["documents"].get(a["id_action"], []), devices=by_action["devices"].get(a["id_action"], []),
@@ -381,17 +383,57 @@ def export(conn: Connection, description: str | None = None) -> Package:
                             calculation=e["calculation"])
                      for e in effects.values() if e["id_action"] == a["id_action"] and e["id_parameter"] in parameters],
         ) for a in actions.values()],
-        thresholds=sorted(
-            (Threshold(parameter=parameters[r["id_parameter"]]["name"], document=documents[r["id_link"]]["name"],
-                       lower=r["lower_limit"], upper=r["upper_limit"], description=r["description"])
-             for r in rows(threshold, threshold.c.id_threshold)
-             if r["id_parameter"] in parameters and r["id_link"] in documents),
-            key=lambda t: (t.parameter, t.document)),
+        thresholds=[Threshold(parameter=parameters[r["id_parameter"]]["name"], document=documents[r["id_link"]]["name"],
+                              lower=r["lower_limit"], upper=r["upper_limit"], description=r["description"])
+                    for r in rows(threshold, threshold.c.id_threshold)
+                    if r["id_parameter"] in parameters and r["id_link"] in documents],
         coefficients=[Coefficient(effects=[effect_ref(r["id_effect1"]), effect_ref(r["id_effect2"])],
                                   description=r["description"])
                       for r in rows(coefficient, coefficient.c.id_coefficient)
                       if r["id_effect1"] in effects and r["id_effect2"] in effects],
     )
+
+
+class StrictLoader(yaml.SafeLoader):
+    """YAML 1.2's booleans: only true and false, so that a matrix called NO stays a name."""
+
+
+StrictLoader.yaml_implicit_resolvers = {
+    first: [(tag, regexp) for tag, regexp in resolvers if tag != "tag:yaml.org,2002:bool"]
+    for first, resolvers in yaml.SafeLoader.yaml_implicit_resolvers.items()
+}
+StrictLoader.add_implicit_resolver(
+    "tag:yaml.org,2002:bool", re.compile(r"^(?:true|True|TRUE|false|False|FALSE)$"), list("tTfF"))
+
+
+def load_yaml(text: str):
+    return yaml.load(text, Loader=StrictLoader)  # noqa: S506 (a safe loader)
+
+
+def yaml_lines(text: str):
+    """A function from a path in the package (("actions", 3, "effects")) to its line in the YAML text."""
+    try:
+        root = yaml.compose(text, Loader=StrictLoader)  # noqa: S506
+    except yaml.YAMLError:
+        root = None
+
+    def line_of(path) -> int | None:
+        node, line = root, None
+        for part in path:
+            if isinstance(node, yaml.MappingNode):  # the key's line: where `effects:` stands
+                key, node = next(((k, v) for k, v in node.value if k.value == part), (None, None))
+                mark = key.start_mark if key is not None else None
+            elif isinstance(node, yaml.SequenceNode) and isinstance(part, int) and part < len(node.value):
+                node = node.value[part]
+                mark = node.start_mark
+            else:
+                node = mark = None
+            if node is None:
+                break
+            line = mark.line + 1
+        return line
+
+    return line_of
 
 
 def as_yaml(package: Package, schema_url: str | None = None) -> str:

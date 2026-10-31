@@ -2239,7 +2239,7 @@
           "packages"
         ],
         "summary": "Export Package",
-        "description": "The master data of this lucentBASE as a lucent package: organizations, people and roles,\nunits, parameters, methods, documents, thresholds, devices and locations. Measurements are\nnot part of it.",
+        "description": "The master data of this lucentBASE as a lucent package: organizations, people and roles,\nunits, parameters, methods, documents, thresholds, devices and locations, in the order they\nwere entered. Measurements are not part of it.",
         "operationId": "export_package_v1_package_get",
         "security": [
           {
@@ -2285,6 +2285,145 @@
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/package/plan": {
+      "post": {
+        "tags": [
+          "packages"
+        ],
+        "summary": "Plan Package",
+        "description": "What importing the package would create and change, and its problems. Changes nothing.\n\nAn entry is found by its natural key; only what it mentions changes; nothing is deleted. A\nchanged method (different effects) needs a new iteration.",
+        "operationId": "plan_package_v1_package_plan_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "note",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 400
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Why, for lucentBASE's log. Defaults to the package's description.",
+              "title": "Note"
+            },
+            "description": "Why, for lucentBASE's log. Defaults to the package's description."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackagePlan"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Package"
+              }
+            },
+            "application/yaml": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/package/apply": {
+      "post": {
+        "tags": [
+          "packages"
+        ],
+        "summary": "Apply Package",
+        "description": "Imports the package (admin): all of it in one transaction, or nothing if there is any\nproblem. lucentBASE logs every change under the caller.",
+        "operationId": "apply_package_v1_package_apply_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "note",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 400
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Why, for lucentBASE's log. Defaults to the package's description.",
+              "title": "Note"
+            },
+            "description": "Why, for lucentBASE's log. Defaults to the package's description."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PackagePlan"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The package has problems; nothing was applied."
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Package"
+              }
+            },
+            "application/yaml": {
+              "schema": {
+                "type": "string"
               }
             }
           }
@@ -3284,6 +3423,118 @@
         ],
         "title": "lucent package",
         "description": "A lucentBASE's master data. Sections may be left out; entries refer to each other by name."
+      },
+      "PackageChange": {
+        "properties": {
+          "section": {
+            "type": "string",
+            "title": "Section",
+            "description": "e.g. parameters, actions"
+          },
+          "key": {
+            "type": "string",
+            "title": "Key",
+            "description": "The entry's natural key, e.g. a parameter's name."
+          },
+          "change": {
+            "type": "string",
+            "enum": [
+              "create",
+              "update"
+            ],
+            "title": "Change"
+          },
+          "fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Fields",
+            "description": "For an update: what changes.",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "section",
+          "key",
+          "change"
+        ],
+        "title": "PackageChange"
+      },
+      "PackagePlan": {
+        "properties": {
+          "applied": {
+            "type": "boolean",
+            "title": "Applied",
+            "description": "Whether the changes were written; a plan never writes."
+          },
+          "summary": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Summary",
+            "description": "Per section, how many entries would be (or were) created, updated or left unchanged."
+          },
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/PackageChange"
+            },
+            "type": "array",
+            "title": "Changes"
+          },
+          "problems": {
+            "items": {
+              "$ref": "#/components/schemas/PackageProblem"
+            },
+            "type": "array",
+            "title": "Problems",
+            "description": "If there are any, nothing is applied."
+          }
+        },
+        "type": "object",
+        "required": [
+          "applied",
+          "summary",
+          "changes",
+          "problems"
+        ],
+        "title": "PackagePlan"
+      },
+      "PackageProblem": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "Where in the package, e.g. actions[3].effects[0].parameter."
+          },
+          "line": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line",
+            "description": "The line in a YAML package."
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "message"
+        ],
+        "title": "PackageProblem"
       },
       "Page_Collection_": {
         "properties": {

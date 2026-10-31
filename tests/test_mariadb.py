@@ -104,7 +104,7 @@ def test_schema_matches_lucentbase(mariadb):
 
 def test_workflow_logged_by_lucentbase(maria, mariadb, as_user):
     created = maria.post("/v1/collections", headers=as_user("worf", "sampler"), json={
-        "matrix_id": 3, "collection_class": "spot sample", "spot_id": 6, "action_ids": [1, 3],
+        "matrix_id": 3, "collection_class": "spot sample", "spot_id": 5, "action_ids": [1, 3],
         "sampled_at": "2026-10-29T08:15:00Z", "note": "Sonderprobe"})
     assert created.status_code == 201, created.text
     detail = created.json()

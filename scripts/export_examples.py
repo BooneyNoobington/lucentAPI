@@ -49,12 +49,13 @@ def responses() -> dict[str, object]:
             "units", "parameters", "devices", "documents", "actions", "coefficients", "thresholds", "tasks",
             "messages", "configuration", "roles")}
         result["me"] = get("/v1/me", "xx121")
+        result["package"] = get("/v1/package")
         result["collections"] = get("/v1/collections?limit=3")
         result["values"] = get("/v1/values?limit=3")
-        result["series"] = get("/v1/series?spot_id=10&parameter_id=7")
+        result["series"] = get("/v1/series?spot_id=9&parameter_id=7")
 
         created = client.post("/v1/collections", headers=as_user("worf"), json={
-            "matrix_id": 2, "collection_class": "spot sample", "spot_id": 4, "action_ids": [1, 6],
+            "matrix_id": 2, "collection_class": "spot sample", "spot_id": 3, "action_ids": [1, 6],
             "sampled_at": "2026-10-29T09:30:00Z", "note": "Example"})
         result["collection-created"] = created.json()
         lead = next(v for v in created.json()["values"] if v["effect_id"] == 10)

@@ -1,6 +1,6 @@
 [
   {
-    "id": 8,
+    "id": 7,
     "name": "Brunnen B3",
     "description": "Vertikalfilterbrunnen, 28 m",
     "x": 48.9978,
@@ -8,10 +8,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": 2,
-    "etag": "\"9b099472eed57bf098c89f46\""
+    "etag": "\"572dc8b2a33506cf16576c1c\""
   },
   {
-    "id": 9,
+    "id": 8,
     "name": "Brunnen B7",
     "description": "Vertikalfilterbrunnen, 34 m",
     "x": 48.9958,
@@ -19,10 +19,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": 2,
-    "etag": "\"0f679ff9ca4ed30fe10c97fc\""
+    "etag": "\"ae9f565a4166fea401fd5dda\""
   },
   {
-    "id": 10,
+    "id": 9,
     "name": "GWM 12",
     "description": "Grundwassermessstelle am Feldrand",
     "x": 49.0318,
@@ -30,10 +30,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": 3,
-    "etag": "\"d94cdbf15bf4b039dd38ee03\""
+    "etag": "\"1ed1d67c8e262be520bc4d27\""
   },
   {
-    "id": 3,
+    "id": 2,
     "name": "Garten",
     "description": "Unter dem Dach der Fahrradgarage",
     "x": 49.006097,
@@ -41,10 +41,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": null,
-    "etag": "\"8ed995f6406a32786da706e5\""
+    "etag": "\"a6ee18f9e84fe4446f185ae7\""
   },
   {
-    "id": 6,
+    "id": 5,
     "name": "Hochbehälter Nord",
     "description": "Probenahmehahn Kammer 1",
     "x": 49.0352,
@@ -52,10 +52,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": null,
-    "etag": "\"669a26d7c950e226dcc9d2f6\""
+    "etag": "\"e91242c7e3dd3e0f4de07599\""
   },
   {
-    "id": 11,
+    "id": 10,
     "name": "Messcontainer Innenstadt",
     "description": "Verkehrsnahe Luftmessstation",
     "x": 49.0094,
@@ -63,10 +63,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": null,
-    "etag": "\"af68df649130326af2bad572\""
+    "etag": "\"2434514ae5084c8a67c9da86\""
   },
   {
-    "id": 2,
+    "id": 1,
     "name": "Test 1",
     "description": "Erster Test",
     "x": 49.006986,
@@ -74,10 +74,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": null,
-    "etag": "\"4ef3f55492c9a3a63fd491e9\""
+    "etag": "\"0fbab7e268ee78ed9189119f\""
   },
   {
-    "id": 7,
+    "id": 6,
     "name": "Wasserwerk Reinwasser",
     "description": "Reinwasserbehälter, Ausgang ins Netz",
     "x": 48.9962,
@@ -85,10 +85,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": 2,
-    "etag": "\"d2c3c46248603d6a0210f789\""
+    "etag": "\"7560def356b0120006eeb7ad\""
   },
   {
-    "id": 5,
+    "id": 4,
     "name": "Zapfstelle Kantine",
     "description": "Spülküche, Mischbatterie links",
     "x": 49.0091,
@@ -96,10 +96,10 @@
     "z": null,
     "crs_id": 1,
     "site_id": 1,
-    "etag": "\"c0cfcfb8ab8bd8313315fb08\""
+    "etag": "\"d22349e4e0bfac63b0d1898a\""
   },
   {
-    "id": 4,
+    "id": 3,
     "name": "Zapfstelle Labor 2.14",
     "description": "Kaltwasserhahn im Altbau, 2. OG",
     "x": 49.0096,
@@ -107,6 +107,6 @@
     "z": null,
     "crs_id": 1,
     "site_id": 1,
-    "etag": "\"f77b810d509029a9bdb9f614\""
+    "etag": "\"70759cdbe92f60c39ac0d026\""
   }
 ]

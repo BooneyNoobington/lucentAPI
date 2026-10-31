@@ -1,7 +1,8 @@
 def test_people(client, as_user):
     people = client.get("/v1/people", headers=as_user("grindel")).json()
     assert [p["linux_user"] for p in people][:2] == ["jd", "worf"]  # by surname
-    assert {"given_name": "System", "surname": "User", "linux_user": "grindel"}.items() <= people[-1].items()
+    grindel = next(p for p in people if p["linux_user"] == "grindel")  # lucentBASE's System User, renamed by the demo
+    assert (grindel["given_name"], grindel["surname"]) == ("Booney", "Noobington")
     assert len(people) == 6
 
 
@@ -21,8 +22,8 @@ def test_sites_have_address_and_border(client, as_user):
 
 def test_spots(client, as_user):
     spots = {s["id"]: s for s in client.get("/v1/spots", headers=as_user("grindel")).json()}
-    assert spots[3]["name"] == "Garten"
-    assert (spots[3]["x"], spots[3]["y"]) == (49.006097, 8.382112)
+    assert spots[2]["name"] == "Garten"
+    assert (spots[2]["x"], spots[2]["y"]) == (49.006097, 8.382112)
 
 
 def test_actions_carry_effects_documents_and_dependencies(client, as_user):
