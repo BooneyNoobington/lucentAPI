@@ -27,3 +27,15 @@ def test_example_responses_are_current(tmp_path):
     assert sorted(p.name for p in committed.glob("*.json")) == sorted(p.name for p in tmp_path.glob("*.json"))
     for path in tmp_path.glob("*.json"):
         assert json.loads(path.read_text()) == json.loads((committed / path.name).read_text()), path.name
+
+
+def test_package_schema_is_current():
+    expected = load_script("export_package").schema()
+    assert json.loads((ROOT / "lucent-package.schema.json").read_text()) == json.loads(expected), \
+        "run scripts/export_package.py"
+
+
+def test_demo_package_is_current():
+    expected = load_script("export_package").demo_package()
+    assert (ROOT / "src" / "lucentapi" / "data" / "demo.lucent.yaml").read_text() == expected, \
+        "run scripts/export_package.py"

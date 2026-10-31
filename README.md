@@ -162,6 +162,7 @@ and at `/docs`.
 | `GET /series` | one parameter over time at a spot or site |
 | `GET /tasks`, `POST /tasks`, `PATCH /tasks/{id}` | `PATCH` needs `If-Match` |
 | `GET /messages`, `POST /messages`, `POST /messages/{id}/read` | |
+| `GET /package` | the master data as a lucent package, JSON or YAML (`?format=yaml`) |
 
 `GET /health` needs no token.
 
@@ -201,6 +202,40 @@ A reading is exactly one of `{"decimal": …}`, `{"text": …}`, `{"boolean": �
 Errors look like `{"error": {"code", "message", "request_id", "details"?}}`. Request bodies
 with unknown fields are refused. Times are UTC: the database stores naive UTC, and the API
 answers with `Z`.
+
+## Packages
+
+A **lucent package** is a lucentBASE's master data as one document: organizations, people and
+their roles, units, parameters, methods (actions with their effects, documents, devices, people
+and dependencies), documents and their thresholds, devices, sites and spots. Measurements are
+not part of it.
+
+- Entries refer to each other by **natural keys**, never by database ids: a parameter by its
+  name, a unit by its name or a notation, an action by name and iteration, a device by name and
+  number, a person by `linux_user`. A package can be written by hand, kept in git and moved
+  between lucentBASEs.
+- **YAML or JSON.** `GET /v1/package?format=yaml` writes YAML for people: short entries on one
+  line, defaults and empty fields left out.
+- **A JSON Schema** describes the format: [lucent-package.schema.json](lucent-package.schema.json),
+  also served without a token at `/schemas/lucent-package-1.json`. The YAML export starts with a
+  `# yaml-language-server: $schema=…` line, so editors such as VS Code check the file and complete
+  names while you type. Unknown fields are refused, so a typo doesn't pass silently.
+- **The demo data** is also a package:
+  [src/lucentapi/data/demo.lucent.yaml](src/lucentapi/data/demo.lucent.yaml). It's still written by
+  `demo.py` for now; importing packages comes next, and then the file becomes the source.
+
+```yaml
+actions:
+- name: Anionen (IC)
+  iteration: 2025-02-01
+  documents: [SOP-004 Anionen (IC), Trinkwasserverordnung (TrinkwV)]
+  devices:
+  - {name: Ionenchromatograph IC-3, number: 98}
+  effects:
+  - {parameter: Nitrat, uncertainty: 5, uncertainty_class: relative}
+thresholds:
+- {parameter: Nitrat, document: Trinkwasserverordnung (TrinkwV), upper: 50}
+```
 
 ## The log
 
@@ -315,6 +350,10 @@ uv run python scripts/export_openapi.py
 uv run python scripts/export_examples.py
 ```
 
+```bash
+uv run python scripts/export_package.py
+```
+
 Clients that copy `openapi.json` and the examples (like lucentLIMS's client package) need the
 new copies too.
 
@@ -333,12 +372,14 @@ src/lucentapi/
   devdb.py       lucentBASE on SQLite, with imitated log triggers
   lims.py        status, sampling time, limits, four-eyes
   etag.py        If-Match
+  package.py     lucent packages: the format, its JSON Schema, the export
+  data/          the demo data as a package
   numbering.py   collection identifiers
-  routes/        people, locations, reference, collections, management
+  routes/        people, locations, reference, collections, management, packages
   demo.py        demo data (development and tests)
   devtokens.py   local signing key for development tokens
 dev/             seed.py, mint_token.py
-scripts/         export_openapi.py, export_examples.py
+scripts/         export_openapi.py, export_examples.py, export_package.py
 examples/        responses/: real answers on the demo data
 sql/             the API's database account
 tests/

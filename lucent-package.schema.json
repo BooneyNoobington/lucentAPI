@@ -1,0 +1,1211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "Action": {
+      "additionalProperties": false,
+      "description": "A method, in one version: the same name with a later iteration is a new version.",
+      "properties": {
+        "name": {
+          "maxLength": 50,
+          "title": "Name",
+          "type": "string"
+        },
+        "iteration": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "format": "date-time",
+              "type": "string"
+            }
+          ],
+          "description": "The version, as the date it took effect.",
+          "title": "Iteration"
+        },
+        "active": {
+          "default": true,
+          "title": "Active",
+          "type": "boolean"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 250,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "documents": {
+          "default": [],
+          "description": "Documents' names. Their thresholds are this action's limits.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Documents",
+          "type": "array"
+        },
+        "devices": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DeviceRef"
+          },
+          "title": "Devices",
+          "type": "array"
+        },
+        "people": {
+          "default": [],
+          "description": "Who works on, manages or audits the action.",
+          "items": {
+            "$ref": "#/$defs/Assignment"
+          },
+          "title": "People",
+          "type": "array"
+        },
+        "depends_on": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Dependency"
+          },
+          "title": "Depends On",
+          "type": "array"
+        },
+        "effects": {
+          "default": [],
+          "description": "What the action yields: one parameter each.",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          },
+          "title": "Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "iteration"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "Address": {
+      "additionalProperties": false,
+      "properties": {
+        "street": {
+          "maxLength": 100,
+          "title": "Street",
+          "type": "string"
+        },
+        "house_number": {
+          "title": "House Number",
+          "type": "integer"
+        },
+        "addition": {
+          "anyOf": [
+            {
+              "maxLength": 5,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Addition"
+        },
+        "zip": {
+          "maxLength": 10,
+          "title": "Zip",
+          "type": "string"
+        },
+        "district": {
+          "maxLength": 60,
+          "title": "District",
+          "type": "string"
+        },
+        "city": {
+          "maxLength": 60,
+          "title": "City",
+          "type": "string"
+        }
+      },
+      "required": [
+        "street",
+        "house_number",
+        "zip",
+        "district",
+        "city"
+      ],
+      "title": "Address",
+      "type": "object"
+    },
+    "Assignment": {
+      "additionalProperties": false,
+      "properties": {
+        "person": {
+          "description": "A person's linux_user, or their given name and surname if they have none.",
+          "title": "Person",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "auditor",
+            "manager",
+            "worker"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "person",
+        "role"
+      ],
+      "title": "Assignment",
+      "type": "object"
+    },
+    "Coefficient": {
+      "additionalProperties": false,
+      "properties": {
+        "effects": {
+          "description": "The two effects that belong together.",
+          "items": {
+            "$ref": "#/$defs/EffectRef"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Effects",
+          "type": "array"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 250,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        }
+      },
+      "required": [
+        "effects"
+      ],
+      "title": "Coefficient",
+      "type": "object"
+    },
+    "Dependency": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "description": "The name of the action this one depends on.",
+          "title": "Action",
+          "type": "string"
+        },
+        "iteration": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "format": "date-time",
+              "type": "string"
+            }
+          ],
+          "description": "Which version of it.",
+          "title": "Iteration"
+        },
+        "dependency_class": {
+          "default": "strict",
+          "enum": [
+            "strict",
+            "possibility"
+          ],
+          "title": "Dependency Class",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        }
+      },
+      "required": [
+        "action",
+        "iteration"
+      ],
+      "title": "Dependency",
+      "type": "object"
+    },
+    "Device": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 50,
+          "title": "Name",
+          "type": "string"
+        },
+        "number": {
+          "description": "Together with the name, it identifies the device.",
+          "title": "Number",
+          "type": "integer"
+        },
+        "manufacturer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An organization's name.",
+          "title": "Manufacturer"
+        },
+        "operator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An organization's name.",
+          "title": "Operator"
+        },
+        "active": {
+          "default": true,
+          "title": "Active",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "number"
+      ],
+      "title": "Device",
+      "type": "object"
+    },
+    "DeviceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "number": {
+          "title": "Number",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "number"
+      ],
+      "title": "DeviceRef",
+      "type": "object"
+    },
+    "Dimension": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 40,
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Dimension",
+      "type": "object"
+    },
+    "Document": {
+      "additionalProperties": false,
+      "description": "A link in lucentBASE: an SOP, a standard, a regulation, a manual; a file or a web page.",
+      "properties": {
+        "name": {
+          "maxLength": 50,
+          "title": "Name",
+          "type": "string"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        },
+        "file_path": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "File Path"
+        },
+        "accepted": {
+          "default": false,
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Document",
+      "type": "object"
+    },
+    "Effect": {
+      "additionalProperties": false,
+      "properties": {
+        "parameter": {
+          "description": "A parameter's name. Each parameter once per action.",
+          "title": "Parameter",
+          "type": "string"
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertainty"
+        },
+        "uncertainty_class": {
+          "anyOf": [
+            {
+              "enum": [
+                "absolute",
+                "relative"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertainty Class"
+        },
+        "uncertainty_unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A unit's name or notation, for an absolute uncertainty.",
+          "title": "Uncertainty Unit"
+        },
+        "calculation": {
+          "anyOf": [
+            {
+              "maxLength": 40,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calculation"
+        }
+      },
+      "required": [
+        "parameter"
+      ],
+      "title": "Effect",
+      "type": "object"
+    },
+    "EffectRef": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "iteration": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "format": "date-time",
+              "type": "string"
+            }
+          ],
+          "title": "Iteration"
+        },
+        "parameter": {
+          "title": "Parameter",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "iteration",
+        "parameter"
+      ],
+      "title": "EffectRef",
+      "type": "object"
+    },
+    "GeoPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "latitude": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Latitude",
+          "type": "number"
+        },
+        "longitude": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Longitude",
+          "type": "number"
+        }
+      },
+      "required": [
+        "latitude",
+        "longitude"
+      ],
+      "title": "GeoPoint",
+      "type": "object"
+    },
+    "Matrix": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 40,
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 250,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Matrix",
+      "type": "object"
+    },
+    "Organization": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 50,
+          "title": "Name",
+          "type": "string"
+        },
+        "shorthand": {
+          "anyOf": [
+            {
+              "maxLength": 15,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shorthand"
+        },
+        "relation": {
+          "anyOf": [
+            {
+              "maxLength": 25,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "e.g. Labor, Hersteller, Kunde",
+          "title": "Relation"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Organization",
+      "type": "object"
+    },
+    "Parameter": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 30,
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A unit's name or notation.",
+          "title": "Unit"
+        },
+        "value_class": {
+          "default": "decimal",
+          "description": "Which kind of raw value the parameter takes.",
+          "enum": [
+            "decimal",
+            "text",
+            "boolean",
+            "datetime"
+          ],
+          "title": "Value Class",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Parameter",
+      "type": "object"
+    },
+    "Person": {
+      "additionalProperties": false,
+      "properties": {
+        "given_name": {
+          "maxLength": 50,
+          "title": "Given Name",
+          "type": "string"
+        },
+        "surname": {
+          "maxLength": 50,
+          "title": "Surname",
+          "type": "string"
+        },
+        "linux_user": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The account the person signs in with. People are referred to by it.",
+          "title": "Linux User"
+        },
+        "organization": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An organization's name.",
+          "title": "Organization"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "maxLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "In their organization.",
+          "title": "Position"
+        },
+        "active": {
+          "default": true,
+          "description": "Whether the person can sign in.",
+          "title": "Active",
+          "type": "boolean"
+        },
+        "roles": {
+          "default": [],
+          "description": "What the person may do.",
+          "items": {
+            "enum": [
+              "sampler",
+              "analyst",
+              "reviewer",
+              "admin"
+            ],
+            "type": "string"
+          },
+          "title": "Roles",
+          "type": "array"
+        }
+      },
+      "required": [
+        "given_name",
+        "surname"
+      ],
+      "title": "Person",
+      "type": "object"
+    },
+    "ReferenceSystem": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 25,
+          "title": "Name",
+          "type": "string"
+        },
+        "epsg": {
+          "title": "Epsg",
+          "type": "integer"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        }
+      },
+      "required": [
+        "name",
+        "epsg"
+      ],
+      "title": "ReferenceSystem",
+      "type": "object"
+    },
+    "Site": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 20,
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "address": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Address"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "border": {
+          "default": [],
+          "description": "The corners in order, without repeating the first.",
+          "items": {
+            "$ref": "#/$defs/GeoPoint"
+          },
+          "title": "Border",
+          "type": "array"
+        },
+        "reference_system": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A reference system's name.",
+          "title": "Reference System"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Site",
+      "type": "object"
+    },
+    "Spot": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 50,
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 50,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "latitude": {
+          "anyOf": [
+            {
+              "maximum": 90,
+              "minimum": -90,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "lucentBASE's spot.x.",
+          "title": "Latitude"
+        },
+        "longitude": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": -180,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "lucentBASE's spot.y.",
+          "title": "Longitude"
+        },
+        "z": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Z"
+        },
+        "z_class": {
+          "anyOf": [
+            {
+              "maxLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Z Class"
+        },
+        "z_unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A unit's name or notation.",
+          "title": "Z Unit"
+        },
+        "reference_system": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A reference system's name.",
+          "title": "Reference System"
+        },
+        "site": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The site the spot lies in.",
+          "title": "Site"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Spot",
+      "type": "object"
+    },
+    "Threshold": {
+      "additionalProperties": false,
+      "properties": {
+        "parameter": {
+          "description": "A parameter's name.",
+          "title": "Parameter",
+          "type": "string"
+        },
+        "document": {
+          "description": "The document (e.g. a regulation) that sets the limit.",
+          "title": "Document",
+          "type": "string"
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lower"
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Upper"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        }
+      },
+      "required": [
+        "parameter",
+        "document"
+      ],
+      "title": "Threshold",
+      "type": "object"
+    },
+    "Unit": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 40,
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "dimension": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A dimension's name.",
+          "title": "Dimension"
+        },
+        "notations": {
+          "default": [],
+          "description": "Ways to write the unit, e.g. mg/L. Each is unique, and others refer to the unit by its name or by any of them.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Notations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Unit",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A lucentBASE's master data. Sections may be left out; entries refer to each other by name.",
+  "properties": {
+    "format": {
+      "const": "lucent/1",
+      "description": "The package format and its version.",
+      "title": "Format",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "organizations": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Organization"
+      },
+      "title": "Organizations",
+      "type": "array"
+    },
+    "people": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Person"
+      },
+      "title": "People",
+      "type": "array"
+    },
+    "reference_systems": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ReferenceSystem"
+      },
+      "title": "Reference Systems",
+      "type": "array"
+    },
+    "dimensions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Dimension"
+      },
+      "title": "Dimensions",
+      "type": "array"
+    },
+    "units": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Unit"
+      },
+      "title": "Units",
+      "type": "array"
+    },
+    "matrices": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Matrix"
+      },
+      "title": "Matrices",
+      "type": "array"
+    },
+    "parameters": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Parameter"
+      },
+      "title": "Parameters",
+      "type": "array"
+    },
+    "devices": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Device"
+      },
+      "title": "Devices",
+      "type": "array"
+    },
+    "documents": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Document"
+      },
+      "title": "Documents",
+      "type": "array"
+    },
+    "sites": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Site"
+      },
+      "title": "Sites",
+      "type": "array"
+    },
+    "spots": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Spot"
+      },
+      "title": "Spots",
+      "type": "array"
+    },
+    "actions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Action"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "thresholds": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Threshold"
+      },
+      "title": "Thresholds",
+      "type": "array"
+    },
+    "coefficients": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Coefficient"
+      },
+      "title": "Coefficients",
+      "type": "array"
+    }
+  },
+  "required": [
+    "format"
+  ],
+  "title": "lucent package",
+  "type": "object"
+}

@@ -14,7 +14,7 @@ from .auth import KeySet
 from .checks import check_schema
 from .config import Settings
 from .db import make_engine
-from .routes import collections, locations, management, people, reference
+from .routes import collections, locations, management, packages, people, reference
 
 # The logo is a relative link, so it works under any root path (/docs and /redoc sit beside /static).
 DESCRIPTION = """
@@ -40,6 +40,10 @@ thresholds of its parameter in the documents of its action.
 
 **Concurrent changes.** Records that can be changed carry an `etag`. Send it in `If-Match`;
 if the record changed meanwhile, the answer is 412.
+
+**Packages.** `GET /v1/package` exports the master data (methods, parameters, units, documents,
+thresholds, devices, locations, people) as a lucent package in JSON or YAML; its JSON Schema is
+at `/schemas/lucent-package-1.json`.
 
 **Errors** look like `{"error": {"code", "message", "request_id", "details"?}}`.
 
@@ -93,4 +97,5 @@ def create_app(settings: Settings | None = None, engine: Engine | None = None) -
     app.include_router(reference.router)
     app.include_router(collections.router)
     app.include_router(management.router)
+    app.include_router(packages.router)
     return app

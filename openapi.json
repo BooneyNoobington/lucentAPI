@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "lucentAPI",
-    "description": "\n<img src=\"static/lucentLIMS-logo.svg\" alt=\"lucentLIMS\" width=\"300\">\n\nAn HTTPS API for lucentBASE, for lucentLIMS and any other client.\n\n**Authentication.** Send an access token from the OpenID Connect provider as\n`Authorization: Bearer <token>`. The token's username has to belong to an active person in\nlucentBASE (`person.linux_user`); lucentBASE logs every change under that person.\n\n**Roles** come from lucentBASE (`j_person_role`), not from the token: `sampler` registers\ncollections, `analyst` records raw values, `reviewer` accepts them (never their own: four-eyes\nprinciple), `admin` may do everything, including managing people and their roles. Reading\nneeds no role.\n\n**Collections** have **values**, one per planned effect (an action's parameter), and values\nhave **raw values**: the readings, each accepted on its own. A raw value's limits are the\nthresholds of its parameter in the documents of its action.\n\n**Audit trail.** lucentBASE's triggers log every change in `l_<table>`, with the person and the\n`note` a request gives.\n\n**Concurrent changes.** Records that can be changed carry an `etag`. Send it in `If-Match`;\nif the record changed meanwhile, the answer is 412.\n\n**Errors** look like `{\"error\": {\"code\", \"message\", \"request_id\", \"details\"?}}`.\n\n**Times** are UTC.\n",
+    "description": "\n<img src=\"static/lucentLIMS-logo.svg\" alt=\"lucentLIMS\" width=\"300\">\n\nAn HTTPS API for lucentBASE, for lucentLIMS and any other client.\n\n**Authentication.** Send an access token from the OpenID Connect provider as\n`Authorization: Bearer <token>`. The token's username has to belong to an active person in\nlucentBASE (`person.linux_user`); lucentBASE logs every change under that person.\n\n**Roles** come from lucentBASE (`j_person_role`), not from the token: `sampler` registers\ncollections, `analyst` records raw values, `reviewer` accepts them (never their own: four-eyes\nprinciple), `admin` may do everything, including managing people and their roles. Reading\nneeds no role.\n\n**Collections** have **values**, one per planned effect (an action's parameter), and values\nhave **raw values**: the readings, each accepted on its own. A raw value's limits are the\nthresholds of its parameter in the documents of its action.\n\n**Audit trail.** lucentBASE's triggers log every change in `l_<table>`, with the person and the\n`note` a request gives.\n\n**Concurrent changes.** Records that can be changed carry an `etag`. Send it in `If-Match`;\nif the record changed meanwhile, the answer is 412.\n\n**Packages.** `GET /v1/package` exports the master data (methods, parameters, units, documents,\nthresholds, devices, locations, people) as a lucent package in JSON or YAML; its JSON Schema is\nat `/schemas/lucent-package-1.json`.\n\n**Errors** look like `{\"error\": {\"code\", \"message\", \"request_id\", \"details\"?}}`.\n\n**Times** are UTC.\n",
     "version": "0.1.0"
   },
   "paths": {
@@ -70,7 +70,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Person"
+                    "$ref": "#/components/schemas/lucentapi__models__Person"
                   },
                   "type": "array",
                   "title": "Response List People V1 People Get"
@@ -108,7 +108,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Person"
+                  "$ref": "#/components/schemas/lucentapi__models__Person"
                 }
               }
             }
@@ -160,7 +160,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Person"
+                  "$ref": "#/components/schemas/lucentapi__models__Person"
                 }
               }
             }
@@ -216,7 +216,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Person"
+                  "$ref": "#/components/schemas/lucentapi__models__Person"
                 }
               }
             }
@@ -305,7 +305,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Person"
+                  "$ref": "#/components/schemas/lucentapi__models__Person"
                 }
               }
             }
@@ -389,7 +389,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/ReferenceSystem"
+                    "$ref": "#/components/schemas/lucentapi__models__ReferenceSystem"
                   },
                   "type": "array",
                   "title": "Response Reference Systems V1 Crs Get"
@@ -420,7 +420,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Site"
+                    "$ref": "#/components/schemas/lucentapi__models__Site"
                   },
                   "type": "array",
                   "title": "Response List Sites V1 Sites Get"
@@ -458,7 +458,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Site"
+                  "$ref": "#/components/schemas/lucentapi__models__Site"
                 }
               }
             }
@@ -495,7 +495,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Spot"
+                    "$ref": "#/components/schemas/lucentapi__models__Spot"
                   },
                   "type": "array",
                   "title": "Response List Spots V1 Spots Get"
@@ -533,7 +533,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Spot"
+                  "$ref": "#/components/schemas/lucentapi__models__Spot"
                 }
               }
             }
@@ -596,7 +596,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Site"
+                  "$ref": "#/components/schemas/lucentapi__models__Site"
                 }
               }
             }
@@ -654,7 +654,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Spot"
+                  "$ref": "#/components/schemas/lucentapi__models__Spot"
                 }
               }
             }
@@ -714,7 +714,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Organization"
+                    "$ref": "#/components/schemas/lucentapi__models__Organization"
                   },
                   "type": "array",
                   "title": "Response Organizations V1 Organizations Get"
@@ -745,7 +745,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Matrix"
+                    "$ref": "#/components/schemas/lucentapi__models__Matrix"
                   },
                   "type": "array",
                   "title": "Response Matrices V1 Matrices Get"
@@ -815,7 +815,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Dimension"
+                    "$ref": "#/components/schemas/lucentapi__models__Dimension"
                   },
                   "type": "array",
                   "title": "Response Dimensions V1 Dimensions Get"
@@ -846,7 +846,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Unit"
+                    "$ref": "#/components/schemas/lucentapi__models__Unit"
                   },
                   "type": "array",
                   "title": "Response Units V1 Units Get"
@@ -877,7 +877,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Parameter"
+                    "$ref": "#/components/schemas/lucentapi__models__Parameter"
                   },
                   "type": "array",
                   "title": "Response Parameters V1 Parameters Get"
@@ -908,7 +908,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Device"
+                    "$ref": "#/components/schemas/lucentapi__models__Device"
                   },
                   "type": "array",
                   "title": "Response Devices V1 Devices Get"
@@ -940,7 +940,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Document"
+                    "$ref": "#/components/schemas/lucentapi__models__Document"
                   },
                   "type": "array",
                   "title": "Response Documents V1 Documents Get"
@@ -972,7 +972,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Action"
+                    "$ref": "#/components/schemas/lucentapi__models__Action"
                   },
                   "type": "array",
                   "title": "Response Actions V1 Actions Get"
@@ -1004,7 +1004,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Coefficient"
+                    "$ref": "#/components/schemas/lucentapi__models__Coefficient"
                   },
                   "type": "array",
                   "title": "Response Coefficients V1 Coefficients Get"
@@ -1036,7 +1036,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Threshold"
+                    "$ref": "#/components/schemas/lucentapi__models__Threshold"
                   },
                   "type": "array",
                   "title": "Response Thresholds V1 Thresholds Get"
@@ -2081,7 +2081,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Device"
+                  "$ref": "#/components/schemas/lucentapi__models__Device"
                 }
               }
             }
@@ -2232,92 +2232,68 @@
           }
         }
       }
+    },
+    "/v1/package": {
+      "get": {
+        "tags": [
+          "packages"
+        ],
+        "summary": "Export Package",
+        "description": "The master data of this lucentBASE as a lucent package: organizations, people and roles,\nunits, parameters, methods, documents, thresholds, devices and locations. Measurements are\nnot part of it.",
+        "operationId": "export_package_v1_package_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "json",
+                "yaml"
+              ],
+              "type": "string",
+              "default": "json",
+              "title": "Format"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The package; YAML with `format=yaml`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Package"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "Action": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "iteration": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Iteration",
-            "description": "The version of the action, as a point in time."
-          },
-          "active": {
-            "type": "boolean",
-            "title": "Active"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "document_ids": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array",
-            "title": "Document Ids"
-          },
-          "device_ids": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array",
-            "title": "Device Ids"
-          },
-          "people": {
-            "items": {
-              "$ref": "#/components/schemas/ActionPerson"
-            },
-            "type": "array",
-            "title": "People"
-          },
-          "dependencies": {
-            "items": {
-              "$ref": "#/components/schemas/Dependency"
-            },
-            "type": "array",
-            "title": "Dependencies"
-          },
-          "effects": {
-            "items": {
-              "$ref": "#/components/schemas/Effect"
-            },
-            "type": "array",
-            "title": "Effects"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "iteration",
-          "active",
-          "description",
-          "document_ids",
-          "device_ids",
-          "people",
-          "dependencies",
-          "effects"
-        ],
-        "title": "Action"
-      },
       "ActionPerson": {
         "properties": {
           "person_id": {
@@ -2341,134 +2317,30 @@
         ],
         "title": "ActionPerson"
       },
-      "Address": {
+      "Assignment": {
         "properties": {
-          "street": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Street"
+          "person": {
+            "type": "string",
+            "title": "Person",
+            "description": "A person's linux_user, or their given name and surname if they have none."
           },
-          "house_number": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
+          "role": {
+            "type": "string",
+            "enum": [
+              "auditor",
+              "manager",
+              "worker"
             ],
-            "title": "House Number"
-          },
-          "addition": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Addition"
-          },
-          "zip": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Zip"
-          },
-          "district": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "District"
-          },
-          "city": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "City"
+            "title": "Role"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
-          "street",
-          "house_number",
-          "addition",
-          "zip",
-          "district",
-          "city"
+          "person",
+          "role"
         ],
-        "title": "Address"
-      },
-      "Coefficient": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "effect1_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Effect1 Id"
-          },
-          "effect2_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Effect2 Id"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "effect1_id",
-          "effect2_id",
-          "description"
-        ],
-        "title": "Coefficient"
+        "title": "Assignment"
       },
       "Collection": {
         "properties": {
@@ -2888,100 +2760,6 @@
         ],
         "title": "Configuration"
       },
-      "Dependency": {
-        "properties": {
-          "action_id": {
-            "type": "integer",
-            "title": "Action Id"
-          },
-          "dependency_class": {
-            "type": "string",
-            "enum": [
-              "strict",
-              "possibility"
-            ],
-            "title": "Dependency Class"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          }
-        },
-        "type": "object",
-        "required": [
-          "action_id",
-          "dependency_class",
-          "description"
-        ],
-        "title": "Dependency",
-        "description": "This action depends on `action_id` (j_action_action: id_action1 depends on id_action2)."
-      },
-      "Device": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "number": {
-            "type": "integer",
-            "title": "Number"
-          },
-          "manufacturer_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Manufacturer Id",
-            "description": "An organization."
-          },
-          "operator_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Operator Id",
-            "description": "An organization, as in lucentBASE."
-          },
-          "active": {
-            "type": "boolean",
-            "title": "Active"
-          },
-          "etag": {
-            "type": "string",
-            "title": "Etag"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "number",
-          "manufacturer_id",
-          "operator_id",
-          "active",
-          "etag"
-        ],
-        "title": "Device"
-      },
       "DevicePatch": {
         "properties": {
           "note": {
@@ -3009,178 +2787,59 @@
         ],
         "title": "DevicePatch"
       },
-      "Dimension": {
+      "DeviceRef": {
         "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
           "name": {
             "type": "string",
             "title": "Name"
           },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
+          "number": {
+            "type": "integer",
+            "title": "Number"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
-          "id",
           "name",
-          "description"
+          "number"
         ],
-        "title": "Dimension"
+        "title": "DeviceRef"
       },
-      "Document": {
+      "EffectRef": {
         "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
+          "action": {
             "type": "string",
-            "title": "Name"
+            "title": "Action"
           },
-          "uri": {
+          "iteration": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "date"
               },
               {
-                "type": "null"
+                "type": "string",
+                "format": "date-time"
               }
             ],
-            "title": "Uri"
+            "title": "Iteration"
           },
-          "file_path": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "File Path"
-          },
-          "accepted": {
-            "type": "boolean",
-            "title": "Accepted"
-          },
-          "sha256": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sha256"
-          },
-          "action_ids": {
-            "items": {
-              "type": "integer"
-            },
-            "type": "array",
-            "title": "Action Ids",
-            "description": "Actions that refer to it (j_action_link)."
+          "parameter": {
+            "type": "string",
+            "title": "Parameter"
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
-          "id",
-          "name",
-          "uri",
-          "file_path",
-          "accepted",
-          "sha256",
-          "action_ids"
+          "action",
+          "iteration",
+          "parameter"
         ],
-        "title": "Document",
-        "description": "A link: an SOP, a standard, a regulation, any file or web page."
+        "title": "EffectRef"
       },
-      "Effect": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "action_id": {
-            "type": "integer",
-            "title": "Action Id"
-          },
-          "parameter_id": {
-            "type": "integer",
-            "title": "Parameter Id"
-          },
-          "uncertainty": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Uncertainty"
-          },
-          "uncertainty_class": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Uncertainty Class"
-          },
-          "uncertainty_unit_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Uncertainty Unit Id"
-          },
-          "calculation": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Calculation"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "action_id",
-          "parameter_id",
-          "uncertainty",
-          "uncertainty_class",
-          "uncertainty_unit_id",
-          "calculation"
-        ],
-        "title": "Effect",
-        "description": "What an action yields: one parameter, with method-specific uncertainty."
-      },
-      "GeoPoint": {
+      "GeoPoint-Input": {
         "properties": {
           "latitude": {
             "type": "number",
@@ -3359,40 +3018,10 @@
         ],
         "title": "Limit"
       },
-      "Matrix": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "description"
-        ],
-        "title": "Matrix"
-      },
       "Me": {
         "properties": {
           "person": {
-            "$ref": "#/components/schemas/Person"
+            "$ref": "#/components/schemas/lucentapi__models__Person"
           },
           "roles": {
             "items": {
@@ -3516,13 +3145,15 @@
         "type": "object",
         "title": "Note"
       },
-      "Organization": {
+      "Package": {
         "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
+          "format": {
+            "type": "string",
+            "const": "lucent/1",
+            "title": "Format",
+            "description": "The package format and its version."
           },
-          "name": {
+          "description": {
             "anyOf": [
               {
                 "type": "string"
@@ -3531,39 +3162,128 @@
                 "type": "null"
               }
             ],
-            "title": "Name"
+            "title": "Description"
           },
-          "shorthand": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Shorthand"
+          "organizations": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Organization"
+            },
+            "type": "array",
+            "title": "Organizations",
+            "default": []
           },
-          "relation": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Relation"
+          "people": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Person"
+            },
+            "type": "array",
+            "title": "People",
+            "default": []
+          },
+          "reference_systems": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__ReferenceSystem"
+            },
+            "type": "array",
+            "title": "Reference Systems",
+            "default": []
+          },
+          "dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Dimension"
+            },
+            "type": "array",
+            "title": "Dimensions",
+            "default": []
+          },
+          "units": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Unit"
+            },
+            "type": "array",
+            "title": "Units",
+            "default": []
+          },
+          "matrices": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Matrix"
+            },
+            "type": "array",
+            "title": "Matrices",
+            "default": []
+          },
+          "parameters": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Parameter"
+            },
+            "type": "array",
+            "title": "Parameters",
+            "default": []
+          },
+          "devices": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Device"
+            },
+            "type": "array",
+            "title": "Devices",
+            "default": []
+          },
+          "documents": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Document"
+            },
+            "type": "array",
+            "title": "Documents",
+            "default": []
+          },
+          "sites": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Site"
+            },
+            "type": "array",
+            "title": "Sites",
+            "default": []
+          },
+          "spots": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Spot"
+            },
+            "type": "array",
+            "title": "Spots",
+            "default": []
+          },
+          "actions": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Action"
+            },
+            "type": "array",
+            "title": "Actions",
+            "default": []
+          },
+          "thresholds": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Threshold"
+            },
+            "type": "array",
+            "title": "Thresholds",
+            "default": []
+          },
+          "coefficients": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Coefficient"
+            },
+            "type": "array",
+            "title": "Coefficients",
+            "default": []
           }
         },
+        "additionalProperties": false,
         "type": "object",
         "required": [
-          "id",
-          "name",
-          "shorthand",
-          "relation"
+          "format"
         ],
-        "title": "Organization"
+        "title": "lucent package",
+        "description": "A lucentBASE's master data. Sections may be left out; entries refer to each other by name."
       },
       "Page_Collection_": {
         "properties": {
@@ -3626,147 +3346,6 @@
           "offset"
         ],
         "title": "Page[Value]"
-      },
-      "Parameter": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "unit_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Unit Id"
-          },
-          "value_class": {
-            "type": "string",
-            "enum": [
-              "decimal",
-              "text",
-              "boolean",
-              "datetime"
-            ],
-            "title": "Value Class"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "description",
-          "unit_id",
-          "value_class"
-        ],
-        "title": "Parameter"
-      },
-      "Person": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "given_name": {
-            "type": "string",
-            "title": "Given Name"
-          },
-          "surname": {
-            "type": "string",
-            "title": "Surname"
-          },
-          "linux_user": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Linux User",
-            "description": "The account the person signs in with (the token's username)."
-          },
-          "organization_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Organization Id"
-          },
-          "position": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Position",
-            "description": "In their organization, from j_person_organization."
-          },
-          "active": {
-            "type": "boolean",
-            "title": "Active",
-            "description": "Whether the person can sign in. Inactive people stay in the history."
-          },
-          "roles": {
-            "items": {
-              "type": "string",
-              "enum": [
-                "sampler",
-                "analyst",
-                "reviewer",
-                "admin"
-              ]
-            },
-            "type": "array",
-            "title": "Roles",
-            "description": "What the person may do, from j_person_role."
-          },
-          "etag": {
-            "type": "string",
-            "title": "Etag",
-            "description": "Send it as If-Match when changing the person or their roles."
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "given_name",
-          "surname",
-          "linux_user",
-          "organization_id",
-          "position",
-          "active",
-          "roles",
-          "etag"
-        ],
-        "title": "Person"
       },
       "PersonIn": {
         "properties": {
@@ -4193,41 +3772,6 @@
         "title": "Reading",
         "description": "What a raw value holds: exactly one of the four, matching the parameter's value class."
       },
-      "ReferenceSystem": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "epsg": {
-            "type": "integer",
-            "title": "Epsg"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "epsg",
-          "name",
-          "description"
-        ],
-        "title": "ReferenceSystem"
-      },
       "RoleInfo": {
         "properties": {
           "name": {
@@ -4342,73 +3886,6 @@
         ],
         "title": "SeriesPoint"
       },
-      "Site": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "address": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Address"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "border": {
-            "items": {
-              "$ref": "#/components/schemas/GeoPoint"
-            },
-            "type": "array",
-            "title": "Border"
-          },
-          "crs_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Crs Id"
-          },
-          "etag": {
-            "type": "string",
-            "title": "Etag",
-            "description": "Send it as If-Match when changing the site."
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "description",
-          "address",
-          "border",
-          "crs_id",
-          "etag"
-        ],
-        "title": "Site"
-      },
       "SiteIn": {
         "properties": {
           "note": {
@@ -4445,7 +3922,7 @@
           },
           "border": {
             "items": {
-              "$ref": "#/components/schemas/GeoPoint"
+              "$ref": "#/components/schemas/GeoPoint-Input"
             },
             "type": "array",
             "maxItems": 500,
@@ -4518,7 +3995,7 @@
             "anyOf": [
               {
                 "items": {
-                  "$ref": "#/components/schemas/GeoPoint"
+                  "$ref": "#/components/schemas/GeoPoint-Input"
                 },
                 "type": "array",
                 "maxItems": 500,
@@ -4536,104 +4013,6 @@
         "type": "object",
         "title": "SitePatch",
         "description": "Fields left out stay as they are. An empty description removes it."
-      },
-      "Spot": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "x": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "X",
-            "description": "Latitude, as in lucentBASE."
-          },
-          "y": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Y",
-            "description": "Longitude, as in lucentBASE."
-          },
-          "z": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Z"
-          },
-          "crs_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Crs Id"
-          },
-          "site_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Site Id"
-          },
-          "etag": {
-            "type": "string",
-            "title": "Etag",
-            "description": "Send it as If-Match when changing the spot."
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "description",
-          "x",
-          "y",
-          "z",
-          "crs_id",
-          "site_id",
-          "etag"
-        ],
-        "title": "Spot"
       },
       "SpotIn": {
         "properties": {
@@ -4975,116 +4354,6 @@
         "type": "object",
         "title": "TaskPatch"
       },
-      "Threshold": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "parameter_id": {
-            "type": "integer",
-            "title": "Parameter Id"
-          },
-          "document_id": {
-            "type": "integer",
-            "title": "Document Id"
-          },
-          "lower_limit": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Lower Limit"
-          },
-          "upper_limit": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Upper Limit"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "parameter_id",
-          "document_id",
-          "lower_limit",
-          "upper_limit",
-          "description"
-        ],
-        "title": "Threshold",
-        "description": "Limits of a parameter in the context of a document, in the parameter's unit."
-      },
-      "Unit": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
-          },
-          "notations": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array",
-            "title": "Notations"
-          },
-          "dimension_id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Dimension Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "description",
-          "notations",
-          "dimension_id"
-        ],
-        "title": "Unit"
-      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -5177,6 +4446,1985 @@
         ],
         "title": "Value",
         "description": "A collection's slot for one effect; its raw values are the readings, oldest first."
+      },
+      "lucentapi__models__Action": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "iteration": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Iteration",
+            "description": "The version of the action, as a point in time."
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "document_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Document Ids"
+          },
+          "device_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Device Ids"
+          },
+          "people": {
+            "items": {
+              "$ref": "#/components/schemas/ActionPerson"
+            },
+            "type": "array",
+            "title": "People"
+          },
+          "dependencies": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__models__Dependency"
+            },
+            "type": "array",
+            "title": "Dependencies"
+          },
+          "effects": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__models__Effect"
+            },
+            "type": "array",
+            "title": "Effects"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "iteration",
+          "active",
+          "description",
+          "document_ids",
+          "device_ids",
+          "people",
+          "dependencies",
+          "effects"
+        ],
+        "title": "Action"
+      },
+      "lucentapi__models__Address": {
+        "properties": {
+          "street": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Street"
+          },
+          "house_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "House Number"
+          },
+          "addition": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Addition"
+          },
+          "zip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zip"
+          },
+          "district": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "District"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          }
+        },
+        "type": "object",
+        "required": [
+          "street",
+          "house_number",
+          "addition",
+          "zip",
+          "district",
+          "city"
+        ],
+        "title": "Address"
+      },
+      "lucentapi__models__Coefficient": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "effect1_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effect1 Id"
+          },
+          "effect2_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effect2 Id"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "effect1_id",
+          "effect2_id",
+          "description"
+        ],
+        "title": "Coefficient"
+      },
+      "lucentapi__models__Dependency": {
+        "properties": {
+          "action_id": {
+            "type": "integer",
+            "title": "Action Id"
+          },
+          "dependency_class": {
+            "type": "string",
+            "enum": [
+              "strict",
+              "possibility"
+            ],
+            "title": "Dependency Class"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action_id",
+          "dependency_class",
+          "description"
+        ],
+        "title": "Dependency",
+        "description": "This action depends on `action_id` (j_action_action: id_action1 depends on id_action2)."
+      },
+      "lucentapi__models__Device": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "manufacturer_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manufacturer Id",
+            "description": "An organization."
+          },
+          "operator_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operator Id",
+            "description": "An organization, as in lucentBASE."
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "number",
+          "manufacturer_id",
+          "operator_id",
+          "active",
+          "etag"
+        ],
+        "title": "Device"
+      },
+      "lucentapi__models__Dimension": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description"
+        ],
+        "title": "Dimension"
+      },
+      "lucentapi__models__Document": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uri"
+          },
+          "file_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Path"
+          },
+          "accepted": {
+            "type": "boolean",
+            "title": "Accepted"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sha256"
+          },
+          "action_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Action Ids",
+            "description": "Actions that refer to it (j_action_link)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "uri",
+          "file_path",
+          "accepted",
+          "sha256",
+          "action_ids"
+        ],
+        "title": "Document",
+        "description": "A link: an SOP, a standard, a regulation, any file or web page."
+      },
+      "lucentapi__models__Effect": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "action_id": {
+            "type": "integer",
+            "title": "Action Id"
+          },
+          "parameter_id": {
+            "type": "integer",
+            "title": "Parameter Id"
+          },
+          "uncertainty": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty"
+          },
+          "uncertainty_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty Class"
+          },
+          "uncertainty_unit_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty Unit Id"
+          },
+          "calculation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "action_id",
+          "parameter_id",
+          "uncertainty",
+          "uncertainty_class",
+          "uncertainty_unit_id",
+          "calculation"
+        ],
+        "title": "Effect",
+        "description": "What an action yields: one parameter, with method-specific uncertainty."
+      },
+      "lucentapi__models__GeoPoint": {
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Longitude"
+          }
+        },
+        "type": "object",
+        "required": [
+          "latitude",
+          "longitude"
+        ],
+        "title": "GeoPoint"
+      },
+      "lucentapi__models__Matrix": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description"
+        ],
+        "title": "Matrix"
+      },
+      "lucentapi__models__Organization": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "shorthand": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shorthand"
+          },
+          "relation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "shorthand",
+          "relation"
+        ],
+        "title": "Organization"
+      },
+      "lucentapi__models__Parameter": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "unit_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Id"
+          },
+          "value_class": {
+            "type": "string",
+            "enum": [
+              "decimal",
+              "text",
+              "boolean",
+              "datetime"
+            ],
+            "title": "Value Class"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "unit_id",
+          "value_class"
+        ],
+        "title": "Parameter"
+      },
+      "lucentapi__models__Person": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "given_name": {
+            "type": "string",
+            "title": "Given Name"
+          },
+          "surname": {
+            "type": "string",
+            "title": "Surname"
+          },
+          "linux_user": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linux User",
+            "description": "The account the person signs in with (the token's username)."
+          },
+          "organization_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Organization Id"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position",
+            "description": "In their organization, from j_person_organization."
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "description": "Whether the person can sign in. Inactive people stay in the history."
+          },
+          "roles": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "sampler",
+                "analyst",
+                "reviewer",
+                "admin"
+              ]
+            },
+            "type": "array",
+            "title": "Roles",
+            "description": "What the person may do, from j_person_role."
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag",
+            "description": "Send it as If-Match when changing the person or their roles."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "given_name",
+          "surname",
+          "linux_user",
+          "organization_id",
+          "position",
+          "active",
+          "roles",
+          "etag"
+        ],
+        "title": "Person"
+      },
+      "lucentapi__models__ReferenceSystem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "epsg": {
+            "type": "integer",
+            "title": "Epsg"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "epsg",
+          "name",
+          "description"
+        ],
+        "title": "ReferenceSystem"
+      },
+      "lucentapi__models__Site": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/lucentapi__models__Address"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "border": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__models__GeoPoint"
+            },
+            "type": "array",
+            "title": "Border"
+          },
+          "crs_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs Id"
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag",
+            "description": "Send it as If-Match when changing the site."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "address",
+          "border",
+          "crs_id",
+          "etag"
+        ],
+        "title": "Site"
+      },
+      "lucentapi__models__Spot": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "x": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "X",
+            "description": "Latitude, as in lucentBASE."
+          },
+          "y": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Y",
+            "description": "Longitude, as in lucentBASE."
+          },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          },
+          "crs_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs Id"
+          },
+          "site_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Id"
+          },
+          "etag": {
+            "type": "string",
+            "title": "Etag",
+            "description": "Send it as If-Match when changing the spot."
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "x",
+          "y",
+          "z",
+          "crs_id",
+          "site_id",
+          "etag"
+        ],
+        "title": "Spot"
+      },
+      "lucentapi__models__Threshold": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "parameter_id": {
+            "type": "integer",
+            "title": "Parameter Id"
+          },
+          "document_id": {
+            "type": "integer",
+            "title": "Document Id"
+          },
+          "lower_limit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower Limit"
+          },
+          "upper_limit": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper Limit"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "parameter_id",
+          "document_id",
+          "lower_limit",
+          "upper_limit",
+          "description"
+        ],
+        "title": "Threshold",
+        "description": "Limits of a parameter in the context of a document, in the parameter's unit."
+      },
+      "lucentapi__models__Unit": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "notations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notations"
+          },
+          "dimension_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dimension Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "notations",
+          "dimension_id"
+        ],
+        "title": "Unit"
+      },
+      "lucentapi__package__Action": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "title": "Name"
+          },
+          "iteration": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ],
+            "title": "Iteration",
+            "description": "The version, as the date it took effect."
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 250
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "documents": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Documents",
+            "description": "Documents' names. Their thresholds are this action's limits.",
+            "default": []
+          },
+          "devices": {
+            "items": {
+              "$ref": "#/components/schemas/DeviceRef"
+            },
+            "type": "array",
+            "title": "Devices",
+            "default": []
+          },
+          "people": {
+            "items": {
+              "$ref": "#/components/schemas/Assignment"
+            },
+            "type": "array",
+            "title": "People",
+            "description": "Who works on, manages or audits the action.",
+            "default": []
+          },
+          "depends_on": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Dependency"
+            },
+            "type": "array",
+            "title": "Depends On",
+            "default": []
+          },
+          "effects": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__Effect"
+            },
+            "type": "array",
+            "title": "Effects",
+            "description": "What the action yields: one parameter each.",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "iteration"
+        ],
+        "title": "Action",
+        "description": "A method, in one version: the same name with a later iteration is a new version."
+      },
+      "lucentapi__package__Address": {
+        "properties": {
+          "street": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Street"
+          },
+          "house_number": {
+            "type": "integer",
+            "title": "House Number"
+          },
+          "addition": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 5
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Addition"
+          },
+          "zip": {
+            "type": "string",
+            "maxLength": 10,
+            "title": "Zip"
+          },
+          "district": {
+            "type": "string",
+            "maxLength": 60,
+            "title": "District"
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 60,
+            "title": "City"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "street",
+          "house_number",
+          "zip",
+          "district",
+          "city"
+        ],
+        "title": "Address"
+      },
+      "lucentapi__package__Coefficient": {
+        "properties": {
+          "effects": {
+            "items": {
+              "$ref": "#/components/schemas/EffectRef"
+            },
+            "type": "array",
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Effects",
+            "description": "The two effects that belong together."
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 250
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "effects"
+        ],
+        "title": "Coefficient"
+      },
+      "lucentapi__package__Dependency": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "title": "Action",
+            "description": "The name of the action this one depends on."
+          },
+          "iteration": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "string",
+                "format": "date-time"
+              }
+            ],
+            "title": "Iteration",
+            "description": "Which version of it."
+          },
+          "dependency_class": {
+            "type": "string",
+            "enum": [
+              "strict",
+              "possibility"
+            ],
+            "title": "Dependency Class",
+            "default": "strict"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "action",
+          "iteration"
+        ],
+        "title": "Dependency"
+      },
+      "lucentapi__package__Device": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "title": "Name"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number",
+            "description": "Together with the name, it identifies the device."
+          },
+          "manufacturer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manufacturer",
+            "description": "An organization's name."
+          },
+          "operator": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operator",
+            "description": "An organization's name."
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "number"
+        ],
+        "title": "Device"
+      },
+      "lucentapi__package__Dimension": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Dimension"
+      },
+      "lucentapi__package__Document": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "title": "Name"
+          },
+          "uri": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uri"
+          },
+          "file_path": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Path"
+          },
+          "accepted": {
+            "type": "boolean",
+            "title": "Accepted",
+            "default": false
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sha256"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Document",
+        "description": "A link in lucentBASE: an SOP, a standard, a regulation, a manual; a file or a web page."
+      },
+      "lucentapi__package__Effect": {
+        "properties": {
+          "parameter": {
+            "type": "string",
+            "title": "Parameter",
+            "description": "A parameter's name. Each parameter once per action."
+          },
+          "uncertainty": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty"
+          },
+          "uncertainty_class": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "absolute",
+                  "relative"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty Class"
+          },
+          "uncertainty_unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uncertainty Unit",
+            "description": "A unit's name or notation, for an absolute uncertainty."
+          },
+          "calculation": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 40
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculation"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "parameter"
+        ],
+        "title": "Effect"
+      },
+      "lucentapi__package__GeoPoint": {
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "maximum": 90.0,
+            "minimum": -90.0,
+            "title": "Latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "maximum": 180.0,
+            "minimum": -180.0,
+            "title": "Longitude"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "latitude",
+          "longitude"
+        ],
+        "title": "GeoPoint"
+      },
+      "lucentapi__package__Matrix": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 250
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Matrix"
+      },
+      "lucentapi__package__Organization": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "title": "Name"
+          },
+          "shorthand": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 15
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shorthand"
+          },
+          "relation": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 25
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relation",
+            "description": "e.g. Labor, Hersteller, Kunde"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Organization"
+      },
+      "lucentapi__package__Parameter": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 30,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit",
+            "description": "A unit's name or notation."
+          },
+          "value_class": {
+            "type": "string",
+            "enum": [
+              "decimal",
+              "text",
+              "boolean",
+              "datetime"
+            ],
+            "title": "Value Class",
+            "description": "Which kind of raw value the parameter takes.",
+            "default": "decimal"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Parameter"
+      },
+      "lucentapi__package__Person": {
+        "properties": {
+          "given_name": {
+            "type": "string",
+            "maxLength": 50,
+            "title": "Given Name"
+          },
+          "surname": {
+            "type": "string",
+            "maxLength": 50,
+            "title": "Surname"
+          },
+          "linux_user": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linux User",
+            "description": "The account the person signs in with. People are referred to by it."
+          },
+          "organization": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Organization",
+            "description": "An organization's name."
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position",
+            "description": "In their organization."
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active",
+            "description": "Whether the person can sign in.",
+            "default": true
+          },
+          "roles": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "sampler",
+                "analyst",
+                "reviewer",
+                "admin"
+              ]
+            },
+            "type": "array",
+            "title": "Roles",
+            "description": "What the person may do.",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "given_name",
+          "surname"
+        ],
+        "title": "Person"
+      },
+      "lucentapi__package__ReferenceSystem": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 25,
+            "title": "Name"
+          },
+          "epsg": {
+            "type": "integer",
+            "title": "Epsg"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "epsg"
+        ],
+        "title": "ReferenceSystem"
+      },
+      "lucentapi__package__Site": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/lucentapi__package__Address"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "border": {
+            "items": {
+              "$ref": "#/components/schemas/lucentapi__package__GeoPoint"
+            },
+            "type": "array",
+            "title": "Border",
+            "description": "The corners in order, without repeating the first.",
+            "default": []
+          },
+          "reference_system": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference System",
+            "description": "A reference system's name."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Site"
+      },
+      "lucentapi__package__Spot": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 90.0,
+                "minimum": -90.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude",
+            "description": "lucentBASE's spot.x."
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 180.0,
+                "minimum": -180.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude",
+            "description": "lucentBASE's spot.y."
+          },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          },
+          "z_class": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z Class"
+          },
+          "z_unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z Unit",
+            "description": "A unit's name or notation."
+          },
+          "reference_system": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference System",
+            "description": "A reference system's name."
+          },
+          "site": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site",
+            "description": "The site the spot lies in."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Spot"
+      },
+      "lucentapi__package__Threshold": {
+        "properties": {
+          "parameter": {
+            "type": "string",
+            "title": "Parameter",
+            "description": "A parameter's name."
+          },
+          "document": {
+            "type": "string",
+            "title": "Document",
+            "description": "The document (e.g. a regulation) that sets the limit."
+          },
+          "lower": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower"
+          },
+          "upper": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "parameter",
+          "document"
+        ],
+        "title": "Threshold"
+      },
+      "lucentapi__package__Unit": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 40,
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "dimension": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dimension",
+            "description": "A dimension's name."
+          },
+          "notations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notations",
+            "description": "Ways to write the unit, e.g. mg/L. Each is unique, and others refer to the unit by its name or by any of them.",
+            "default": []
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "Unit"
       }
     },
     "securitySchemes": {

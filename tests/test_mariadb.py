@@ -199,6 +199,17 @@ def test_sites_are_spatial_polygons(maria, mariadb, as_user):
     assert round(area, 6) == 0.000014
 
 
+def test_package_export(maria, as_user):
+    from lucentapi.package import Package
+
+    package = Package.model_validate(maria.get("/v1/package", headers=as_user("jd")).json())
+    # The initial data's admin and the demo data, with dates as dates and borders as corners.
+    assert next(p for p in package.people if p.linux_user == "grindel").roles == ["admin"]
+    assert str(next(a for a in package.actions if a.name == "Anionen (IC)").iteration) == "2025-02-01"
+    assert len(next(s for s in package.sites if s.name == "Wasserwerk Ost").border) == 4
+    assert {r.name for r in package.reference_systems} == {"WGS 84"}
+
+
 def test_the_api_account_cannot_delete(mariadb):
     with mariadb.connect() as conn, pytest.raises(OperationalError, match="DELETE command denied"):
         conn.execute(text("DELETE FROM task"))
